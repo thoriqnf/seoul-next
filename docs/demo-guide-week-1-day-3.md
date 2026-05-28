@@ -18,37 +18,48 @@ npm run dev
 ```
 Navigate to `http://localhost:3000`.
 
-### Click Events (`onClick`)
+### TODO Form 1: Click Events (`onClick`)
 Handles basic user click interactions by updating a numeric state variable.
-```jsx
+
+1. Locate `TODO Form 1` in `BasicFormDemo.jsx`.
+2. Define the increment logic inside `handleButtonClick`:
+```javascript
 const [clickCount, setClickCount] = useState(0);
 
 const handleButtonClick = () => {
   setClickCount((prev) => prev + 1);
 };
-
-// JSX usage:
+```
+3. Attach it to the button element in the JSX:
+```jsx
 <button onClick={handleButtonClick}>
   Clicked {clickCount} times
 </button>
 ```
 
-### Controlled Inputs (`onChange`)
+### TODO Form 2: Controlled Inputs (`onChange`)
 Listens to browser text input events to store current keyboard value into state.
-```jsx
+
+1. Locate `TODO Form 2` in `BasicFormDemo.jsx`.
+2. Bind the text input value and implement the handler:
+```javascript
 const [text, setText] = useState("");
 
 const handleTextChange = (e) => {
   setText(e.target.value);
 };
-
-// JSX usage:
+```
+3. Hook them to the text input in the JSX:
+```jsx
 <input type="text" value={text} onChange={handleTextChange} />
 ```
 
-### Centralized Form State (Multi-field `onChange`)
+### TODO Form 3: Centralized Form State (Multi-field `onChange`)
 Instead of defining separate states for every form field, multiple inputs are combined into a single object. Field values are updated dynamically using the elements' `name` attribute.
-```jsx
+
+1. Locate `TODO Form 3` in `BasicFormDemo.jsx`.
+2. Update the dynamic property assignment inside `handleFormChange`:
+```javascript
 const [formData, setFormData] = useState({
   username: "",
   email: "",
@@ -62,21 +73,26 @@ const handleFormChange = (e) => {
     [name]: value,
   }));
 };
-
-// JSX usage:
+```
+3. Verify the form fields contain correct `name`, `value`, and `onChange` attributes:
+```jsx
 <input name="username" value={formData.username} onChange={handleFormChange} />
 <input name="email" value={formData.email} onChange={handleFormChange} />
 ```
 
-### Form Submission (`onSubmit`)
+### TODO Form 4: Form Submission (`onSubmit`)
 Overrides standard HTML form behavior. The handler calls `preventDefault()` to prevent a browser page reload.
-```jsx
+
+1. Locate `TODO Form 4` in `BasicFormDemo.jsx`.
+2. Implement the submission handler:
+```javascript
 const handleFormSubmit = (e) => {
-  e.preventDefault();
+  e.preventDefault(); // Prevents page reload
   setSubmittedData({ ...formData });
 };
-
-// JSX usage:
+```
+3. Bind the handler to the `<form>` wrapper:
+```jsx
 <form onSubmit={handleFormSubmit}>
   ...
 </form>
@@ -89,19 +105,22 @@ Path: `src/components/Demo/ReactHookFormDemo.jsx`
 
 Using React controlled components triggers component re-renders on every keystroke. React Hook Form reduces boilerplate and improves rendering performance by utilizing uncontrolled inputs.
 
-### Installation
-Install `react-hook-form` in the workspace:
+### TODO Form 5: Installation & Import
+1. Install `react-hook-form` in the workspace:
 ```bash
 bun install react-hook-form
 # or
 npm install react-hook-form
 ```
-
-### Initializing the hook
-The `useForm` hook returns register methods and form state:
+2. Locate `TODO Form 5` at the top of `ReactHookFormDemo.jsx` and import `useForm`:
 ```javascript
 import { useForm } from "react-hook-form";
+```
 
+### TODO Form 6: Initializing the Hook
+1. Locate `TODO Form 6` inside `ReactHookFormDemo.jsx`.
+2. Un-comment the `useForm` hook initialization and remove the starter fallbacks:
+```javascript
 const {
   register,
   handleSubmit,
@@ -112,8 +131,9 @@ const {
 });
 ```
 
-### Binding Fields with Validation Rules
-The `register` helper integrates the inputs with the form context and configures specific validation constraints.
+### TODO Form 7: Binding Fields with Validation Rules
+1. Locate `TODO Form 7` in the input elements of `ReactHookFormDemo.jsx`.
+2. Bind the inputs using the `register` helper, configuring specific validation constraints:
 ```jsx
 <input
   type="text"
@@ -136,25 +156,45 @@ The `register` helper integrates the inputs with the form context and configures
     }
   })}
 />
+
+<input
+  type="number"
+  {...register("age", { 
+    required: "Age is required",
+    min: {
+      value: 18,
+      message: "You must be at least 18 years old"
+    },
+    max: {
+      value: 120,
+      message: "Please enter a valid age"
+    }
+  })}
+/>
 ```
 
-### Form Submission Workflow
+### TODO Form 8: Form Submission Workflow
 The `handleSubmit` function performs a validation sweep across all registered inputs. It only triggers the custom `onSubmit` callback if all validation rules are met.
-```jsx
-const onSubmit = (data) => {
-  console.log("Valid Form Data:", data);
-};
 
-// JSX usage:
+1. Locate `TODO Form 8` in the form tag of `ReactHookFormDemo.jsx`.
+2. Wrap the custom submission inside `handleSubmit`:
+```jsx
 <form onSubmit={handleSubmit(onSubmit)}>
   ...
 </form>
 ```
 
-### Conditional Validation Feedback
+### TODO Form 9: Conditional Validation Feedback
 Error messages are stored in the `errors` object and can be conditionally checked to render inline validation alerts.
+
+1. Locate `TODO Form 9` inside the form layout of `ReactHookFormDemo.jsx`.
+2. Ensure validation messages are displayed:
 ```jsx
-{errors.fullName && <p style={{ color: "red" }}>{errors.fullName.message}</p>}
+{errors.fullName && (
+  <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px" }}>
+    ⚠ {errors.fullName.message}
+  </p>
+)}
 ```
 
 ---

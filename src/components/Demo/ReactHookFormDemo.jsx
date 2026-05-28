@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+// TODO Form 5: Import useForm from "react-hook-form"
 
 /**
- * ReactHookFormDemo
- * Demonstrates:
- * 1. basic usage of useForm hook
- * 2. registering input elements
- * 3. basic validation rules: required, minLength, pattern (email validation)
- * 4. conditional error feedback UI
+ * ReactHookFormDemo (Starter Template)
+ * Follow the steps in `docs/demo-guide-week-1-day-3.md` to complete:
+ * 
+ * TODO Form 5: Import useForm from "react-hook-form"
+ * TODO Form 6: Initialize useForm with defaultValues
+ * TODO Form 7: Register input fields with validation rules
+ * TODO Form 8: Connect onSubmit to handleSubmit validation sweep
+ * TODO Form 9: Display validation error messages dynamically
  */
 export default function ReactHookFormDemo() {
+  // ----------------------------------------------------
+  // TODO Form 6: Initialize useForm hook here.
+  // Un-comment and complete the useForm hook below once imported:
+  // ----------------------------------------------------
+  /*
   const {
     register,
     handleSubmit,
@@ -24,13 +31,23 @@ export default function ReactHookFormDemo() {
       age: "",
     },
   });
+  */
+
+  // --- Starter Fallbacks (Delete these once useForm is un-commented) ---
+  const register = (name, options) => ({ name });
+  const handleSubmit = (onSubmitCallback) => (e) => {
+    e.preventDefault();
+    onSubmitCallback({ fullName: "Starter Name", email: "starter@example.com", age: "25" });
+  };
+  const errors = {};
+  const reset = () => {};
+  // ---------------------------------------------------------------------
 
   const [submittedData, setSubmittedData] = useState(null);
 
   const onSubmit = (data) => {
-    // data is fully validated and typed according to rules below
     setSubmittedData(data);
-    reset(); // Reset form inputs after successful submission
+    reset();
   };
 
   return (
@@ -40,8 +57,10 @@ export default function ReactHookFormDemo() {
         React Hook Form avoids re-rendering the whole page on every keystroke and makes validation incredibly simple.
       </p>
 
+      {/* TODO Form 8: Wrap onSubmit in handleSubmit */}
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "400px" }}>
-        {/* Full Name Input (Required & minLength validation) */}
+        
+        {/* Full Name Input */}
         <div>
           <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold" }}>Full Name:</label>
           <input
@@ -53,22 +72,18 @@ export default function ReactHookFormDemo() {
               borderRadius: "4px" 
             }}
             placeholder="e.g. Jane Doe"
-            {...register("fullName", { 
-              required: "Full name is required", 
-              minLength: {
-                value: 3,
-                message: "Full name must be at least 3 characters long"
-              }
-            })}
+            // TODO Form 7: Register this input with validation rules (required, minLength: 3)
+            {...register("fullName")}
           />
+          {/* TODO Form 9: Render fullName error message dynamically */}
           {errors.fullName && (
-            <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px", marginContent: 0 }}>
+            <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px" }}>
               ⚠ {errors.fullName.message}
             </p>
           )}
         </div>
 
-        {/* Email Input (Required & Regex pattern validation) */}
+        {/* Email Input */}
         <div>
           <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold" }}>Email Address:</label>
           <input
@@ -80,14 +95,10 @@ export default function ReactHookFormDemo() {
               borderRadius: "4px" 
             }}
             placeholder="e.g. jane@example.com"
-            {...register("email", { 
-              required: "Email address is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Please enter a valid email address"
-              }
-            })}
+            // TODO Form 7: Register this input with validation rules (required, email regex pattern)
+            {...register("email")}
           />
+          {/* TODO Form 9: Render email error message dynamically */}
           {errors.email && (
             <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px" }}>
               ⚠ {errors.email.message}
@@ -95,7 +106,7 @@ export default function ReactHookFormDemo() {
           )}
         </div>
 
-        {/* Age Input (Required & custom numeric range validation) */}
+        {/* Age Input */}
         <div>
           <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold" }}>Age:</label>
           <input
@@ -107,18 +118,10 @@ export default function ReactHookFormDemo() {
               borderRadius: "4px" 
             }}
             placeholder="e.g. 25"
-            {...register("age", { 
-              required: "Age is required",
-              min: {
-                value: 18,
-                message: "You must be at least 18 years old"
-              },
-              max: {
-                value: 120,
-                message: "Please enter a valid age"
-              }
-            })}
+            // TODO Form 7: Register this input with validation rules (required, min: 18, max: 120)
+            {...register("age")}
           />
+          {/* TODO Form 9: Render age error message dynamically */}
           {errors.age && (
             <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px" }}>
               ⚠ {errors.age.message}

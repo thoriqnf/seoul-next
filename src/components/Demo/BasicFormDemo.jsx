@@ -3,53 +3,53 @@
 import { useState } from "react";
 
 /**
- * BasicFormDemo
- * Demonstrates:
- * 1. onClick event
- * 2. onChange event (single state)
- * 3. onChange event (multiple inputs using one state object)
- * 4. onSubmit event with preventDefault
+ * BasicFormDemo (Starter Template)
+ * Follow the steps in `docs/demo-guide-week-1-day-3.md` to complete:
+ * 
+ * TODO Form 1: Implement onClick event
+ * TODO Form 2: Implement onChange event (single state)
+ * TODO Form 3: Implement onChange event (multiple inputs using one state object)
+ * TODO Form 4: Implement onSubmit event with preventDefault
  */
 export default function BasicFormDemo() {
   // ----------------------------------------------------
-  // 1. onClick State & Handler
+  // TODO Form 1: Implement clickCount state & increment handler
   // ----------------------------------------------------
   const [clickCount, setClickCount] = useState(0);
 
   const handleButtonClick = () => {
-    setClickCount((prev) => prev + 1);
+    // Write logic here
   };
 
   // ----------------------------------------------------
-  // 2. onChange (Single State) State & Handler
+  // TODO Form 2: Implement text state & single input handler
   // ----------------------------------------------------
   const [text, setText] = useState("");
 
   const handleTextChange = (e) => {
-    setText(e.target.value);
+    // Write logic here
   };
 
   // ----------------------------------------------------
-  // 3 & 4. onChange (Multiple fields in 1 state object) & onSubmit
+  // TODO Form 3: Implement form state & multi-input handler
   // ----------------------------------------------------
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     favoriteColor: "blue",
   });
-  const [submittedData, setSubmittedData] = useState(null);
 
   const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    // Write logic here to update the state using input `name` dynamically
   };
 
+  // ----------------------------------------------------
+  // TODO Form 4: Implement submit handler with preventDefault
+  // ----------------------------------------------------
+  const [submittedData, setSubmittedData] = useState(null);
+
   const handleFormSubmit = (e) => {
-    e.preventDefault(); // Stop default browser reload
-    setSubmittedData({ ...formData });
+    // Write logic here to prevent default browser behavior and set submittedData
   };
 
   return (
