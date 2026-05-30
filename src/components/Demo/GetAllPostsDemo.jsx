@@ -22,10 +22,32 @@ export default function GetAllPostsDemo() {
   // ----------------------------------------------------
   // TODO useEffect 2: Create Fetch Hook inside useEffect with Dependency Array []
   // ----------------------------------------------------
-  useEffect(() => {
-    // Write your fetch logic here
-  }, []);
+  // useEffect(() => {
+  // Write your fetch logic here
+  // }, []);
 
+  useEffect(() => {
+    // isi function dalam useeffect adalah efek
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("https://dummyjson.com/posts/2");
+        console.log("response", response);
+        const data = await response.json();
+        console.log("data", data);
+        setPosts(data.title);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch");
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [posts]);
+
+  console.log(posts);
+  console.log(error);
   // ----------------------------------------------------
   // 3. UI / Component Render
   // ----------------------------------------------------
@@ -35,15 +57,21 @@ export default function GetAllPostsDemo() {
         Demo 3: Fetch All Posts (useEffect on Mount)
       </h3>
       <p className="text-xs text-slate-500 dark:text-zinc-400 mb-4">
-        This component demonstrates how to perform an API request using `useEffect` with an empty dependency array `[]`.
+        This component demonstrates how to perform an API request using
+        `useEffect` with an empty dependency array `[]`.
       </p>
-
       {/* TODO useEffect 3: Render Loading State and Error State Conditionally */}
       {/* (e.g. Render loading tag if loading is true, render error tag if error is not null) */}
-
       {/* TODO useEffect 4: Render Posts List Dynamically using posts.map */}
       {/* (e.g. Render list items containing post.id, post.title, and post.body excerpt) */}
-      
+      {/* map adalah bawaan dari method array */}
+      {loading ? (
+        <h1>loading dulu bos</h1>
+      ) : error ? (
+        <h1 className="text-red-600">Error {error}</h1>
+      ) : (
+        <h1>data: {posts}</h1>
+      )}
     </div>
   );
 }
