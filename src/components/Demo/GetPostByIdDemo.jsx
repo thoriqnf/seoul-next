@@ -3,55 +3,40 @@
 import { useState, useEffect } from "react";
 
 /**
- * GetPostByIdDemo
- * Demonstrates useEffect usage with a dependency array:
- * Fetches post details based on the selected ID.
- * The dependency array contains [postId], meaning the effect will re-run
- * every time the value of `postId` changes.
+ * GetPostByIdDemo (Starter Template)
+ * Follow the steps in `docs/demo-guide-week-1-day-4.md` to complete:
+ *
+ * TODO useEffect 5: Initialize State Variables (postId, post, loading, error)
+ * TODO useEffect 6: Create Navigation Handlers (handleNext, handlePrev)
+ * TODO useEffect 7: Create Fetch Hook inside useEffect with Dependency Array [postId]
+ * TODO useEffect 8: Render Post Detail Content Conditionally
  */
 export default function GetPostByIdDemo() {
   // ----------------------------------------------------
-  // TODO useEffect 5: Initialize State Variables (postId, post, loading, error)
+  // TODO useEffect 5: Initialize State Variables (postId default 1, post default null, loading default false, error default null)
   // ----------------------------------------------------
   const [postId, setPostId] = useState(1);
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // ----------------------------------------------------
   // TODO useEffect 6: Create Navigation Handlers (handleNext, handlePrev)
   // ----------------------------------------------------
   const handleNext = () => {
-    setPostId((prev) => prev + 1);
+    // Write your logic here to increment postId
   };
 
   const handlePrev = () => {
-    setPostId((prev) => (prev > 1 ? prev - 1 : 1));
+    // Write your logic here to decrement postId (ensure it cannot go below 1)
   };
 
   // ----------------------------------------------------
   // TODO useEffect 7: Create Fetch Hook inside useEffect with Dependency Array [postId]
   // ----------------------------------------------------
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch(`https://dummyjson.com/posts/${postId}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Post with ID ${postId} not found`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setPost(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [postId]); // Dependency [postId] triggers re-fetching whenever postId state changes
+    // Write your fetch logic here
+  }, []); // Remember to add correct dependencies
 
   // ----------------------------------------------------
   // 4. UI / Component Render
@@ -89,20 +74,8 @@ export default function GetPostByIdDemo() {
 
       {/* TODO useEffect 8: Render Post Detail Content Conditionally */}
       <div className="min-h-[120px] p-4 border border-dashed border-slate-200 dark:border-zinc-800 rounded-lg bg-slate-50/50 dark:bg-zinc-900/30">
-        {loading ? (
-          <p className="text-blue-500 dark:text-blue-450 font-bold text-sm m-0">Loading post details...</p>
-        ) : error ? (
-          <p className="text-red-500 dark:text-red-400 text-sm m-0">⚠ Error: {error}</p>
-        ) : post ? (
-          <div className="m-0">
-            <h4 className="m-0 text-slate-800 dark:text-zinc-200 text-base font-bold mb-2">
-              {post.title}
-            </h4>
-            <p className="m-0 text-slate-600 dark:text-zinc-400 text-sm leading-relaxed">
-              {post.body}
-            </p>
-          </div>
-        ) : null}
+        {/* Write conditional checks for loading, error, and rendering the fetched post here */}
+        
       </div>
     </div>
   );
