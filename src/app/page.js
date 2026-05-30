@@ -4,6 +4,8 @@ import GreetingName from "@/components/Text/GreetingName";
 import Counter from "@/components/Button/Counter";
 import BasicFormDemo from "@/components/Demo/BasicFormDemo";
 import ReactHookFormDemo from "@/components/Demo/ReactHookFormDemo";
+import GetAllPostsDemo from "@/components/Demo/GetAllPostsDemo";
+import GetPostByIdDemo from "@/components/Demo/GetPostByIdDemo";
 
 export default function Home() {
   return (
@@ -20,7 +22,13 @@ export default function Home() {
 
       {/* React Hook Form Demo */}
       <ReactHookFormDemo />
+
+      {/* useEffect Fetching Demos */}
+      <GetAllPostsDemo />
+      <GetPostByIdDemo />
     </div>
   );
 }
+
+
 

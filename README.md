@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Web Development Demo Portal
 
-## Getting Started
+This repository contains live coding demonstrations, starter templates, and completed exercises for a multi-week web development course. Lectures and code components are updated dynamically on a daily basis.
 
-First, run the development server:
+---
+
+## 🚀 Getting Started
+
+First, launch the Next.js local development server:
 
 ```bash
+bun dev
+# or
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the interactive demo components.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤖 Instructions for AI Coding Agents
+If you are an AI assistant (such as Cursor, Windsurf, or Antigravity) working in this workspace, **you must read the agent rulebook before making any changes**:
+- 📄 **[Master Agent Instructions & Branching Rules](file:///Users/thq/Documents/RV/seoul-new/my-app-demo/docs/AGENTS.md)**
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📚 Class Exercises & Daily Guides
+Each class session has its own walkthrough guide detailing the code implementation:
+- 📖 **Week 1 Day 3 Guide:** [React Events & React Hook Form Introduction](file:///Users/thq/Documents/RV/seoul-new/my-app-demo/docs/demo-guide-week-1-day-3.md)
+- 📖 **Week 1 Day 4 Guide:** [Advanced Form Handling & Validation](file:///Users/thq/Documents/RV/seoul-new/my-app-demo/docs/demo-guide-week-1-day-4.md)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🌿 Branch Structure
+This project utilizes a structured branch model for easy navigation:
+- `week-[W]-day-[D]-starter`: Boilerplate branch with `TODO` markers.
+- `week-[W]-day-[D]-finish`: Completed demonstration branch (includes both full code and the guide in the `docs/` folder).
