@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 
 /**
  * GetPostByIdDemo
- * Mendemonstrasikan penggunaan useEffect dengan array dependensi:
- * Mengambil (fetching) detail postingan berdasarkan ID yang dipilih.
- * Array dependensi berisi [postId], sehingga effect akan dipicu kembali
- * setiap kali nilai `postId` berubah.
+ * Demonstrates useEffect usage with a dependency array:
+ * Fetches post details based on the selected ID.
+ * The dependency array contains [postId], meaning the effect will re-run
+ * every time the value of `postId` changes.
  */
 export default function GetPostByIdDemo() {
   // ----------------------------------------------------
-  // 1. State Declarations
+  // TODO useEffect 5: Initialize State Variables (postId, post, loading, error)
   // ----------------------------------------------------
   const [postId, setPostId] = useState(1);
   const [post, setPost] = useState(null);
@@ -19,17 +19,27 @@ export default function GetPostByIdDemo() {
   const [error, setError] = useState(null);
 
   // ----------------------------------------------------
-  // 2. useEffect Handler (Reacting to State Changes)
+  // TODO useEffect 6: Create Navigation Handlers (handleNext, handlePrev)
+  // ----------------------------------------------------
+  const handleNext = () => {
+    setPostId((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    setPostId((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
+  // ----------------------------------------------------
+  // TODO useEffect 7: Create Fetch Hook inside useEffect with Dependency Array [postId]
   // ----------------------------------------------------
   useEffect(() => {
-    // Jalankan setiap kali `postId` berubah
     setLoading(true);
     setError(null);
 
     fetch(`https://dummyjson.com/posts/${postId}`)
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`Postingan dengan ID ${postId} tidak ditemukan`);
+          throw new Error(`Post with ID ${postId} not found`);
         }
         return res.json();
       })
@@ -41,89 +51,54 @@ export default function GetPostByIdDemo() {
         setError(err.message);
         setLoading(false);
       });
-  }, [postId]); // [postId] Menandakan effect berjalan ulang jika postId berubah
-
-  // ----------------------------------------------------
-  // 3. User Actions / Interaction Handlers
-  // ----------------------------------------------------
-  const handleNext = () => {
-    setPostId((prev) => prev + 1);
-  };
-
-  const handlePrev = () => {
-    setPostId((prev) => (prev > 1 ? prev - 1 : 1));
-  };
+  }, [postId]); // Dependency [postId] triggers re-fetching whenever postId state changes
 
   // ----------------------------------------------------
   // 4. UI / Component Render
   // ----------------------------------------------------
   return (
-    <div
-      style={{
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        margin: "20px 0",
-        backgroundColor: "#fff",
-      }}
-    >
-      <h3 style={{ margin: "0 0 10px 0", color: "#1a202c" }}>
-        Demo 4: Ambil Postingan Berdasarkan ID (useEffect with Dependency)
+    <div className="p-5 border border-slate-200 dark:border-zinc-800 rounded-lg my-5 bg-transparent font-sans">
+      <h3 className="m-0 text-base font-bold text-slate-800 dark:text-zinc-100 mb-1">
+        Demo 4: Fetch Post By ID (useEffect with Dependency)
       </h3>
-      <p style={{ fontSize: "0.9rem", color: "#4a5568", marginBottom: "15px" }}>
-        Component ini mendemonstrasikan bagaimana `useEffect` merespons perubahan state `postId` dengan menyertakannya dalam array dependensi `[postId]`.
+      <p className="text-xs text-slate-500 dark:text-zinc-400 mb-4">
+        This component demonstrates how `useEffect` responds to changes in the `postId` state by including it in the dependency array `[postId]`.
       </p>
 
-      {/* Navigasi ID Postingan */}
-      <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "20px" }}>
+      {/* Post ID Navigation */}
+      <div className="flex gap-3 items-center mb-5">
         <button
           onClick={handlePrev}
           disabled={postId <= 1}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: postId <= 1 ? "#cbd5e0" : "#3182ce",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: postId <= 1 ? "not-allowed" : "pointer",
-            fontWeight: "bold",
-          }}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm rounded-lg disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-zinc-800/40 dark:disabled:text-zinc-650 disabled:cursor-not-allowed transition"
         >
-          Sebelumnya
+          Previous
         </button>
 
-        <span style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#2d3748" }}>
-          ID Postingan: {postId}
+        <span className="text-base font-bold text-slate-700 dark:text-zinc-300">
+          Post ID: {postId}
         </span>
 
         <button
           onClick={handleNext}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#3182ce",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm rounded-lg transition"
         >
-          Selanjutnya
+          Next
         </button>
       </div>
 
-      {/* Konten detail postingan */}
-      <div style={{ minHeight: "120px", padding: "15px", border: "1px dashed #e2e8f0", borderRadius: "6px" }}>
+      {/* TODO useEffect 8: Render Post Detail Content Conditionally */}
+      <div className="min-h-[120px] p-4 border border-dashed border-slate-200 dark:border-zinc-800 rounded-lg bg-slate-50/50 dark:bg-zinc-900/30">
         {loading ? (
-          <p style={{ color: "#3182ce", fontWeight: "bold", margin: 0 }}>Memuat detail postingan...</p>
+          <p className="text-blue-500 dark:text-blue-450 font-bold text-sm m-0">Loading post details...</p>
         ) : error ? (
-          <p style={{ color: "#e53e3e", margin: 0 }}>⚠ Error: {error}</p>
+          <p className="text-red-500 dark:text-red-400 text-sm m-0">⚠ Error: {error}</p>
         ) : post ? (
-          <div style={{ margin: 0 }}>
-            <h4 style={{ margin: "0 0 8px 0", color: "#2d3748", fontSize: "1.1rem" }}>
+          <div className="m-0">
+            <h4 className="m-0 text-slate-800 dark:text-zinc-200 text-base font-bold mb-2">
               {post.title}
             </h4>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "#4a5568", lineHeight: "1.5" }}>
+            <p className="m-0 text-slate-600 dark:text-zinc-400 text-sm leading-relaxed">
               {post.body}
             </p>
           </div>

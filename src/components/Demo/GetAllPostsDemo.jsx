@@ -4,75 +4,68 @@ import { useState, useEffect } from "react";
 
 /**
  * GetAllPostsDemo
- * Mendemonstrasikan penggunaan useEffect paling dasar:
- * Mengambil (fetching) data dari API satu kali pada saat component pertama kali dimuat (mount).
- * Menggunakan array dependensi kosong [] agar effect hanya berjalan sekali.
+ * Demonstrates the most basic usage of useEffect:
+ * Fetching data from an API once when the component is first mounted.
+ * Uses an empty dependency array [] to ensure the effect only runs once.
  */
 export default function GetAllPostsDemo() {
   // ----------------------------------------------------
-  // 1. State Declarations
+  // TODO useEffect 1: Initialize State Variables (posts, loading, error)
   // ----------------------------------------------------
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // ----------------------------------------------------
-  // 2. useEffect Handler (Fetch on Mount)
+  // TODO useEffect 2: Create Fetch Hook inside useEffect with Dependency Array []
   // ----------------------------------------------------
   useEffect(() => {
-    // Memulai proses fetching data
     fetch("https://dummyjson.com/posts")
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Gagal mengambil data dari server");
+          throw new Error("Failed to fetch data from server");
         }
         return res.json();
       })
       .then((data) => {
-        setPosts(data.posts || []); // Menyimpan data postingan ke state
-        setLoading(false); // Menghentikan loading indicator
+        setPosts(data.posts || []);
+        setLoading(false);
       })
       .catch((err) => {
-        setError(err.message); // Menyimpan pesan error jika terjadi kegagalan
-        setLoading(false); // Menghentikan loading indicator
+        setError(err.message);
+        setLoading(false);
       });
-  }, []); // [] Menandakan effect ini hanya dipanggil sekali saat mount
+  }, []); // Empty dependency array [] ensures this runs only once on mount
 
   // ----------------------------------------------------
   // 3. UI / Component Render
   // ----------------------------------------------------
   return (
-    <div
-      style={{
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        margin: "20px 0",
-        backgroundColor: "#fff",
-      }}
-    >
-      <h3 style={{ margin: "0 0 10px 0", color: "#1a202c" }}>
-        Demo 3: Ambil Semua Postingan (useEffect on Mount)
+    <div className="p-5 border border-slate-200 dark:border-zinc-800 rounded-lg my-5 bg-transparent font-sans">
+      <h3 className="m-0 text-base font-bold text-slate-800 dark:text-zinc-100 mb-1">
+        Demo 3: Fetch All Posts (useEffect on Mount)
       </h3>
-      <p style={{ fontSize: "0.9rem", color: "#4a5568", marginBottom: "15px" }}>
-        Component ini mendemonstrasikan cara melakukan request API menggunakan `useEffect` dengan array dependensi kosong `[]`.
+      <p className="text-xs text-slate-500 dark:text-zinc-400 mb-4">
+        This component demonstrates how to perform an API request using `useEffect` with an empty dependency array `[]`.
       </p>
 
+      {/* TODO useEffect 3: Render Loading State and Error State Conditionally */}
       {loading ? (
-        <p style={{ color: "#3182ce", fontWeight: "bold" }}>Memuat postingan...</p>
+        <p className="text-blue-500 dark:text-blue-400 font-bold text-sm">Loading posts...</p>
       ) : error ? (
-        <p style={{ color: "#e53e3e" }}>⚠ Error: {error}</p>
+        <p className="text-red-500 dark:text-red-400 text-sm">⚠ Error: {error}</p>
       ) : posts.length === 0 ? (
-        <p>Tidak ada postingan yang ditemukan.</p>
+        <p className="text-slate-500 dark:text-zinc-400 text-sm">No posts found.</p>
       ) : (
-        <div style={{ maxHeight: "300px", overflowY: "auto", paddingRight: "5px" }}>
-          <ul style={{ paddingLeft: "20px", margin: 0 }}>
+        /* TODO useEffect 4: Render Posts List Dynamically using posts.map */
+        <div className="max-h-[300px] overflow-y-auto pr-1">
+          <ul className="space-y-3 m-0 p-0">
             {posts.map((post) => (
-              <li key={post.id} style={{ marginBottom: "12px", borderBottom: "1px solid #edf2f7", paddingBottom: "8px" }}>
-                <strong style={{ display: "block", color: "#2d3748" }}>
+              <li key={post.id} className="pb-2 border-b border-slate-100 dark:border-zinc-850 list-none">
+                <strong className="block text-slate-800 dark:text-zinc-200 text-sm font-semibold mb-1">
                   {post.id}. {post.title}
                 </strong>
-                <span style={{ fontSize: "0.85rem", color: "#718096" }}>
+                <span className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed block">
                   {post.body.substring(0, 100)}...
                 </span>
               </li>

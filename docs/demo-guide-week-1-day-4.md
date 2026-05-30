@@ -1,220 +1,180 @@
-# Developer Guide: Advanced Form Handling & React Hook Form (Week 1 Day 4)
+# Developer Guide: Data Fetching with `useEffect` (Week 1 Day 4)
 
-This document provides a technical walkthrough of the demonstration components included in Week 1 Day 4, focusing on advanced state callback updates, dynamic multi-field handlers, form reset capabilities, and integrating React Hook Form with local language validation constraints.
+This document provides a step-by-step walkthrough of the demonstration components for Week 1 Day 4. In this lecture, we learn how to fetch data from a REST API (`https://dummyjson.com/posts`) using the built-in React `useEffect` hook.
+
+To ensure a smooth learning experience, the material is split into two clean components and broken down into **8 beginner-friendly sequential tasks**, all styled exclusively using **TailwindCSS**.
 
 ---
 
-## 1. Advanced Events & Controlled Resets (`BasicFormDemo.jsx`)
-Path: `src/components/Demo/BasicFormDemo.jsx`
+## 1. Fetching All Posts on Mount (`GetAllPostsDemo.jsx`)
+Path: `src/components/Demo/GetAllPostsDemo.jsx`
 
-This component builds on standard React events to demonstrate dynamic state updating and controlled form resetting.
+This component teaches how to fetch a list of items once when the component is first rendered (mounted). We use an empty dependency array `[]`.
 
-### Running the Dev Server
-Start the local server to test interactions in real-time:
-```bash
-bun dev
-# or
-npm run dev
-```
-Navigate to `http://localhost:3000`.
+### TODO useEffect 1: Initialize State Variables
+To manage data, loading, and error states, we define three standard state hooks.
 
-### TODO Form 1: State Callback Increments (`onClick`)
-Instead of referencing `clickCount` directly inside `setClickCount(clickCount + 1)`—which can cause stale state bugs during rapid clicks—we use a functional update callback.
-
-1. Locate `TODO Form 1` in `BasicFormDemo.jsx`.
-2. Define the increment logic using a functional state callback:
+1. Locate `TODO useEffect 1` in `GetAllPostsDemo.jsx`.
+2. Define the states:
 ```javascript
-const [clickCount, setClickCount] = useState(100);
-
-const handleButtonClick = () => {
-  setClickCount((previous) => previous + 1); // Recommended approach to prevent stale state
-};
+const [posts, setPosts] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
 ```
-3. Attach this handler to the `<button>` element in the JSX.
 
----
+### TODO useEffect 2: Fetch Data on Component Mount
+We trigger a simple `fetch` request inside `useEffect` and configure the dependency array as `[]` so that it only runs once.
 
-### TODO Form 2: Controlled Input (`onChange`)
-Captures real-time keypress events and mirrors the input value back into a single text state.
-
-1. Locate `TODO Form 2` in `BasicFormDemo.jsx`.
-2. Implement the text state and handler:
+1. Locate `TODO useEffect 2` in `GetAllPostsDemo.jsx`.
+2. Write the fetch hook:
 ```javascript
-const [text, setText] = useState("");
-
-const handleTextChange = (event) => {
-  setText(event.target.value);
-};
+useEffect(() => {
+  fetch("https://dummyjson.com/posts")
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Gagal mengambil data dari server");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      setPosts(data.posts || []);
+      setLoading(false);
+    })
+    .catch((err) => {
+      setError(err.message);
+      setLoading(false);
+    });
+}, []); // Empty array ensures this only runs ONCE when component mounts
 ```
-3. Hook them to the `<input>` element:
+
+### TODO useEffect 3: Conditional Rendering for Loading & Errors
+We render feedback elements based on the state values of `loading` and `error`.
+
+1. Locate `TODO useEffect 3` in the JSX wrapper of `GetAllPostsDemo.jsx`.
+2. Implement the conditional loading/error checks:
 ```jsx
-<input type="text" value={text} onChange={handleTextChange} />
-```
-
----
-
-### TODO Form 3: Centralized Multi-field Handler
-Instead of managing distinct state variables for every field, we map them into a single consolidated object. We update fields dynamically using their HTML `name` property.
-
-1. Locate `TODO Form 3` in `BasicFormDemo.jsx`.
-2. Implement the centralized handler:
-```javascript
-const [formData, setFormData] = useState({
-  username: "",
-  email: "",
-  favoriteColor: "blue",
-});
-
-const handleFormChange = (event) => {
-  setFormData((previous) => ({
-    ...previous,
-    [event.target.name]: event.target.value, // Dynamically maps name attribute to state key
-  }));
-};
-```
-3. Bind the fields to the change handler in the JSX:
-```jsx
-<input name="username" value={formData.username} onChange={handleFormChange} />
-<input name="email" value={formData.email} onChange={handleFormChange} />
-<select name="favoriteColor" value={formData.favoriteColor} onChange={handleFormChange}>
-  ...
-</select>
-```
-
----
-
-### Form Reset Capability
-Demonstrates how to clear all form fields back to their default values when a user clicks the reset button.
-
-1. Define the reset handler:
-```javascript
-const handleReset = (event) => {
-  event.preventDefault(); // Prevents default browser reload behavior
-  setFormData({
-    username: "",
-    email: "",
-    favoriteColor: "blue",
-  });
-};
-```
-2. Attach it to the `<form>` wrapper using `onReset` and add a reset type button:
-```jsx
-<form onSubmit={handleFormSubmit} onReset={handleReset}>
-  ...
-  <button type="reset">reset</button>
-</form>
-```
-
----
-
-### TODO Form 4: Form Submission (`onSubmit`)
-Overrides standard browser POST behavior to handle submit operations cleanly in-memory.
-
-1. Locate `TODO Form 4` in `BasicFormDemo.jsx`.
-2. Implement the submit handler:
-```javascript
-const [submittedData, setSubmittedData] = useState(null);
-
-const handleFormSubmit = (event) => {
-  event.preventDefault(); // Stop standard browser page refresh
-  setSubmittedData({ ...formData });
-};
-```
-3. Hook it to the `<form>` wrapper:
-```jsx
-<form onSubmit={handleFormSubmit}>
-  ...
-</form>
-```
-
----
-
-## 2. Dynamic Input Validation with Localized Messages (`ReactHookFormDemo.jsx`)
-Path: `src/components/Demo/ReactHookFormDemo.jsx`
-
-This component uses `react-hook-form` to bypass standard controlled re-render cycles and implement performant validations with custom Indonesian error messages.
-
-### TODO Form 5: Installation & Import
-1. Verify `react-hook-form` is installed in your package file. If not, install it:
-```bash
-bun install react-hook-form
-# or
-npm install react-hook-form
-```
-2. Locate `TODO Form 5` at the top of `ReactHookFormDemo.jsx` and import:
-```javascript
-import { useForm } from "react-hook-form";
-```
-
----
-
-### TODO Form 6: Initializing the Hook & Deleting Fallbacks
-1. Locate `TODO Form 6` in `ReactHookFormDemo.jsx`.
-2. Un-comment and initialize the `useForm` hook with default fields:
-```javascript
-const {
-  register,
-  handleSubmit,
-  formState: { errors },
-  reset,
-} = useForm({
-  defaultValues: {
-    fullName: "",
-    email: "",
-    age: "",
-  },
-});
-```
-3. **Delete or comment out** the starter fallbacks block underneath the hook.
-
----
-
-### TODO Form 7: Registering Fields & Validation Rules
-The `register` helper configures dynamic validations. In this lecture, we validate `fullName` with custom Indonesian constraints.
-
-1. Locate `TODO Form 7` in the input tags of `ReactHookFormDemo.jsx`.
-2. Bind and configure validation rules:
-```jsx
-{/* Full Name Input: Required & MinLength */}
-<input
-  type="text"
-  {...register("fullName", {
-    required: "Full name harus isi",
-    minLength: {
-      value: 3,
-      message: "Full name minimal 3 huruf",
-    },
-  })}
-/>
-
-{/* Email Input */}
-<input type="text" {...register("email")} />
-
-{/* Age Input */}
-<input type="number" {...register("age")} />
-```
-
----
-
-### TODO Form 8 & 9: Form Submission & Errors
-1. Wrap the submit event inside `handleSubmit` pointing to the `onSubmits` handler:
-```jsx
-<form onSubmit={handleSubmit(onSubmits)}>
-  ...
-</form>
-```
-2. Render error messages dynamically:
-```jsx
-{errors.fullName && (
-  <p style={{ color: "#dc2626", fontSize: "0.875rem", marginTop: "4px" }}>
-    ⚠ {errors.fullName.message}
-  </p>
+{loading ? (
+  <p className="text-blue-500 font-bold">Memuat postingan...</p>
+) : error ? (
+  <p className="text-red-500">⚠ Error: {error}</p>
+) : posts.length === 0 ? (
+  <p className="text-slate-500">Tidak ada postingan yang ditemukan.</p>
+) : (
+  /* List container here */
 )}
 ```
 
+### TODO useEffect 4: Rendering List Items dynamically (`posts.map`)
+We map over the `posts` array and render a list item for each post.
+
+1. Locate `TODO useEffect 4` in `GetAllPostsDemo.jsx`.
+2. Write the mapping code inside the parent list element:
+```jsx
+<div className="max-h-[300px] overflow-y-auto pr-1">
+  <ul className="list-disc pl-5 m-0">
+    {posts.map((post) => (
+      <li key={post.id} className="mb-3 border-b border-slate-100 pb-2">
+        <strong className="block text-slate-800 text-sm font-semibold">
+          {post.id}. {post.title}
+        </strong>
+        <span className="text-xs text-slate-500">
+          {post.body.substring(0, 100)}...
+        </span>
+      </li>
+    ))}
+  </ul>
+</div>
+```
+
 ---
 
-## Guidelines Summary
-- Use functional update state callbacks (`setCount((prev) => prev + 1)`) to avoid stale state bugs.
-- Group multiple inputs into a single object and use dynamic property keys (`[name]: value`) to keep handlers lightweight.
-- Use `react-hook-form` to drastically optimize rendering performance for validation-heavy screens.
+## 2. Fetching Single Items by ID (`GetPostByIdDemo.jsx`)
+Path: `src/components/Demo/GetPostByIdDemo.jsx`
+
+This component teaches how `useEffect` can react to state changes by listing `[postId]` inside its dependency array.
+
+### TODO useEffect 5: Initialize Detail State Variables
+We track the current `postId` we want to fetch, the returned `post` object, loading, and error states.
+
+1. Locate `TODO useEffect 5` in `GetPostByIdDemo.jsx`.
+2. Define the states:
+```javascript
+const [postId, setPostId] = useState(1);
+const [post, setPost] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+```
+
+### TODO useEffect 6: Define ID Navigation Handlers
+We write helper functions to increment and decrement the ID.
+
+1. Locate `TODO useEffect 6` in `GetPostByIdDemo.jsx`.
+2. Write the handlers:
+```javascript
+const handleNext = () => {
+  setPostId((prev) => prev + 1);
+};
+
+const handlePrev = () => {
+  setPostId((prev) => (prev > 1 ? prev - 1 : 1)); // ID cannot go below 1
+};
+```
+
+### TODO useEffect 7: Fetch Dynamic Data on State Changes
+We write a `useEffect` hook that triggers a new `fetch` request every time `postId` changes.
+
+1. Locate `TODO useEffect 7` in `GetPostByIdDemo.jsx`.
+2. Write the dependency-tracked hook:
+```javascript
+useEffect(() => {
+  setLoading(true);
+  setError(null);
+
+  fetch(`https://dummyjson.com/posts/${postId}`)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Postingan dengan ID ${postId} tidak ditemukan`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      setPost(data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      setError(err.message);
+      setLoading(false);
+    });
+}, [postId]); // effect runs again whenever postId changes
+```
+
+### TODO useEffect 8: Render Selected Post Card
+We conditionally render the detailed content card once the post data is successfully fetched.
+
+1. Locate `TODO useEffect 8` in the JSX wrapper of `GetPostByIdDemo.jsx`.
+2. Render the post detail:
+```jsx
+<div className="min-h-[120px] p-4 border border-dashed border-slate-200 rounded-lg bg-slate-50">
+  {loading ? (
+    <p className="text-blue-500 font-bold m-0">Memuat detail postingan...</p>
+  ) : error ? (
+    <p className="text-red-500 m-0">⚠ Error: {error}</p>
+  ) : post ? (
+    <div className="m-0">
+      <h4 className="m-0 text-slate-800 text-base font-bold mb-2">
+        {post.title}
+      </h4>
+      <p className="m-0 text-slate-600 text-sm leading-relaxed">
+        {post.body}
+      </p>
+    </div>
+  ) : null}
+</div>
+```
+
+---
+
+## 🌿 Summary of Best Practices
+- **Empty Array `[]`:** Triggers once after the initial render. Ideal for general list loading.
+- **Dependency List `[dependency]`:** Triggers every time the listed state or prop variable changes. Ideal for details drawers or dynamic pages.
+- **Conditional Rendering:** Always check for `loading` and `error` states to prevent React from reading properties of `null` objects before they are fetched.
