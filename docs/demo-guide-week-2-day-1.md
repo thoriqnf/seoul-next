@@ -1,40 +1,46 @@
 # Developer Guide: Next.js with TypeScript (Week 2 Day 1)
 
-This developer guide provides an instructional walkthrough of the demonstration components included in this project, focusing on **TypeScript Interfaces & Types**, **typed React `useState` hooks**, and **typed React `useEffect` hooks** inside a Next.js environment using Tailwind CSS.
+This developer guide provides a technical walkthrough of the demonstration components included in this project, explaining how to utilize TypeScript **literal types, interfaces, typed state, typed effects, and typed event handlers** sequentially from easiest to hardest.
 
 ---
 
-## 1. Core Concepts Covered
+## 1. Roadmap of Exercises (`TODO TS 1` to `TODO TS 8`)
 
-By building and studying this **Todo Dashboard**, students will learn:
-1. **TypeScript Interfaces & Types:** How to declare data shapes using `interface` and custom type unions using `type`.
-2. **Typed React State (`useState`):** How to supply explicit types to state variables like lists, inputs, and custom filter modes.
-3. **Typed React Side Effects (`useEffect`):** How to type API request responses safely, handle loading/error states, and clean up subscriptions using browser `AbortController`.
-4. **Typed Events:** How to type standard React form submission events and input change events.
+The curriculum is structured progressively, starting from basic type definitions and moving to advanced asynchronous event and hook lifecycles:
+
+* **`TODO TS 1`** *(Easy)*: Define a literal string union type for filtering state (`TodoFilter`).
+* **`TODO TS 2`** *(Easy)*: Define a structured model interface (`Todo`) for individual items.
+* **`TODO TS 3`** *(Medium)*: Define the compound model interface (`DummyJsonTodoResponse`) representing an external API payload.
+* **`TODO TS 4`** *(Medium)*: Enforce type parameters for primitive state hooks (`newTodoText`, `filter`, etc.).
+* **`TODO TS 5`** *(Medium)*: Enforce type parameters for object lists in state (`todos`).
+* **`TODO TS 6`** *(Medium)*: Type standard React SyntheticEvent handler arguments (`React.FormEvent`, `React.ChangeEvent`).
+* **`TODO TS 7`** *(Hard)*: Cast parsed external API response JSON payloads inside asynchronous hooks.
+* **`TODO TS 8`** *(Hard)*: Implement async effect cancellation and resource clean-up via the `AbortController` signal inside component unmounting phases.
 
 ---
 
-## 2. Defining Interfaces & Union Types (`src/types/index.ts`)
+## 2. Setting Up Types & Interfaces (`src/types/index.ts`)
 
-Understanding the difference between `interface` and `type` is a fundamental starting point:
-* **`interface`:** Used to define the structure/shape of objects. Perfect for models like `Todo` or API responses.
-* **`type`:** More flexible. Primarily used to define custom unions (like `TodoFilter`), intersections, or primitive aliases.
-
-### The Code (`src/types/index.ts`)
-
+### `TODO TS 1`: Literal Type Unions
+Literal union types let you restrict string variables to a specific, predefined set of values:
 ```typescript
-// Define the shape of a single Todo item
+export type TodoFilter = 'all' | 'completed' | 'pending';
+```
+
+### `TODO TS 2`: Object Interfaces
+An `interface` specifies the exact structure of an object:
+```typescript
 export interface Todo {
   id: number;
   todo: string;
   completed: boolean;
   userId: number;
 }
+```
 
-// Define a type union for valid filter states
-export type TodoFilter = 'all' | 'completed' | 'pending';
-
-// Define the expected shape of the DummyJSON API response
+### `TODO TS 3`: Complex API Interfaces
+APIs often wrap their lists in pagination metadata. We mirror that exactly:
+```typescript
 export interface DummyJsonTodoResponse {
   todos: Todo[];
   total: number;
@@ -45,121 +51,72 @@ export interface DummyJsonTodoResponse {
 
 ---
 
-## 3. Managing State with TypeScript (`useState`)
+## 3. Enforcing State Type Bounds (`src/app/page.tsx`)
 
-By default, React can sometimes infer the type of a state variable (e.g., `useState("")` infers `string`). However, for objects, lists, or union types, we must explicitly declare the expected type using generics:
-
+### `TODO TS 4`: Primitive & Union States
+For basic primitives, type bounds prevent assignment of invalid filter modes:
 ```typescript
-// 1. Array of Todo objects
-const [todos, setTodos] = useState<Todo[]>([]);
-
-// 2. Custom Type Union (only allows 'all', 'completed', or 'pending')
-const [filter, setFilter] = useState<TodoFilter>("all");
-
-// 3. Simple primitive states
 const [newTodoText, setNewTodoText] = useState<string>("");
-const [loading, setLoading] = useState<boolean>(true);
-const [error, setError] = useState<string | null>(null);
+const [filter, setFilter] = useState<TodoFilter>("all");
 ```
 
-Explicit typing prevents students from accidentally assigning invalid data to states (e.g., setting `filter` to `"finished"`, which will trigger a compilation error).
-
----
-
-## 4. API Fetching & Clean-up in `useEffect`
-
-When fetching data from an external API, we must:
-1. Parse the response JSON and typecast it to our helper interface (`DummyJsonTodoResponse`).
-2. Implement clean-up logic to cancel outstanding requests if the component unmounts. This is done using standard browser `AbortController`.
-
-### Typing & Fetching Code
-
+### `TODO TS 5`: Object List States
+For complex arrays, typescript prevents pushing objects that don't match the interface schema:
 ```typescript
-useEffect(() => {
-  const abortController = new AbortController();
-
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch("https://dummyjson.com/todos?limit=8", {
-        signal: abortController.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.statusText}`);
-      }
-
-      // Parse JSON as our typed response
-      const data: DummyJsonTodoResponse = await response.json();
-      setTodos(data.todos);
-    } catch (err) {
-      if (err instanceof Error) {
-        // Suppress errors caused by aborting the request on unmount
-        if (err.name !== "AbortError") {
-          setError(err.message);
-        }
-      } else {
-        setError("An unexpected error occurred.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchTodos();
-
-  // Return the cleanup function
-  return () => {
-    abortController.abort();
-  };
-}, []);
+const [todos, setTodos] = useState<Todo[]>([]);
 ```
 
 ---
 
-## 5. Typing React Event Handlers
+## 4. Typed Asynchronous Effects (`src/app/page.tsx`)
 
-React handles events via SyntheticEvents. When writing custom handler functions, we need to declare the correct event types:
+Inside `useEffect`, we perform typecasting on raw API results and clean up active network requests.
 
-### A. Form Submission Event (`React.FormEvent`)
-Prevents page reload and handles form submission safely:
+### `TODO TS 7`: Cast Response
+Standard `fetch` responses yield type `any` upon parsing. We explicitly cast this:
 ```typescript
+const data: DummyJsonTodoResponse = await response.json();
+setTodos(data.todos);
+```
+
+### `TODO TS 8`: Effect Clean-up (Cancel Active Fetch)
+If a user quickly clicks away from the page while a fetch is active, we prevent memory leaks and state updates on unmounted components by returning a clean-up handler:
+```typescript
+return () => {
+  abortController.abort(); // Cancel network request
+};
+```
+
+---
+
+## 5. Event Handling Typings (`src/app/page.tsx`)
+
+### `TODO TS 6`: Typed React Form & Input Event Handler Parameters
+When typing elements inline or in standalone methods:
+```typescript
+// Typed form submission SyntheticEvent
 const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-  if (!newTodoText.trim()) return;
-
-  const newTodoItem: Todo = {
-    id: Date.now(),
-    todo: newTodoText.trim(),
-    completed: false,
-    userId: 1,
-  };
-
-  setTodos((prevTodos) => [newTodoItem, ...prevTodos]);
-  setNewTodoText("");
+  ...
 };
-```
 
-### B. Input Change Event (`React.ChangeEvent`)
-Captures keypress inputs:
-```typescript
-const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setNewTodoText(e.target.value);
-};
+// Typed input tag onChange handler
+onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTodoText(e.target.value)}
 ```
 
 ---
 
-## 6. How to Run the App
+## 6. How to Run & Verify
 
-1. Ensure all packages are installed:
+1. Run the local package installer:
    ```bash
-   npm install
+   bun install # or npm install
    ```
-2. Run the Next.js development server:
+2. Start the development server:
    ```bash
-   npm run dev
+   bun dev # or npm run dev
    ```
-3. Open `http://localhost:3000` in your web browser.
+3. Verify production compilation is error-free:
+   ```bash
+   bun run build # or npm run build
+   ```

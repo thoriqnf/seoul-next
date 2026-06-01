@@ -1,4 +1,11 @@
-// TODO TS 1: Define a Todo interface
+// ============================================================================
+// TODO TS 1: Define a union type for filtering ('all' | 'completed' | 'pending')
+// ============================================================================
+export type TodoFilter = 'all' | 'completed' | 'pending';
+
+// ============================================================================
+// TODO TS 2: Define a Todo interface (id, todo, completed, userId)
+// ============================================================================
 export interface Todo {
   id: number;
   todo: string;
@@ -6,10 +13,9 @@ export interface Todo {
   userId: number;
 }
 
-// TODO TS 2: Define a union type for filtering
-export type TodoFilter = 'all' | 'completed' | 'pending';
-
-// Helper interface for DummyJSON API Response structure
+// ============================================================================
+// TODO TS 3: Define the DummyJSON API response structure
+// ============================================================================
 export interface DummyJsonTodoResponse {
   todos: Todo[];
   total: number;

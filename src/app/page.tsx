@@ -5,16 +5,20 @@ import { Todo, TodoFilter, DummyJsonTodoResponse } from "@/types";
 
 export default function Home() {
   // ==========================================
-  // TODO State 1: Define typed useState hooks
+  // TODO TS 4: Define typed useState hooks for primitive & union states
   // ==========================================
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoText, setNewTodoText] = useState<string>("");
   const [filter, setFilter] = useState<TodoFilter>("all");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO Effect 1: Fetch initial todos from dummyjson.com
+  // TODO TS 5: Define typed useState hook for the array of Todos
+  // ==========================================
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  // ==========================================
+  // Typed useEffect for initial API data loading
   // ==========================================
   useEffect(() => {
     const abortController = new AbortController();
@@ -32,7 +36,9 @@ export default function Home() {
           throw new Error(`Error: Failed to fetch todos (${response.statusText})`);
         }
 
-        // TODO Effect 2: Parse response and cast it to the correct typed interface (DummyJsonTodoResponse)
+        // ==========================================
+        // TODO TS 7: Parse response & cast it to DummyJsonTodoResponse
+        // ==========================================
         const data: DummyJsonTodoResponse = await response.json();
         setTodos(data.todos);
       } catch (err) {
@@ -50,14 +56,16 @@ export default function Home() {
 
     fetchTodos();
 
-    // TODO Effect 3: Return the cleanup function to abort the active fetch
+    // ==========================================
+    // TODO TS 8: Return cleanup function to cancel fetch on unmount
+    // ==========================================
     return () => {
       abortController.abort();
     };
   }, []);
 
   // ==========================================
-  // Core Handlers (Fully Typed)
+  // TODO TS 6: Type event handlers for form submission and change events
   // ==========================================
   const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
