@@ -6,19 +6,15 @@ import { Todo, TodoFilter, DummyJsonTodoResponse } from "@/types";
 export default function Home() {
   // ==========================================
   // TODO State 1: Define typed useState hooks
-  // Add explicit generic types to these states to enforce type safety (e.g. <Todo[]> or <TodoFilter>).
-  // Currently they are typed as any or inferred; change them to proper TypeScript types!
   // ==========================================
-  const [todos, setTodos] = useState<any[]>([]);
-  const [newTodoText, setNewTodoText] = useState("");
-  const [filter, setFilter] = useState<any>("all");
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [newTodoText, setNewTodoText] = useState<string>("");
+  const [filter, setFilter] = useState<TodoFilter>("all");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
   // TODO Effect 1: Fetch initial todos from dummyjson.com
-  // Fetch from "https://dummyjson.com/todos?limit=8", handle loading/error, type-cast the response,
-  // and make sure to clean up the fetch with an AbortController.
   // ==========================================
   useEffect(() => {
     const abortController = new AbortController();
@@ -37,7 +33,7 @@ export default function Home() {
         }
 
         // TODO Effect 2: Parse response and cast it to the correct typed interface (DummyJsonTodoResponse)
-        const data: any = await response.json();
+        const data: DummyJsonTodoResponse = await response.json();
         setTodos(data.todos);
       } catch (err) {
         if (err instanceof Error) {
@@ -188,7 +184,7 @@ export default function Home() {
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200 ${
                   filter === "completed"
                     ? "bg-white dark:bg-zinc-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/40 dark:border-neutral-800"
-                    : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100"
+                    : "text-slate-500 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-zinc-100"
                 }`}
               >
                 Completed
@@ -198,7 +194,7 @@ export default function Home() {
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200 ${
                   filter === "pending"
                     ? "bg-white dark:bg-zinc-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/40 dark:border-neutral-800"
-                    : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100"
+                    : "text-slate-500 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-zinc-100"
                 }`}
               >
                 Pending
@@ -208,8 +204,6 @@ export default function Home() {
               onClick={() => {
                 setTodos([]);
                 setLoading(true);
-                // Trigger refetch by toggling/resettling a custom refresh counter if desired,
-                // but since useEffect fetches on mount, we can just fetch programmatically:
                 fetch("https://dummyjson.com/todos?limit=8")
                   .then(res => res.json())
                   .then(data => {
