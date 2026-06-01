@@ -6,16 +6,18 @@ import { Todo, TodoFilter, DummyJsonTodoResponse } from "@/types";
 export default function Home() {
   // ==========================================
   // TODO TS 4: Define typed useState hooks for primitive & union states
+  // Enforce types by supplying generic type parameters (e.g. <string> and <TodoFilter>)!
   // ==========================================
-  const [newTodoText, setNewTodoText] = useState<string>("");
-  const [filter, setFilter] = useState<TodoFilter>("all");
+  const [newTodoText, setNewTodoText] = useState(""); // TODO: Add type generic <string>
+  const [filter, setFilter] = useState<any>("all"); // TODO: Replace <any> with <TodoFilter>
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
   // TODO TS 5: Define typed useState hook for the array of Todos
+  // Enforce type safety on the array using the Todo model interface!
   // ==========================================
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<any[]>([]); // TODO: Replace <any[]> with <Todo[]>
 
   // ==========================================
   // Typed useEffect for initial API data loading
@@ -38,8 +40,9 @@ export default function Home() {
 
         // ==========================================
         // TODO TS 7: Parse response & cast it to DummyJsonTodoResponse
+        // Cast the parsed JSON response body to the DummyJsonTodoResponse interface!
         // ==========================================
-        const data: DummyJsonTodoResponse = await response.json();
+        const data: any = await response.json(); // TODO: Replace any with DummyJsonTodoResponse
         setTodos(data.todos);
       } catch (err) {
         if (err instanceof Error) {
@@ -58,21 +61,23 @@ export default function Home() {
 
     // ==========================================
     // TODO TS 8: Return cleanup function to cancel fetch on unmount
+    // Return a clean-up callback that invokes the AbortController's abort signal!
     // ==========================================
     return () => {
-      abortController.abort();
+      // TODO: Call abort signal to clean up subscription
     };
   }, []);
 
   // ==========================================
   // TODO TS 6: Type event handlers for form submission and change events
+  // Type the form submit SyntheticEvent parameter 'e' as React.FormEvent<HTMLFormElement>!
   // ==========================================
-  const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddTodo = (e: any) => { // TODO: Replace 'e: any' with 'e: React.FormEvent<HTMLFormElement>'
     e.preventDefault();
     if (!newTodoText.trim()) return;
 
     // Create a new typed Todo item
-    const newTodoItem: Todo = {
+    const newTodoItem: any = { // TODO: Replace 'any' with 'Todo'
       id: Date.now(), // Generate local unique numeric ID
       todo: newTodoText.trim(),
       completed: false,
