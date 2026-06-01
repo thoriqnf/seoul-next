@@ -1,4 +1,13 @@
 // ============================================================================
+// ⚠️ EDUCATIONAL NOTE ON THE 'any' TYPE:
+// The 'any' type is an escape hatch that tells the TypeScript compiler to skip
+// checking a variable. Using 'any' in real applications is STRONGLY DISCOURAGED
+// because it turns off type safety, bringing you back to unsafe JavaScript.
+// We use 'any' here ONLY as a temporary compilable placeholder so the starter
+// code builds cleanly on checkout. Replace them all with strict, explicit types!
+// ============================================================================
+
+// ============================================================================
 // TODO TS 1: Define a union type for filtering ('all' | 'completed' | 'pending')
 // Currently this is typed as 'any'. Change it to the literal union type!
 // ============================================================================

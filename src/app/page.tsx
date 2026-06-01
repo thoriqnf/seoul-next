@@ -7,6 +7,7 @@ export default function Home() {
   // ==========================================
   // TODO TS 4: Define typed useState hooks for primitive & union states
   // Enforce types by supplying generic type parameters (e.g. <string> and <TodoFilter>)!
+  // Note: Avoid using 'any' or raw defaults in real applications to prevent type widening.
   // ==========================================
   const [newTodoText, setNewTodoText] = useState(""); // TODO: Add type generic <string>
   const [filter, setFilter] = useState<any>("all"); // TODO: Replace <any> with <TodoFilter>
@@ -16,6 +17,7 @@ export default function Home() {
   // ==========================================
   // TODO TS 5: Define typed useState hook for the array of Todos
   // Enforce type safety on the array using the Todo model interface!
+  // Note: Avoid using <any[]> in production; it turns off checking for pushed objects.
   // ==========================================
   const [todos, setTodos] = useState<any[]>([]); // TODO: Replace <any[]> with <Todo[]>
 
@@ -41,6 +43,7 @@ export default function Home() {
         // ==========================================
         // TODO TS 7: Parse response & cast it to DummyJsonTodoResponse
         // Cast the parsed JSON response body to the DummyJsonTodoResponse interface!
+        // Note: fetch responses default to 'any'. Do not keep it as 'any'; cast it to block bugs.
         // ==========================================
         const data: any = await response.json(); // TODO: Replace any with DummyJsonTodoResponse
         setTodos(data.todos);
@@ -71,6 +74,7 @@ export default function Home() {
   // ==========================================
   // TODO TS 6: Type event handlers for form submission and change events
   // Type the form submit SyntheticEvent parameter 'e' as React.FormEvent<HTMLFormElement>!
+  // Note: Avoid leaving parameters as 'e: any' because it disables IDE auto-completions!
   // ==========================================
   const handleAddTodo = (e: any) => { // TODO: Replace 'e: any' with 'e: React.FormEvent<HTMLFormElement>'
     e.preventDefault();
