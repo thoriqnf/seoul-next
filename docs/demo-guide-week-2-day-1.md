@@ -49,6 +49,12 @@ export interface DummyJsonTodoResponse {
 }
 ```
 
+### ⚠️ A Note on the `any` Type: The Forbidden Escape Hatch
+In the starter code, you will see many files initialized with the `any` type placeholder.
+* **What is `any`?** The `any` type is an "escape hatch" in TypeScript. It tells the compiler: *"Do not perform type-checking on this variable; allow it to accept any value and call any property."*
+* **Why it's NOT Recommended:** Using `any` completely disables the type checker. If you write `let x: any = 5; x.toUpperCase();`, it will compile successfully but crash with a runtime error in the browser! Using `any` brings you back to plain, unsafe JavaScript and defeats the entire purpose of TypeScript.
+* **Our Sandbox Strategy:** We only use `any` as a temporary placeholder in our starter files to allow the project to compile successfully on checkout. **Your goal in these exercises is to replace all occurrences of `any` with strict, explicit types!**
+
 ---
 
 ## 3. Enforcing State Type Bounds (`src/app/page.tsx`)
