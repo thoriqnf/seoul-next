@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Todo, TodoFilter, DummyJsonTodoResponse } from "@/types";
+// import { TodoFilter, Todo, DummyJsonTodoResponse } from "@/types";
 
 export default function Home() {
   // ==========================================
@@ -9,17 +9,18 @@ export default function Home() {
   // Enforce types by supplying generic type parameters (e.g. <string> and <TodoFilter>)!
   // Note: Avoid using 'any' or raw defaults in real applications to prevent type widening.
   // ==========================================
-  const [newTodoText, setNewTodoText] = useState(""); // TODO: Add type generic <string>
-  const [filter, setFilter] = useState<any>("all"); // TODO: Replace <any> with <TodoFilter>
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [newTodoText, setNewTodoText] = useState("");
+  // const [newTodoText, setNewTodoText] = useState(""); // TODO: Add type generic <string>
+  const [filter, setFilter] = useState("all"); // TODO: Replace <any> with <TodoFilter>
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // ==========================================
   // TODO TS 5: Define typed useState hook for the array of Todos
   // Enforce type safety on the array using the Todo model interface!
   // Note: Avoid using <any[]> in production; it turns off checking for pushed objects.
   // ==========================================
-  const [todos, setTodos] = useState<any[]>([]); // TODO: Replace <any[]> with <Todo[]>
+  const [todos, setTodos] = useState([]); // TODO: Replace <any[]> with <Todo[]>
 
   // ==========================================
   // Typed useEffect for initial API data loading
@@ -37,7 +38,9 @@ export default function Home() {
         });
 
         if (!response.ok) {
-          throw new Error(`Error: Failed to fetch todos (${response.statusText})`);
+          throw new Error(
+            `Error: Failed to fetch todos (${response.statusText})`,
+          );
         }
 
         // ==========================================
@@ -45,7 +48,7 @@ export default function Home() {
         // Cast the parsed JSON response body to the DummyJsonTodoResponse interface!
         // Note: fetch responses default to 'any'. Do not keep it as 'any'; cast it to block bugs.
         // ==========================================
-        const data: any = await response.json(); // TODO: Replace any with DummyJsonTodoResponse
+        const data = await response.json(); // TODO: Replace any with DummyJsonTodoResponse
         setTodos(data.todos);
       } catch (err) {
         if (err instanceof Error) {
@@ -68,6 +71,7 @@ export default function Home() {
     // ==========================================
     return () => {
       // TODO: Call abort signal to clean up subscription
+      abortController.abort();
     };
   }, []);
 
@@ -76,12 +80,14 @@ export default function Home() {
   // Type the form submit SyntheticEvent parameter 'e' as React.FormEvent<HTMLFormElement>!
   // Note: Avoid leaving parameters as 'e: any' because it disables IDE auto-completions!
   // ==========================================
-  const handleAddTodo = (e: any) => { // TODO: Replace 'e: any' with 'e: React.FormEvent<HTMLFormElement>'
+  const handleAddTodo = (e) => {
+    // TODO: Replace 'e: any' with 'e: React.FormEvent<HTMLFormElement>'
     e.preventDefault();
     if (!newTodoText.trim()) return;
 
     // Create a new typed Todo item
-    const newTodoItem: any = { // TODO: Replace 'any' with 'Todo'
+    const newTodoItem = {
+      // TODO: Replace 'any' with 'Todo'
       id: Date.now(), // Generate local unique numeric ID
       todo: newTodoText.trim(),
       completed: false,
@@ -92,15 +98,15 @@ export default function Home() {
     setNewTodoText("");
   };
 
-  const handleToggleTodo = (id: number) => {
+  const handleToggleTodo = (id) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
     );
   };
 
-  const handleDeleteTodo = (id: number) => {
+  const handleDeleteTodo = (id) => {
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
@@ -127,13 +133,21 @@ export default function Home() {
           Next.js with TypeScript Demo
         </h1>
         <p className="mt-2 text-slate-500 dark:text-zinc-400 max-w-2xl text-base leading-relaxed">
-          An interactive, beginner-friendly Todo Dashboard designed to teach TypeScript interfaces/types, typed <code className="text-sm font-mono text-pink-600 dark:text-pink-400">useState</code>, and typed <code className="text-sm font-mono text-pink-600 dark:text-pink-400">useEffect</code>.
+          An interactive, beginner-friendly Todo Dashboard designed to teach
+          TypeScript interfaces/types, typed{" "}
+          <code className="text-sm font-mono text-pink-600 dark:text-pink-400">
+            useState
+          </code>
+          , and typed{" "}
+          <code className="text-sm font-mono text-pink-600 dark:text-pink-400">
+            useEffect
+          </code>
+          .
         </p>
       </header>
 
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
         {/* Left Side: Stats Card & Form */}
         <div className="flex flex-col gap-6 md:col-span-1">
           {/* Form Card */}
@@ -146,7 +160,7 @@ export default function Home() {
                 type="text"
                 placeholder="What needs to be done?"
                 value={newTodoText}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTodoText(e.target.value)}
+                onChange={(e) => setNewTodoText(e.target.value)}
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
               />
               <button
@@ -166,16 +180,28 @@ export default function Home() {
             </h2>
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-neutral-800 pb-2">
-                <span className="text-sm text-slate-500 dark:text-zinc-400">Total Tasks</span>
-                <span className="text-sm font-bold text-slate-900 dark:text-zinc-50">{totalCount}</span>
+                <span className="text-sm text-slate-500 dark:text-zinc-400">
+                  Total Tasks
+                </span>
+                <span className="text-sm font-bold text-slate-900 dark:text-zinc-50">
+                  {totalCount}
+                </span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-neutral-800 pb-2">
-                <span className="text-sm text-slate-500 dark:text-zinc-400">Completed</span>
-                <span className="text-sm font-bold text-green-600 dark:text-green-400">{completedCount}</span>
+                <span className="text-sm text-slate-500 dark:text-zinc-400">
+                  Completed
+                </span>
+                <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                  {completedCount}
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-500 dark:text-zinc-400">Pending</span>
-                <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{pendingCount}</span>
+                <span className="text-sm text-slate-500 dark:text-zinc-400">
+                  Pending
+                </span>
+                <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
+                  {pendingCount}
+                </span>
               </div>
             </div>
           </div>
@@ -222,12 +248,12 @@ export default function Home() {
                 setTodos([]);
                 setLoading(true);
                 fetch("https://dummyjson.com/todos?limit=8")
-                  .then(res => res.json())
-                  .then(data => {
+                  .then((res) => res.json())
+                  .then((data) => {
                     setTodos(data.todos);
                     setLoading(false);
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     setError("Failed to reload todos");
                     setLoading(false);
                   });
@@ -247,11 +273,25 @@ export default function Home() {
             {/* Error View */}
             {error && (
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-red-500">
-                <svg className="w-12 h-12 mb-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg
+                  className="w-12 h-12 mb-3 text-red-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
                 </svg>
-                <h3 className="font-bold text-slate-800 dark:text-zinc-200">Failed to Load</h3>
-                <p className="text-sm mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
+                <h3 className="font-bold text-slate-800 dark:text-zinc-200">
+                  Failed to Load
+                </h3>
+                <p className="text-sm mt-1 text-slate-500 dark:text-zinc-400">
+                  {error}
+                </p>
               </div>
             )}
 
@@ -259,7 +299,10 @@ export default function Home() {
             {loading && (
               <div className="flex-1 flex flex-col gap-4">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-4 animate-pulse">
+                  <div
+                    key={i}
+                    className="flex items-center gap-4 animate-pulse"
+                  >
                     <div className="w-5 h-5 bg-slate-200 dark:bg-zinc-800 rounded-md" />
                     <div className="flex-1 h-5 bg-slate-100 dark:bg-zinc-800/65 rounded-lg" />
                     <div className="w-6 h-6 bg-slate-100 dark:bg-zinc-800 rounded-md" />
@@ -271,10 +314,22 @@ export default function Home() {
             {/* Empty View */}
             {!loading && !error && filteredTodos.length === 0 && (
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                <svg className="w-14 h-14 mb-3 text-slate-300 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                <svg
+                  className="w-14 h-14 mb-3 text-slate-300 dark:text-zinc-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                  />
                 </svg>
-                <h3 className="font-bold text-slate-800 dark:text-zinc-200">No Tasks Found</h3>
+                <h3 className="font-bold text-slate-800 dark:text-zinc-200">
+                  No Tasks Found
+                </h3>
                 <p className="text-sm mt-1 text-slate-400 dark:text-zinc-500">
                   {filter === "all"
                     ? "Add a task to get started."
@@ -313,8 +368,18 @@ export default function Home() {
                       className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-zinc-950 cursor-pointer transition-all duration-200"
                       title="Delete Task"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
                       </svg>
                     </button>
                   </li>
