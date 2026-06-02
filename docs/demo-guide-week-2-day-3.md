@@ -1,10 +1,10 @@
 # Developer Guide: CRUD Operations & Form Validation (Week 2 Day 3)
 
-This guide covers integrating a Next.js client component with a Mock API (`https://64ca45bd700d50e3c7049e2f.mockapi.io/product`) to perform full CRUD operations (Create, Read, Update, Delete) and using `react-hook-form` to validate inputs before sending requests.
+This guide covers integrating a Next.js client component with a Mock API (`https://64ca45bd700d50e3c7049e2f.mockapi.io/product`) to perform full CRUD operations (Create, Read, Update, Delete), using `react-hook-form` to validate inputs, and extracting the product list item into a reusable component.
 
 ---
 
-## 1. Roadmap of Exercises (`TODO CRUD 1` to `TODO CRUD 8`)
+## 1. Roadmap of Exercises (`TODO CRUD 1` to `TODO CRUD 9`)
 
 * **`TODO CRUD 1`**: Define the `Product` and `ProductFormInput` interfaces in `src/types/index.ts`.
 * **`TODO CRUD 2`**: Add a client-side navigation link to the Products page in `src/components/Navigation.tsx`.
@@ -12,8 +12,9 @@ This guide covers integrating a Next.js client component with a Mock API (`https
 * **`TODO CRUD 4`**: Initialize `useForm` from `react-hook-form` and set up defaults and control states.
 * **`TODO CRUD 5`**: Register form inputs with validation constraints (name, price) and display inline error feedback.
 * **`TODO CRUD 6`**: Implement the POST request inside the submit handler to add a new product.
-* **`TODO CRUD 7`**: Implement the DELETE request to remove a product.
-* **`TODO CRUD 8`**: Implement loading a product into Edit Mode and sending a PUT request on submit.
+* **`TODO CRUD 7`**: Extract the single product row list item to `src/components/ProductItem.tsx` with typed props.
+* **`TODO CRUD 8`**: Implement the DELETE request to remove a product.
+* **`TODO CRUD 9`**: Implement loading a product into Edit Mode and sending a PUT request on submit.
 
 ---
 
@@ -167,9 +168,41 @@ const onSubmit = async (data: ProductFormInput) => {
 
 ---
 
-## 7. Deleting Products (DELETE)
+## 7. Extracting Product Item Component (`src/components/ProductItem.tsx`)
 
-### `TODO CRUD 7`: Removing a Product
+### `TODO CRUD 7`: Defining Props Interface & Component
+To make the code cleaner and reuse logic, extract the single list item row into a separate component. Define the prop boundaries and emit callbacks on clicks:
+```typescript
+import { Product } from "@/types";
+
+export interface ProductItemProps {
+  product: Product;
+  onEdit: (product: Product) => void;
+  onDelete: (id: string) => void;
+  disabled: boolean;
+}
+
+export function ProductItem({ product, onEdit, onDelete, disabled }: ProductItemProps) {
+  return (
+    <li className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white">
+      <div>
+        <span className="text-sm font-bold text-slate-800">{product.product}</span>
+        <span className="text-xs text-indigo-655 font-semibold">${product.price}</span>
+      </div>
+      <div className="flex gap-1">
+        <button onClick={() => onEdit(product)} disabled={disabled}>Edit</button>
+        <button onClick={() => onDelete(product.id)} disabled={disabled}>Delete</button>
+      </div>
+    </li>
+  );
+}
+```
+
+---
+
+## 8. Deleting Products (DELETE)
+
+### `TODO CRUD 8`: Removing a Product
 Send a DELETE request containing the product's unique `id`, and filter it out of local state:
 ```typescript
 const handleDelete = async (id: string) => {
@@ -194,9 +227,9 @@ const handleDelete = async (id: string) => {
 
 ---
 
-## 8. Updating Products (PUT)
+## 9. Updating Products (PUT)
 
-### `TODO CRUD 8`: Entering Edit Mode and Saving Updates
+### `TODO CRUD 9`: Entering Edit Mode and Saving Updates
 When in editing mode, clicking submit runs a PUT request instead of a POST request:
 
 1. **Enter Edit Mode (Populate Form):**

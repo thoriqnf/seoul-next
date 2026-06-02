@@ -46,3 +46,11 @@ export interface TodoItemProps {
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
 }
+
+export interface ProductItemProps {
+  product: Product;
+  onEdit: (product: Product) => void;
+  onDelete: (id: string) => void;
+  disabled: boolean;
+}
+
