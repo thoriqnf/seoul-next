@@ -133,3 +133,12 @@ const handleLogout = () => {
   router.push("/login");
 };
 ```
+
+---
+
+## 7. Error Handling & 404 Pages (`src/app/not-found.tsx`, `src/app/error.tsx`)
+
+Next.js App Router provides built-in support for custom 404 (Not Found) and error boundary pages at any route segment:
+* **`not-found.tsx`**: Rendered automatically when a route is not matched, or when `notFound()` is programmatically invoked.
+* **`error.tsx`**: Must be a Client Component (`"use client"`) that acts as an error boundary to gracefully display rendering errors without crashing the whole application.
+
