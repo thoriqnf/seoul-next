@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Todo, TodoFilter, DummyJsonTodoResponse } from "@/types";
+import { TodoItem } from "@/components/TodoItem";
+import { Navigation } from "@/components/Navigation";
 
 export default function Home() {
   // ==========================================
@@ -108,8 +110,10 @@ export default function Home() {
   const pendingCount = totalCount - completedCount;
 
   return (
-    <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-12 md:py-20 font-sans">
-      {/* Header Panel */}
+    <>
+      <Navigation />
+      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-12 md:py-20 font-sans">
+        {/* Header Panel */}
       <header className="mb-10 text-center md:text-left">
         <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 rounded-full">
           Week 2 • Day 1
@@ -278,43 +282,22 @@ export default function Home() {
             {!loading && !error && filteredTodos.length > 0 && (
               <ul className="flex flex-col gap-3">
                 {filteredTodos.map((todo) => (
-                  <li
+                  // ==========================================
+                  // TODO ROUTING 2: Render TodoItem and pass required props
+                  // ==========================================
+                  <TodoItem
                     key={todo.id}
-                    className="group flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-neutral-800/80 hover:border-slate-200 dark:hover:border-neutral-700 bg-white dark:bg-zinc-900 transition-all duration-150"
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <input
-                        type="checkbox"
-                        checked={todo.completed}
-                        onChange={() => handleToggleTodo(todo.id)}
-                        className="w-5 h-5 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500/20 cursor-pointer transition-all"
-                      />
-                      <span
-                        className={`text-sm select-none transition-all duration-200 ${
-                          todo.completed
-                            ? "line-through text-slate-400 dark:text-zinc-600"
-                            : "text-slate-700 dark:text-zinc-200"
-                        }`}
-                      >
-                        {todo.todo}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteTodo(todo.id)}
-                      className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-zinc-950 cursor-pointer transition-all duration-200"
-                      title="Delete Task"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </li>
+                    todo={todo}
+                    onToggle={handleToggleTodo}
+                    onDelete={handleDeleteTodo}
+                  />
                 ))}
               </ul>
             )}
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
