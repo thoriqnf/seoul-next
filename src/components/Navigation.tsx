@@ -30,6 +30,15 @@ export function Navigation() {
           >
             Dashboard
           </Link>
+          {/* ========================================== */}
+          {/* TODO CRUD 2: Add client-side Navigation link to '/products' */}
+          {/* ========================================== */}
+          <Link
+            href="/products"
+            className="text-sm text-slate-650 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          >
+            Products
+          </Link>
         </nav>
       </div>
     </header>

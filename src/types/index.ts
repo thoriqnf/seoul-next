@@ -3,6 +3,21 @@
 // ============================================================================
 export type TodoFilter = 'all' | 'completed' | 'pending';
 
+// ==========================================
+// TODO CRUD 1: Define Product and ProductFormInput interfaces for our mock API & React Hook Form
+// ==========================================
+export interface Product {
+  id: string;
+  product: string;
+  price: string;
+  createdAt: string;
+}
+
+export interface ProductFormInput {
+  product: string;
+  price: string;
+}
+
 // ============================================================================
 // TODO TS 2: Define a Todo interface (id, todo, completed, userId)
 // ============================================================================
