@@ -20,14 +20,10 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    // Simple client-side mock authentication
     setTimeout(() => {
       if (email.trim() === "admin@example.com" && password === "password123") {
-        // Set local storage session key
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email.trim());
-
-        // Redirect programmatically to /dashboard
         router.push("/dashboard");
       } else {
         setError("Invalid email or password. Use admin@example.com / password123");
@@ -40,22 +36,16 @@ export default function LoginPage() {
     <>
       <Navigation />
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-16 flex flex-col justify-center font-sans">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-3xl p-8 shadow-sm">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-8">
           <header className="mb-6 text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 rounded-full">
-              Programmatic Router
-            </span>
-            <h1 className="mt-4 text-2xl font-extrabold text-slate-900 dark:text-zinc-50">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-zinc-50">
               Sign In
             </h1>
-            <p className="mt-2 text-xs text-slate-500 dark:text-zinc-400">
-              Enter details below to access your secure dashboard.
-            </p>
           </header>
 
           {error && (
-            <div className="mb-4 p-3.5 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/60 text-xs text-red-600 dark:text-red-400 rounded-xl font-medium">
-              ⚠ {error}
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/60 text-xs text-red-600 dark:text-red-400 rounded-lg">
+              {error}
             </div>
           )}
 
@@ -70,7 +60,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com"
                 required
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
               />
             </div>
 
@@ -84,21 +74,21 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-2.5 rounded-xl font-semibold text-sm text-white bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/60 cursor-pointer disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full mt-2 py-2 rounded-lg font-semibold text-sm text-white bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/60 cursor-pointer transition-all duration-200"
             >
               {loading ? "Signing in..." : "Login"}
             </button>
           </form>
 
           <footer className="mt-6 border-t border-slate-100 dark:border-neutral-800/80 pt-4 text-center">
-            <p className="text-[10px] text-slate-400 leading-normal">
+            <p className="text-[10px] text-slate-400">
               Demo Credentials:<br />
               <span className="font-semibold">admin@example.com</span> / <span className="font-semibold">password123</span>
             </p>

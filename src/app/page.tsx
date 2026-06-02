@@ -116,7 +116,7 @@ export default function Home() {
         {/* Header Panel */}
       <header className="mb-10 text-center md:text-left">
         <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 rounded-full">
-          Week 2 • Day 1
+          Week 2 • Day 2
         </span>
         <h1 className="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-50">
           Next.js with TypeScript Demo
