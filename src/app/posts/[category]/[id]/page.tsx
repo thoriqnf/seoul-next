@@ -21,7 +21,8 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
   // ==========================================
   // TODO ROUTING 6: Resolve nested parameters (category, id) from params Promise
   // ==========================================
-  const { category, id } = await params;
+  const category = "";
+  const id = "";
 
   const post = MOCK_POSTS.find(
     (p) => p.category.toLowerCase() === category.toLowerCase() && p.id === id

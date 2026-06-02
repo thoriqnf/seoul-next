@@ -1,11 +1,20 @@
 "use client";
 
-import { Todo, TodoItemProps } from "@/types";
+import { Todo } from "@/types";
 
 // ==========================================
-// TODO ROUTING 1: Import TodoItemProps from "@/types" and use it to type-guard this component's parameters
+// TODO ROUTING 1: Import TodoItemProps from "@/types" and use it to replace the inline type signature below.
+// (Remember to uncomment/define TodoItemProps inside src/types/index.ts first!)
 // ==========================================
-export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+export function TodoItem({
+  todo,
+  onToggle,
+  onDelete,
+}: {
+  todo: Todo;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
+}) {
   return (
     <li className="group flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-neutral-800/80 hover:border-slate-200 dark:hover:border-neutral-700 bg-white dark:bg-zinc-900 transition-all duration-150">
       <div className="flex items-center gap-4 flex-1">

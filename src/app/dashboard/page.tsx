@@ -13,24 +13,20 @@ export default function DashboardPage() {
   // TODO ROUTING 7: Secure route via local storage checks inside useEffect
   // ==========================================
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    const email = localStorage.getItem("userEmail");
-
-    if (isLoggedIn !== "true") {
-      router.push("/login");
-    } else {
-      setUserEmail(email);
-      setIsChecking(false);
-    }
+    // ==========================================
+    // TODO ROUTING 7: Secure route via local storage checks inside useEffect
+    // ==========================================
+    setIsChecking(false);
   }, [router]);
 
   // ==========================================
   // TODO ROUTING 8: Implement logout handler to clear state & redirect
   // ==========================================
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userEmail");
-    router.push("/login");
+    // ==========================================
+    // TODO ROUTING 8: Implement logout handler to clear state & redirect
+    // ==========================================
+    console.log("Logout triggered");
   };
 
   if (isChecking) {

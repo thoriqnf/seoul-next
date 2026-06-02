@@ -25,9 +25,10 @@ export interface DummyJsonTodoResponse {
 
 // ==========================================
 // TODO ROUTING 1: Define TypeScript interface for TodoItem Props
+// (Define properties: todo of type Todo, onToggle callback, and onDelete callback)
 // ==========================================
-export interface TodoItemProps {
-  todo: Todo;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+// export interface TodoItemProps {
+//   todo: Todo;
+//   onToggle: (id: number) => void;
+//   onDelete: (id: number) => void;
+// }

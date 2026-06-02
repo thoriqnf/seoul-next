@@ -13,7 +13,11 @@ export default function LoginPage() {
   // ==========================================
   // TODO ROUTING 4: Initialize useRouter hook for programmatic redirect
   // ==========================================
-  const router = useRouter();
+  const router: ReturnType<typeof useRouter> = {
+    push: (url: string) => {
+      console.log("Mock redirect to:", url);
+    },
+  } as ReturnType<typeof useRouter>; // Replace with useRouter() hook
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +28,8 @@ export default function LoginPage() {
       if (email.trim() === "admin@example.com" && password === "password123") {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email.trim());
-        router.push("/dashboard");
+        // TODO ROUTING 4: Redirect programmatically to /dashboard
+        console.log("Login successful! Redirecting...");
       } else {
         setError("Invalid email or password. Use admin@example.com / password123");
         setLoading(false);

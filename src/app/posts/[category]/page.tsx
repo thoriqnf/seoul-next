@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   // ==========================================
   // TODO ROUTING 5: Resolve the dynamic category parameter from params Promise
   // ==========================================
-  const { category } = await params;
+  const category = ""; // Replace this with the resolved category value from params Promise
 
   const categoryPosts = MOCK_POSTS.filter(
     (post) => post.category.toLowerCase() === category.toLowerCase()

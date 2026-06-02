@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-
 // ==========================================
 // TODO ROUTING 3: Replace standard <a> tags with Next.js <Link> components
+// (Remember to uncomment the "import Link from 'next/link'" import statement at the top)
 // ==========================================
+// import Link from "next/link";
 
 export function Navigation() {
   return (
@@ -12,24 +12,24 @@ export function Navigation() {
       <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
         <span className="font-bold text-slate-900 dark:text-zinc-50 text-sm">Demo App</span>
         <nav className="flex items-center gap-6">
-          <Link
+          <a
             href="/"
             className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Home
-          </Link>
-          <Link
+          </a>
+          <a
             href="/posts"
             className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Posts
-          </Link>
-          <Link
+          </a>
+          <a
             href="/dashboard"
             className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Dashboard
-          </Link>
+          </a>
         </nav>
       </div>
     </header>
