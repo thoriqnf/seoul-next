@@ -2,6 +2,9 @@
 
 import { Todo, TodoItemProps } from "@/types";
 
+// ==========================================
+// TODO ROUTING 1: Import TodoItemProps from "@/types" and use it to type-guard this component's parameters
+// ==========================================
 export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
   return (
     <li className="group flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-neutral-800/80 hover:border-slate-200 dark:hover:border-neutral-700 bg-white dark:bg-zinc-900 transition-all duration-150">

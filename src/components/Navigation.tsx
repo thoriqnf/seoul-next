@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 
+// ==========================================
+// TODO ROUTING 3: Replace standard <a> tags with Next.js <Link> components
+// ==========================================
+
 export function Navigation() {
   return (
     <header className="w-full border-b border-slate-200 bg-white dark:border-neutral-800 dark:bg-zinc-900">
