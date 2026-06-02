@@ -22,3 +22,12 @@ export interface DummyJsonTodoResponse {
   skip: number;
   limit: number;
 }
+
+// ==========================================
+// TODO ROUTING 1: Define TypeScript interface for TodoItem Props
+// ==========================================
+export interface TodoItemProps {
+  todo: Todo;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
+}

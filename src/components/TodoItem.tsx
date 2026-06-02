@@ -1,15 +1,6 @@
 "use client";
 
-import { Todo } from "@/types";
-
-// ==========================================
-// TODO ROUTING 1: Define TypeScript interface for TodoItem Props
-// ==========================================
-export interface TodoItemProps {
-  todo: Todo;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+import { Todo, TodoItemProps } from "@/types";
 
 export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
   return (
