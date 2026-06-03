@@ -16,7 +16,15 @@ export default function DashboardPage() {
     // ==========================================
     // TODO ROUTING 7: Secure route via local storage checks inside useEffect
     // ==========================================
-    setIsChecking(false);
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const email = localStorage.getItem("userEmail");
+
+    if (isLoggedIn !== "true") {
+      router.push("/login");
+    } else {
+      setUserEmail(email);
+      setIsChecking(false);
+    }
   }, [router]);
 
   // ==========================================
@@ -27,6 +35,9 @@ export default function DashboardPage() {
     // TODO ROUTING 8: Implement logout handler to clear state & redirect
     // ==========================================
     console.log("Logout triggered");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    router.push("/");
   };
 
   if (isChecking) {
@@ -52,7 +63,11 @@ export default function DashboardPage() {
               Dashboard
             </h1>
             <p className="mt-2 text-slate-500 dark:text-zinc-400 text-sm">
-              Welcome back, <span className="font-semibold text-slate-800 dark:text-zinc-200">{userEmail}</span>.
+              Welcome back,{" "}
+              <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                {userEmail}
+              </span>
+              .
             </p>
           </div>
           <div>
@@ -73,15 +88,21 @@ export default function DashboardPage() {
           <div className="flex flex-col gap-3">
             <div className="flex justify-between text-sm border-b border-slate-100 dark:border-neutral-850 pb-2">
               <span className="text-slate-500">Email:</span>
-              <span className="font-medium text-slate-850 dark:text-zinc-205">{userEmail}</span>
+              <span className="font-medium text-slate-850 dark:text-zinc-205">
+                {userEmail}
+              </span>
             </div>
             <div className="flex justify-between text-sm border-b border-slate-100 dark:border-neutral-855 pb-2">
               <span className="text-slate-505">Status:</span>
-              <span className="font-medium text-green-600 dark:text-green-400">Authenticated</span>
+              <span className="font-medium text-green-600 dark:text-green-400">
+                Authenticated
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-505">Storage Mode:</span>
-              <span className="font-medium text-slate-850 dark:text-zinc-205">LocalStorage</span>
+              <span className="font-medium text-slate-850 dark:text-zinc-205">
+                LocalStorage
+              </span>
             </div>
           </div>
         </div>

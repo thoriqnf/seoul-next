@@ -13,11 +13,7 @@ export default function LoginPage() {
   // ==========================================
   // TODO ROUTING 4: Initialize useRouter hook for programmatic redirect
   // ==========================================
-  const router: ReturnType<typeof useRouter> = {
-    push: (url: string) => {
-      console.log("Mock redirect to:", url);
-    },
-  } as ReturnType<typeof useRouter>; // Replace with useRouter() hook
+  const router = useRouter();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,9 +25,12 @@ export default function LoginPage() {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", email.trim());
         // TODO ROUTING 4: Redirect programmatically to /dashboard
-        console.log("Login successful! Redirecting...");
+        console.log("Login successful! Redirecting...", router);
+        router.push("/dashboard");
       } else {
-        setError("Invalid email or password. Use admin@example.com / password123");
+        setError(
+          "Invalid email or password. Use admin@example.com / password123",
+        );
         setLoading(false);
       }
     }, 800);
@@ -94,8 +93,10 @@ export default function LoginPage() {
 
           <footer className="mt-6 border-t border-slate-100 dark:border-neutral-800/80 pt-4 text-center">
             <p className="text-[10px] text-slate-400">
-              Demo Credentials:<br />
-              <span className="font-semibold">admin@example.com</span> / <span className="font-semibold">password123</span>
+              Demo Credentials:
+              <br />
+              <span className="font-semibold">admin@example.com</span> /{" "}
+              <span className="font-semibold">password123</span>
             </p>
           </footer>
         </div>
