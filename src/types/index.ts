@@ -1,7 +1,7 @@
 // ============================================================================
 // TODO TS 1: Define a union type for filtering ('all' | 'completed' | 'pending')
 // ============================================================================
-export type TodoFilter = 'all' | 'completed' | 'pending';
+export type TodoFilter = "all" | "completed" | "pending";
 
 // ==========================================
 // TODO CRUD 1: Define Product and ProductFormInput interfaces for our mock API & React Hook Form
@@ -11,6 +11,7 @@ export interface Product {
   product: string;
   price: string;
   createdAt: string;
+  image: string;
 }
 
 export interface ProductFormInput {
@@ -53,4 +54,3 @@ export interface ProductItemProps {
   onDelete: (id: string) => void;
   disabled: boolean;
 }
-
