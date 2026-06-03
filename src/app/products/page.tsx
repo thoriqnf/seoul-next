@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import { Product, ProductFormInput } from "@/types";
 import { Navigation } from "@/components/Navigation";
 import { ProductItem } from "@/components/ProductItem";
@@ -33,40 +34,24 @@ export default function ProductsPage() {
   });
 
   // ==========================================
-  // TODO CRUD 3: Fetch products from mock API on mount with AbortController clean-up
+  // TODO CRUD 3: Fetch products from mock API on mount using Axios
   // ==========================================
   useEffect(() => {
-    const abortController = new AbortController();
-
     const fetchProducts = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/product", {
-          signal: abortController.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error: Failed to fetch products (${response.statusText})`);
-        }
-
-        const data: Product[] = await response.json();
-        setProducts(data);
+        const response = await axios.get<Product[]>("https://64ca45bd700d50e3c7049e2f.mockapi.io/product");
+        setProducts(response.data);
       } catch (err: any) {
-        if (err.name !== "AbortError") {
-          setError(err.message || "An unexpected error occurred.");
-        }
+        setError(err.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-
-    return () => {
-      abortController.abort();
-    };
   }, []);
 
   // ==========================================
@@ -78,43 +63,27 @@ export default function ProductsPage() {
 
       if (editingId) {
         // ==========================================
-        // TODO CRUD 8 (PUT): Update product on Mock API
+        // TODO CRUD 8 (PUT): Update product on Mock API using Axios
         // ==========================================
-        const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${editingId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await axios.put<Product>(
+          `https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${editingId}`,
+          data
+        );
 
-        if (!response.ok) {
-          throw new Error("Failed to update product");
-        }
-
-        const updatedProduct: Product = await response.json();
         setProducts((prev) =>
-          prev.map((p) => (p.id === editingId ? updatedProduct : p))
+          prev.map((p) => (p.id === editingId ? response.data : p))
         );
         setEditingId(null);
       } else {
         // ==========================================
-        // TODO CRUD 6 (POST): Create product on Mock API
+        // TODO CRUD 6 (POST): Create product on Mock API using Axios
         // ==========================================
-        const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/product", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await axios.post<Product>(
+          "https://64ca45bd700d50e3c7049e2f.mockapi.io/product",
+          data
+        );
 
-        if (!response.ok) {
-          throw new Error("Failed to create product");
-        }
-
-        const newProduct: Product = await response.json();
-        setProducts((prev) => [newProduct, ...prev]);
+        setProducts((prev) => [response.data, ...prev]);
       }
 
       reset();
@@ -126,20 +95,14 @@ export default function ProductsPage() {
   };
 
   // ==========================================
-  // TODO CRUD 7: Implement product DELETE handler
+  // TODO CRUD 7: Implement product DELETE handler using Axios
   // ==========================================
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
       setActionLoading(true);
-      const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete product");
-      }
+      await axios.delete(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${id}`);
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {

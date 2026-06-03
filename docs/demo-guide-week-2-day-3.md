@@ -56,36 +56,23 @@ Add the new route to the navigation bar using the client-side `<Link>` component
 ## 4. Reading Products (`src/app/products/page.tsx`)
 
 ### `TODO CRUD 3`: Fetching Products on Mount
-Create a typed asynchronous `useEffect` that pulls products from MockAPI. Always clean up active network requests using `AbortController`:
+Create a typed asynchronous `useEffect` that pulls products from MockAPI using Axios:
 ```typescript
 useEffect(() => {
-  const abortController = new AbortController();
-
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/product", {
-        signal: abortController.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-
-      const data: Product[] = await response.json();
-      setProducts(data);
+      const response = await axios.get<Product[]>("https://64ca45bd700d50e3c7049e2f.mockapi.io/product");
+      setProducts(response.data);
     } catch (err: any) {
-      if (err.name !== "AbortError") {
-        setError(err.message || "An error occurred");
-      }
+      setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
   };
 
   fetchProducts();
-  return () => abortController.abort();
 }, []);
 ```
 
@@ -147,16 +134,8 @@ const onSubmit = async (data: ProductFormInput) => {
   try {
     setActionLoading(true);
     
-    const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) throw new Error("Failed to add product");
-
-    const newProduct: Product = await response.json();
-    setProducts((prev) => [newProduct, ...prev]);
+    const response = await axios.post<Product>("https://64ca45bd700d50e3c7049e2f.mockapi.io/product", data);
+    setProducts((prev) => [response.data, ...prev]);
     reset(); // Clear input fields
   } catch (err: any) {
     alert(err.message || "Failed to create product");
@@ -210,11 +189,7 @@ const handleDelete = async (id: string) => {
 
   try {
     setActionLoading(true);
-    const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) throw new Error("Failed to delete product");
+    await axios.delete(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${id}`);
 
     setProducts((prev) => prev.filter((p) => p.id !== id));
   } catch (err: any) {
@@ -257,17 +232,13 @@ When in editing mode, clicking submit runs a PUT request instead of a POST reque
 
        if (editingId) {
          // PUT Operation
-         const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${editingId}`, {
-           method: "PUT",
-           headers: { "Content-Type": "application/json" },
-           body: JSON.stringify(data),
-         });
+         const response = await axios.put<Product>(
+           `https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${editingId}`,
+           data
+         );
 
-         if (!response.ok) throw new Error("Failed to update product");
-
-         const updatedProduct: Product = await response.json();
          setProducts((prev) =>
-           prev.map((p) => (p.id === editingId ? updatedProduct : p))
+           prev.map((p) => (p.id === editingId ? response.data : p))
          );
          setEditingId(null);
        } else {
