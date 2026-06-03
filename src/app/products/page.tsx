@@ -26,104 +26,42 @@ export default function ProductsPage() {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<ProductFormInput>({
-    defaultValues: {
-      product: "",
-      price: "",
-    },
+  } = useForm<any>({
+    // Configure default values here
   });
 
   // ==========================================
   // TODO CRUD 3: Fetch products from mock API on mount using Axios
   // ==========================================
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await axios.get<Product[]>("https://64ca45bd700d50e3c7049e2f.mockapi.io/product");
-        setProducts(response.data);
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+    // Implement fetch logic here
+    setLoading(false);
   }, []);
 
   // ==========================================
-  // TODO CRUD 6 & 8: Form Submission handler (Create vs Update)
+  // TODO CRUD 6 & 9: Form Submission handler (Create vs Update)
   // ==========================================
-  const onSubmit = async (data: ProductFormInput) => {
-    try {
-      setActionLoading(true);
-
-      if (editingId) {
-        // ==========================================
-        // TODO CRUD 8 (PUT): Update product on Mock API using Axios
-        // ==========================================
-        const response = await axios.put<Product>(
-          `https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${editingId}`,
-          data
-        );
-
-        setProducts((prev) =>
-          prev.map((p) => (p.id === editingId ? response.data : p))
-        );
-        setEditingId(null);
-      } else {
-        // ==========================================
-        // TODO CRUD 6 (POST): Create product on Mock API using Axios
-        // ==========================================
-        const response = await axios.post<Product>(
-          "https://64ca45bd700d50e3c7049e2f.mockapi.io/product",
-          data
-        );
-
-        setProducts((prev) => [response.data, ...prev]);
-      }
-
-      reset();
-    } catch (err: any) {
-      alert(err.message || "An error occurred during submission.");
-    } finally {
-      setActionLoading(false);
-    }
+  const onSubmit = async (data: any) => {
+    // Implement submission logic (POST for new products, PUT for editing products)
+    console.log("Form submitted with data:", data);
   };
 
   // ==========================================
-  // TODO CRUD 7: Implement product DELETE handler using Axios
+  // TODO CRUD 8: Implement product DELETE handler using Axios
   // ==========================================
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-
-    try {
-      setActionLoading(true);
-      await axios.delete(`https://64ca45bd700d50e3c7049e2f.mockapi.io/product/${id}`);
-
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch (err: any) {
-      alert(err.message || "Failed to delete product.");
-    } finally {
-      setActionLoading(false);
-    }
+    // Implement delete logic here
   };
 
   // ==========================================
-  // TODO CRUD 8 (Edit Mode helpers): Populate form values for editing and Cancel edit handler
+  // TODO CRUD 9 (Edit Mode helpers): Populate form values for editing and Cancel edit handler
   // ==========================================
   const startEdit = (product: Product) => {
-    setEditingId(product.id);
-    setValue("product", product.product);
-    setValue("price", product.price);
+    // Set edit mode states and populate form fields
   };
 
   const cancelEdit = () => {
-    setEditingId(null);
-    reset();
+    // Reset editing state and form fields
   };
 
   return (
@@ -165,20 +103,10 @@ export default function ProductsPage() {
                   <input
                     type="text"
                     placeholder="e.g. Mechanical Keyboard"
-                    {...register("product", {
-                      required: "Product name is required",
-                      minLength: {
-                        value: 3,
-                        message: "Product name must be at least 3 characters",
-                      },
-                    })}
+                    {...register("product")}
                     className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   />
-                  {errors.product && (
-                    <p className="text-red-500 text-xs mt-1.5 font-medium flex items-center gap-1">
-                      <span>⚠</span> {errors.product.message}
-                    </p>
-                  )}
+                  {/* Render error feedback here */}
                 </div>
 
                 {/* Product Price Field */}
@@ -193,20 +121,10 @@ export default function ProductsPage() {
                     type="number"
                     step="0.01"
                     placeholder="e.g. 99.99"
-                    {...register("price", {
-                      required: "Price is required",
-                      min: {
-                        value: 0.01,
-                        message: "Price must be greater than 0",
-                      },
-                    })}
+                    {...register("price")}
                     className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   />
-                  {errors.price && (
-                    <p className="text-red-500 text-xs mt-1.5 font-medium flex items-center gap-1">
-                      <span>⚠</span> {errors.price.message}
-                    </p>
-                  )}
+                  {/* Render error feedback here */}
                 </div>
 
                 {/* Submit & Cancel Buttons */}
@@ -289,13 +207,8 @@ export default function ProductsPage() {
               {!loading && !error && products.length > 0 && (
                 <ul className="flex flex-col gap-3">
                   {products.map((prod) => (
-                    <ProductItem
-                      key={prod.id}
-                      product={prod}
-                      onEdit={startEdit}
-                      onDelete={handleDelete}
-                      disabled={actionLoading}
-                    />
+                    // TODO CRUD 7: Render <ProductItem /> component and pass props
+                    null
                   ))}
                 </ul>
               )}
