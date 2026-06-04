@@ -26,15 +26,9 @@ export default function DashboardPage() {
   // TODO RECAP 7: Protect route inside client-side useEffect mount check
   // ==========================================
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    const email = localStorage.getItem("userEmail");
-
-    if (isLoggedIn !== "true") {
-      router.push("/login");
-    } else {
-      setUserEmail(email);
-      setIsChecking(false);
-    }
+    // Check localStorage for "isLoggedIn" value. If not "true", redirect to "/login".
+    // Otherwise set userEmail state and set isChecking to false.
+    setIsChecking(false);
   }, [router]);
 
   // ==========================================
@@ -71,20 +65,20 @@ export default function DashboardPage() {
   // ==========================================
   // TODO RECAP 8: Initialize useForm with types and defaults
   // ==========================================
+  // Replace this mock hook with real useForm<FlowerFormInput> initialization:
   const {
     register,
     handleSubmit,
     setValue,
     reset,
     formState: { errors },
-  } = useForm<FlowerFormInput>({
-    defaultValues: {
-      name: "",
-      price: 0,
-      description: "",
-      image: "",
-    },
-  });
+  }: any = {
+    register: () => ({}),
+    handleSubmit: (fn: any) => (e: any) => { e?.preventDefault(); fn({}); },
+    setValue: () => {},
+    reset: () => {},
+    formState: { errors: {} },
+  };
 
   // ==========================================
   // Form submission handler: handles both POST (Create) and PUT (Edit)
@@ -92,67 +86,25 @@ export default function DashboardPage() {
   // TODO RECAP 11: Implement Axios PUT submit & Edit Mode populate/cancel logic
   // ==========================================
   const onSubmit = async (data: FlowerFormInput) => {
-    try {
-      setActionLoading(true);
-      const payload = {
-        ...data,
-        price: Number(data.price),
-      };
-
-      if (editingId) {
-        // PUT (Update) operation
-        const response = await axios.put<Flower>(`${API_URL}/${editingId}`, payload);
-        setFlowers((prev) =>
-          prev.map((flower) => (flower.id === editingId ? response.data : flower))
-        );
-        setEditingId(null);
-      } else {
-        // POST (Create) operation
-        const response = await axios.post<Flower>(API_URL, payload);
-        setFlowers((prev) => [response.data, ...prev]);
-      }
-      reset();
-    } catch (err: any) {
-      alert(err.message || "Failed to save flower arrangement.");
-    } finally {
-      setActionLoading(false);
-    }
+    // Implement POST (create) and PUT (update) Axios operations based on editingId.
+    // Sync local flowers array state, reset form, and manage action loading.
   };
 
   // Populate form with item details to trigger Edit Mode
   const startEdit = (flower: Flower) => {
-    setEditingId(flower.id);
-    setValue("name", flower.name);
-    setValue("price", flower.price);
-    setValue("description", flower.description);
-    setValue("image", flower.image);
+    // TODO RECAP 11: Set editingId state and populate form fields using setValue helper
   };
 
   // Cancel edit mode and reset form inputs
   const cancelEdit = () => {
-    setEditingId(null);
-    reset();
+    // TODO RECAP 11: Exit editing mode and reset input values
   };
 
   // ==========================================
   // TODO RECAP 12: Implement Axios DELETE logic with browser confirm alert
   // ==========================================
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this flower product?")) return;
-
-    try {
-      setActionLoading(true);
-      await axios.delete(`${API_URL}/${id}`);
-      setFlowers((prev) => prev.filter((flower) => flower.id !== id));
-      
-      if (editingId === id) {
-        cancelEdit();
-      }
-    } catch (err: any) {
-      alert(err.message || "Failed to delete flower arrangement.");
-    } finally {
-      setActionLoading(false);
-    }
+    // Ask for user confirmation, trigger DELETE request, update state list, and exit edit mode if active on target ID
   };
 
   if (isChecking) {
@@ -201,10 +153,7 @@ export default function DashboardPage() {
                 <input
                   type="text"
                   placeholder="e.g. Red Rose Bouquet"
-                  {...register("name", {
-                    required: "Flower name is required",
-                    minLength: { value: 3, message: "Name must be at least 3 characters" },
-                  })}
+                  // TODO RECAP 9: Register the "name" field with required and minLength: 3 constraints
                   className="input-field"
                 />
                 {errors.name && (
@@ -219,10 +168,7 @@ export default function DashboardPage() {
                   type="number"
                   step="0.01"
                   placeholder="29.99"
-                  {...register("price", {
-                    required: "Price is required",
-                    min: { value: 1, message: "Price must be at least $1.00" },
-                  })}
+                  // TODO RECAP 9: Register the "price" field with required and min: 1 constraints
                   className="input-field"
                 />
                 {errors.price && (
@@ -236,7 +182,7 @@ export default function DashboardPage() {
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
-                  {...register("image", { required: "Image URL is required" })}
+                  // TODO RECAP 9: Register the "image" field with required constraint
                   className="input-field"
                 />
                 {errors.image && (
@@ -249,10 +195,7 @@ export default function DashboardPage() {
                 <label className="input-label">Description</label>
                 <textarea
                   placeholder="Provide floral arrangement descriptions..."
-                  {...register("description", {
-                    required: "Description is required",
-                    minLength: { value: 10, message: "Description must be at least 10 characters" },
-                  })}
+                  // TODO RECAP 9: Register the "description" field with required and minLength: 10 constraints
                   className="textarea-field"
                 />
                 {errors.description && (

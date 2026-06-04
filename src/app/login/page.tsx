@@ -11,9 +11,9 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 6: Initialize useRouter hook for programmatic redirect
+  // TODO RECAP 4: Initialize useRouter hook for programmatic redirect
   // ==========================================
-  const router = useRouter();
+  const router: any = { push: (url: string) => console.log(`Redirecting to ${url}`) };
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export default function LoginPage() {
         localStorage.setItem("userEmail", email.trim());
         // Sync header state across windows/components
         window.dispatchEvent(new Event("storage"));
-        router.push("/dashboard");
+        // TODO RECAP 4: Use router.push to programmatically redirect to "/dashboard"
       } else {
         setError("Invalid email or password. Hint: admin@example.com / password123");
         setLoading(false);

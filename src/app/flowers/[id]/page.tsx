@@ -19,7 +19,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 
   useEffect(() => {
-    params.then((res) => setResolvedParams(res));
+    // Resolve the params promise and store the result in resolvedParams state
   }, [params]);
 
   const [flower, setFlower] = useState<Flower | null>(null);
@@ -30,35 +30,10 @@ export default function FlowerDetailPage({ params }: PageProps) {
   // TODO RECAP 6: Fetch single flower detail on resolved ID change inside useEffect
   // ==========================================
   useEffect(() => {
-    if (!resolvedParams?.id) return;
-
-    const abortController = new AbortController();
-
-    const fetchFlowerDetail = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await axios.get<Flower>(
-          `https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${resolvedParams.id}`,
-          { signal: abortController.signal }
-        );
-        setFlower(response.data);
-      } catch (err: any) {
-        if (err.name !== "CanceledError" && err.message !== "canceled") {
-          setError(err.message || "Failed to load product details.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFlowerDetail();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [resolvedParams?.id]);
+    // Perform axios.get details fetch from API, manage state variables,
+    // and cleanup using AbortController on resolvedParams change
+    setLoading(false);
+  }, []);
 
   return (
     <>

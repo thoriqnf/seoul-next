@@ -34,20 +34,20 @@ export function Navigation() {
         </Link>
         <nav className="flex items-center gap-6">
           {/* ========================================== */}
-          {/* TODO RECAP 5: Use Next.js Link components instead of standard <a> tags */}
+          {/* TODO RECAP 3: Use Next.js Link components instead of standard <a> tags */}
           {/* ========================================== */}
-          <Link
+          <a
             href="/"
             className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Catalog
-          </Link>
-          <Link
+          </a>
+          <a
             href="/dashboard"
             className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Admin Panel
-          </Link>
+          </a>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
@@ -56,12 +56,12 @@ export function Navigation() {
               Logout
             </button>
           ) : (
-            <Link
+            <a
               href="/login"
               className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Login
-            </Link>
+            </a>
           )}
         </nav>
       </div>

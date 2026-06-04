@@ -14,57 +14,33 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 13: Initialize searchKeyword controlled state variable
+  // TODO RECAP 13: Initialize searchKeyword controlled state variable (strict string type)
   // ==========================================
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<any>("");
 
   // ==========================================
   // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
-  // TODO RECAP 2: Implement network request cancellation using AbortController
+  // TODO RECAP 2: Implement network request cancellation using AbortController to prevent memory leaks
   // ==========================================
   useEffect(() => {
-    const abortController = new AbortController();
-
-    const fetchFlowers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await axios.get<Flower[]>(API_URL, {
-          signal: abortController.signal,
-        });
-        setFlowers(response.data);
-      } catch (err: any) {
-        if (err.name !== "CanceledError" && err.message !== "canceled") {
-          setError(err.message || "Failed to load flowers.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFlowers();
-
-    return () => {
-      abortController.abort();
-    };
+    // 1. Initialize AbortController signal
+    // 2. Perform axios GET call to API_URL
+    // 3. Set flowers array, error, and loading states
+    // 4. Return cleanup function to abort fetch on unmount
+    setLoading(false);
   }, []);
 
   // ==========================================
-  // TODO RECAP 13: Handle text search input event updates
+  // TODO RECAP 13: Handle text search input event updates (typed Event parameter)
   // ==========================================
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
+  const handleSearchChange = (e: any) => {
+    // Update searchKeyword state with input value
   };
 
   // ==========================================
   // TODO RECAP 14: Filter flowers listing dynamically by keyword match
   // ==========================================
-  const filteredFlowers = flowers.filter((flower) => {
-    return flower.name
-      ? flower.name.toLowerCase().includes(searchKeyword.toLowerCase())
-      : false;
-  });
+  const filteredFlowers = flowers; // Replace with filtered array logic
 
   return (
     <>
