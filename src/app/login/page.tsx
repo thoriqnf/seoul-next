@@ -13,7 +13,7 @@ export default function LoginPage() {
   // ==========================================
   // TODO RECAP 5: Initialize useRouter hook for programmatic redirect
   // ==========================================
-  const router: any = { push: (url: string) => console.log(`Redirecting to ${url}`) };
+  const router: any = useRouter();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,18 +21,21 @@ export default function LoginPage() {
     setLoading(true);
 
     // Mock authentication check
-    setTimeout(() => {
-      if (email.trim() === "admin@example.com" && password === "password123") {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", email.trim());
-        // Sync header state across windows/components
-        window.dispatchEvent(new Event("storage"));
-        // TODO RECAP 5: Use router.push to programmatically redirect to "/dashboard"
-      } else {
-        setError("Invalid email or password. Hint: admin@example.com / password123");
-        setLoading(false);
-      }
-    }, 600);
+    // setTimeout(() => {
+    if (email.trim() === "admin@example.com" && password === "password123") {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userEmail", email.trim());
+      // Sync header state across windows/components
+      window.dispatchEvent(new Event("storage"));
+      // TODO RECAP 5: Use router.push to programmatically redirect to "/dashboard"
+      router.push("/dashboard");
+    } else {
+      setError(
+        "Invalid email or password. Hint: admin@example.com / password123",
+      );
+      setLoading(false);
+    }
+    // }, 600);
   };
 
   return (
@@ -57,13 +60,13 @@ export default function LoginPage() {
 
           <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col">
-              <label className="input-label">
-                Email Address
-              </label>
+              <label className="input-label">Email Address</label>
               <input
                 type="email"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
                 placeholder="admin@example.com"
                 required
                 className="input-field"
@@ -71,13 +74,13 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col">
-              <label className="input-label">
-                Password
-              </label>
+              <label className="input-label">Password</label>
               <input
                 type="password"
                 value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
                 placeholder="••••••••"
                 required
                 className="input-field"
@@ -95,8 +98,15 @@ export default function LoginPage() {
 
           <footer className="mt-6 border-t border-slate-100 dark:border-neutral-800/80 pt-4 text-center">
             <p className="text-[10px] text-slate-400 leading-normal">
-              Demo Credentials:<br />
-              <span className="font-semibold text-slate-550 dark:text-zinc-400">admin@example.com</span> / <span className="font-semibold text-slate-550 dark:text-zinc-400">password123</span>
+              Demo Credentials:
+              <br />
+              <span className="font-semibold text-slate-550 dark:text-zinc-400">
+                admin@example.com
+              </span>{" "}
+              /{" "}
+              <span className="font-semibold text-slate-550 dark:text-zinc-400">
+                password123
+              </span>
             </p>
           </footer>
         </div>

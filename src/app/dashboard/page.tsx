@@ -8,7 +8,7 @@ import { Flower, FlowerFormInput } from "@/types";
 import { Navigation } from "@/components/Navigation";
 import { FlowerItem } from "@/components/FlowerItem";
 
-const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
+const API_URL = "http://localhost:5000/flowers";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -27,27 +27,35 @@ export default function DashboardPage() {
   // ==========================================
   useEffect(() => {
     // Verify session credentials from localStorage. If not authenticated, redirect to /login
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const email = localStorage.getItem("userEmail");
+
+    if (isLoggedIn !== "true") {
+      router.push("/login");
+    } else {
+      setUserEmail(email);
+      setIsChecking(false);
+    }
     setIsChecking(false);
   }, [router]);
 
   // ==========================================
   // Fetch flowers for the dashboard listings
   // ==========================================
+  const fetchFlowers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get<Flower[]>(API_URL);
+      setFlowers(response.data);
+    } catch (err: any) {
+      setError(err.message || "Failed to load flowers.");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (isChecking) return;
-
-    const fetchFlowers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await axios.get<Flower[]>(API_URL);
-        setFlowers(response.data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load flowers.");
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchFlowers();
   }, [isChecking]);
@@ -62,13 +70,14 @@ export default function DashboardPage() {
     setValue,
     reset,
     formState: { errors },
-  }: any = {
-    register: () => ({}),
-    handleSubmit: (fn: any) => (e: any) => { e?.preventDefault(); fn({}); },
-    setValue: () => {},
-    reset: () => {},
-    formState: { errors: {} },
-  };
+  }: any = useForm({
+    defaultValues: {
+      name: "",
+      price: 0,
+      description: "",
+      image: "",
+    },
+  });
 
   // ==========================================
   // Form submission handler: handles both POST (Create) and PUT (Edit)
@@ -76,25 +85,63 @@ export default function DashboardPage() {
   // TODO RECAP 10: Implement Axios PUT submit & Edit Mode populate/cancel logic
   // ==========================================
   const onSubmit = async (data: FlowerFormInput) => {
-    // Implement POST (create) and PUT (update) Axios operations based on editingId.
-    // Sync local flowers array state, reset form, and manage action loading.
+    const payload = {
+      ...data,
+      price: Number(data.price),
+    };
+    try {
+      setActionLoading(true);
+      if (editingId) {
+        await axios.put(`${API_URL}/${editingId}`, payload);
+        setEditingId(null);
+        reset();
+      } else {
+        await axios.post(API_URL, payload);
+        reset();
+      }
+      fetchFlowers();
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   // Populate form with item details to trigger Edit Mode
   const startEdit = (flower: Flower) => {
-    // TODO RECAP 10: Set editingId state and populate form fields using setValue helper
+    setEditingId(flower.id);
+    setValue("name", flower.name);
+    setValue("price", flower.price);
+    setValue("image", flower.image);
+    setValue("description", flower.description);
   };
 
   // Cancel edit mode and reset form inputs
   const cancelEdit = () => {
-    // TODO RECAP 10: Exit editing mode and reset input values
+    setEditingId(null);
+    reset();
   };
 
   // ==========================================
   // TODO RECAP 11: Implement Axios DELETE logic with browser confirm alert
   // ==========================================
   const handleDelete = async (id: string) => {
-    // Ask for user confirmation, trigger DELETE request, update state list, and exit edit mode if active on target ID
+    const confirmDelete = window.confirm("Are you sure you want to delete this flower arrangement?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+
+      if (editingId === id) {
+        cancelEdit();
+      }
+
+      await fetchFlowers();
+    } catch (err: any) {
+      setError(err.message || "Failed to delete flower.");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   if (isChecking) {
@@ -120,20 +167,25 @@ export default function DashboardPage() {
             Admin Panel
           </h1>
           <p className="mt-2 text-slate-500 dark:text-zinc-400 text-sm">
-            Authenticated as: <span className="font-bold text-slate-800 dark:text-zinc-200">{userEmail}</span>
+            Authenticated as:{" "}
+            <span className="font-bold text-slate-800 dark:text-zinc-200">
+              {userEmail}
+            </span>
           </p>
         </header>
 
         {/* Form and Table Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-          
           {/* Left Side: Create / Update Form Card */}
           <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-6 shadow-xs lg:col-span-1">
             <h2 className="text-lg font-extrabold text-slate-800 dark:text-zinc-100 mb-5">
               {editingId ? "Edit Flower Details" : "Add Flower Arrangement"}
             </h2>
-            
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
               {/* Flower Name Input */}
               <div>
                 <label className="input-label">Flower Name</label>
@@ -144,6 +196,13 @@ export default function DashboardPage() {
                   type="text"
                   placeholder="e.g. Red Rose Bouquet"
                   // TODO RECAP 8: Register the "name" field with required and minLength: 3 constraints
+                  {...register("name", {
+                    required: "Flower Name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Flower name minimal 3 characters",
+                    },
+                  })}
                   className="input-field"
                 />
                 {errors.name && (
@@ -159,6 +218,13 @@ export default function DashboardPage() {
                   step="0.01"
                   placeholder="29.99"
                   // TODO RECAP 8: Register the "price" field with required and min: 1 constraints
+                  {...register("price", {
+                    required: "price is required",
+                    minLength: {
+                      value: 1,
+                      message: "Flower price minimal $1",
+                    },
+                  })}
                   className="input-field"
                 />
                 {errors.price && (
@@ -173,6 +239,9 @@ export default function DashboardPage() {
                   type="url"
                   placeholder="https://images.unsplash.com/..."
                   // TODO RECAP 8: Register the "image" field with required constraint
+                  {...register("image", {
+                    required: "Flower image is required",
+                  })}
                   className="input-field"
                 />
                 {errors.image && (
@@ -186,6 +255,13 @@ export default function DashboardPage() {
                 <textarea
                   placeholder="Provide floral arrangement descriptions..."
                   // TODO RECAP 8: Register the "description" field with required and minLength: 10 constraints
+                  {...register("description", {
+                    required: "Flower Description is required",
+                    minLength: {
+                      value: 5,
+                      message: "Flower Description minimal 5 characters",
+                    },
+                  })}
                   className="textarea-field"
                 />
                 {errors.description && (
@@ -200,7 +276,11 @@ export default function DashboardPage() {
                   disabled={actionLoading}
                   className="btn-primary"
                 >
-                  {actionLoading ? "Saving..." : editingId ? "Update Flower" : "Create Flower"}
+                  {actionLoading
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Flower"
+                      : "Create Flower"}
                 </button>
                 {editingId && (
                   <button
@@ -226,8 +306,12 @@ export default function DashboardPage() {
             {error && (
               <div className="flex flex-col items-center justify-center p-10 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
                 <span className="text-2xl mb-1">⚠</span>
-                <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Listings</h3>
-                <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
+                <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">
+                  Failed to Load Listings
+                </h3>
+                <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">
+                  {error}
+                </p>
               </div>
             )}
 
@@ -242,7 +326,9 @@ export default function DashboardPage() {
             {!loading && !error && flowers.length === 0 && (
               <div className="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
                 <span className="text-3xl mb-2">🌸</span>
-                <h3 className="font-bold text-slate-850 dark:text-zinc-200 text-sm">Inventory is Empty</h3>
+                <h3 className="font-bold text-slate-850 dark:text-zinc-200 text-sm">
+                  Inventory is Empty
+                </h3>
                 <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
                   Use the entry form to add your first flower arrangement.
                 </p>

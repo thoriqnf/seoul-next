@@ -29,25 +29,34 @@ export function Navigation() {
   return (
     <header className="w-full border-b border-slate-200 bg-white dark:border-neutral-800 dark:bg-zinc-900">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="font-extrabold text-indigo-600 dark:text-indigo-400 text-lg tracking-tight">
+        <Link
+          href="/"
+          className="font-extrabold text-indigo-600 dark:text-indigo-400 text-lg tracking-tight"
+        >
           🌸 FlowerShop
         </Link>
         <nav className="flex items-center gap-6">
           {/* ========================================== */}
           {/* TODO RECAP 2: Use Next.js Link components instead of standard <a> tags */}
           {/* ========================================== */}
-          <a
+          {/* <Link
             href="/"
             className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Catalog
-          </a>
-          <a
+          </Link> */}
+          <button
+            onClick={() => router.push("/")}
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          >
+            Catalog
+          </button>
+          <Link
             href="/dashboard"
             className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Admin Panel
-          </a>
+          </Link>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}

@@ -1,0 +1,74 @@
+{
+  "flowers": [
+    {
+      "name": "Classic Red Rosess",
+      "price": 29.99,
+      "description": "A stunning arrangement of deep red roses, accented with fresh eucalyptus leaves. Perfect for expressing love and romance.",
+      "image": "https://images.unsplash.com/photo-1560022402-aae014a0f4de?w=500&auto=format&fit=crop&q=60",
+      "id": "1"
+    },
+    {
+      "createdAt": "2026-06-03T11:23:04.062Z",
+      "name": "Pink Tulips Bouquet",
+      "price": 24.99,
+      "category": "Tulips",
+      "description": "Elegant and charming pink tulips wrapped in premium craft paper. A beautiful gift to bring warmth and happiness to anyone.",
+      "image": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500&auto=format&fit=crop&q=60",
+      "id": "2"
+    },
+    {
+      "createdAt": "2026-06-03T22:53:26.082Z",
+      "name": "Sweet Purple Lilies",
+      "price": 34.99,
+      "category": "Lilies",
+      "description": "A fragrant selection of purple and white lilies arranged in a clear glass vase. Known for their long-lasting blooms and elegance.",
+      "image": "https://images.unsplash.com/photo-1508784411316-02b8cd4d3a3a?w=500&auto=format&fit=crop&q=60",
+      "id": "3"
+    },
+    {
+      "createdAt": "2026-06-03T20:04:53.472Z",
+      "name": "Sunshine Sunflowers",
+      "price": 19.99,
+      "category": "Sunflowers",
+      "description": "Bright, cheerful yellow sunflowers designed to bring sunshine and positive energy into any room or home.",
+      "image": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500&auto=format&fit=crop&q=60",
+      "id": "4"
+    },
+    {
+      "createdAt": "2026-06-03T20:18:33.356Z",
+      "name": "Casablanca White Lilies",
+      "price": 39.99,
+      "category": "Lilies",
+      "description": "An exquisite bouquet of pure Casablanca white lilies. Perfect for celebrations, weddings, or formal dining arrangements.",
+      "image": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=500&auto=format&fit=crop&q=60",
+      "id": "5"
+    },
+    {
+      "createdAt": "2026-06-03T14:27:22.606Z",
+      "name": "Premium Velvet Roses",
+      "price": 49.99,
+      "category": "Roses",
+      "description": "Luxurious red velvet roses arranged neatly in an elegant signature black gift box. Designed for a premium gifting experience.",
+      "image": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=500&auto=format&fit=crop&q=60",
+      "id": "6"
+    },
+    {
+      "createdAt": "2026-06-03T23:50:55.596Z",
+      "name": "Golden Tulip Centerpiece",
+      "price": 22.99,
+      "category": "Tulips",
+      "description": "A bright spring arrangement of fresh yellow tulips inside a premium glass bowl. Ideal for dining table decoration.",
+      "image": "https://images.unsplash.com/photo-1591767134492-338e62f7b5a2?w=500&auto=format&fit=crop&q=60",
+      "id": "7"
+    },
+    {
+      "createdAt": "2026-06-04T02:21:05.035Z",
+      "name": "Rustic Sunflower Pot",
+      "price": 27.99,
+      "category": "Sunflowers",
+      "description": "Beautiful wild sunflowers mixed with white baby's breath inside a rustic clay ceramic pot.",
+      "image": "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?w=500&auto=format&fit=crop&q=60",
+      "id": "8"
+    }
+  ]
+}

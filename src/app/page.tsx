@@ -6,7 +6,7 @@ import { Flower } from "@/types";
 import { Navigation } from "@/components/Navigation";
 import { FlowerCard } from "@/components/FlowerCard";
 
-const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
+const API_URL = "http://localhost:5000/flowers";
 
 export default function Home() {
   const [flowers, setFlowers] = useState<Flower[]>([]);
@@ -22,10 +22,22 @@ export default function Home() {
   // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
   // TODO RECAP 13: Integrate search query parameter inside data fetching effect
   // ==========================================
+  const fetchFlowers = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      console.log("response", response);
+      setFlowers(response.data);
+    } catch (error: any) {
+      setError(error.message || "Please call admin");
+    }
+  };
+
   useEffect(() => {
     // 1. Perform axios GET call to API_URL (with search query parameter if searchKeyword is present)
     // 2. Set flowers array, error, and loading states
     setLoading(false);
+
+    fetchFlowers();
   }, []);
 
   // ==========================================
@@ -48,7 +60,9 @@ export default function Home() {
             Fresh & Handcrafted Blooms
           </h1>
           <p className="mt-2.5 text-slate-500 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-            Recap Project Day: Experience a beautifully structured catalog with client-side searching, dynamic detail views, and asynchronous network fetching.
+            Recap Project Day: Experience a beautifully structured catalog with
+            client-side searching, dynamic detail views, and asynchronous
+            network fetching.
           </p>
         </header>
 
@@ -72,8 +86,12 @@ export default function Home() {
         {error && (
           <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
             <span className="text-3xl mb-2">⚠</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flowers</h3>
-            <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
+            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">
+              Failed to Load Flowers
+            </h3>
+            <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">
+              {error}
+            </p>
           </div>
         )}
 
@@ -81,7 +99,10 @@ export default function Home() {
         {loading && (
           <div className="shop-grid">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="shop-card animate-pulse border border-slate-200 dark:border-neutral-800/80">
+              <div
+                key={i}
+                className="shop-card animate-pulse border border-slate-200 dark:border-neutral-800/80"
+              >
                 <div className="h-48 w-full bg-slate-100 dark:bg-zinc-800/80" />
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
@@ -104,7 +125,9 @@ export default function Home() {
         {!loading && !error && flowers.length === 0 && (
           <div className="flex flex-col items-center justify-center p-16 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
             <span className="text-4xl mb-3">🌸</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">No Flowers Found</h3>
+            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">
+              No Flowers Found
+            </h3>
             <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
               Try modifying your search text.
             </p>

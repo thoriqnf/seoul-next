@@ -11,8 +11,11 @@ export default function FlowerDetailPage() {
   // ==========================================
   // TODO RECAP 3: Retrieve dynamic route parameters using the useParams hook inside client component
   // ==========================================
-  const params: any = { id: "" };
+  const params: any = useParams();
+  console.log("params", params);
   const id = params.id;
+  console.log("id", id);
+  const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
 
   const [flower, setFlower] = useState<Flower | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,8 +26,23 @@ export default function FlowerDetailPage() {
   // ==========================================
   useEffect(() => {
     // Perform axios.get details fetch from API, manage state variables
-    setLoading(false);
+
+    if (!id) return;
+    const fetchFlowerDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/flowers/${id}`);
+        setFlower(response.data);
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFlowerDetail();
   }, [id]);
+
+  console.log("flower", flower);
 
   return (
     <>
@@ -32,7 +50,10 @@ export default function FlowerDetailPage() {
       <main className="shop-container max-w-3xl">
         {/* Navigation Action Back Button */}
         <div className="mb-6 flex">
-          <Link href="/" className="btn-secondary py-2 text-xs flex items-center gap-1.5 active:scale-95 transition-all">
+          <Link
+            href="/"
+            className="btn-secondary py-2 text-xs flex items-center gap-1.5 active:scale-95 transition-all"
+          >
             ← Back to Catalog
           </Link>
         </div>
@@ -41,8 +62,12 @@ export default function FlowerDetailPage() {
         {error && (
           <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
             <span className="text-3xl mb-2">⚠</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flower Details</h3>
-            <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
+            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">
+              Failed to Load Flower Details
+            </h3>
+            <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">
+              {error}
+            </p>
           </div>
         )}
 
@@ -70,9 +95,15 @@ export default function FlowerDetailPage() {
             {/* Left Side: Flower Image wrapper */}
             <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-100 dark:bg-zinc-800 rounded-xl overflow-hidden">
               {flower.image ? (
-                <img src={flower.image} alt={flower.name} className="h-full w-full object-cover" />
+                <img
+                  src={flower.image}
+                  alt={flower.name}
+                  className="h-full w-full object-cover"
+                />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-5xl">🌸</div>
+                <div className="flex h-full w-full items-center justify-center text-5xl">
+                  🌸
+                </div>
               )}
             </div>
 
@@ -91,13 +122,16 @@ export default function FlowerDetailPage() {
                 </h1>
 
                 <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed mb-6 whitespace-pre-line">
-                  {flower.description || "No description available for this floral arrangement."}
+                  {flower.description ||
+                    "No description available for this floral arrangement."}
                 </p>
               </div>
 
               {/* Order checkout confirmation CTA */}
               <button
-                onClick={() => alert(`Purchase process for "${flower.name}" simulated!`)}
+                onClick={() =>
+                  alert(`Purchase process for "${flower.name}" simulated!`)
+                }
                 className="btn-primary w-full py-3 text-sm tracking-wide font-bold"
               >
                 Add to Cart
