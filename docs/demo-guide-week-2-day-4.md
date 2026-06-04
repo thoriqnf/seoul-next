@@ -6,58 +6,29 @@ This guide walks you through building a cohesive, beginner-friendly **Flower Sho
 
 ## Learning Objectives & Topics Covered
 
-1. **React Event Handlers & Controlled Inputs** (Week 1 Day 3)
-2. **Next.js Data Fetching & Network Cleanups** (Week 1 Day 4)
-3. **Next.js with TypeScript & Generic Typings** (Week 2 Day 1)
-4. **Next.js Client Routing, Layouts & Route Protection** (Week 2 Day 2)
-5. **Axios Integration, React Hook Form, Input Validation, & CRUD** (Week 2 Day 3)
+1. **React State & Asynchronous Data Fetching on Mount** (Week 1 Day 4)
+2. **Network Cancellation with AbortController** (Week 1 Day 4)
+3. **Next.js Client Routing & Navigation Links** (Week 2 Day 2)
+4. **Dynamic Segment Parameters Resolution** (Week 2 Day 2)
+5. **Dynamic Details Fetching & Lifecycle tracking** (Week 2 Day 2)
+6. **Programmatic Redirects with useRouter** (Week 2 Day 2)
+7. **Route Protection Client Guards** (Week 2 Day 2)
+8. **Form Initializations via useForm** (Week 2 Day 3)
+9. **Form Constraints Validation & Feedback UI** (Week 2 Day 3)
+10. **Axios POST API integrations** (Week 2 Day 3)
+11. **Axios PUT API integrations & Edit Mode** (Week 2 Day 3)
+12. **Axios DELETE API integrations** (Week 2 Day 3)
+13. **Controlled Search Input Binding** (Week 1 Day 3)
+14. **API-side Query Search Filtering** (Week 1 Day 4 / Week 2 Day 3)
 
 ---
 
 ## Step-by-Step Task Walkthrough
 
-### Phase 1: React State & Events (Catalog Page)
+### Phase 1: Asynchronous Data Fetching & TypeScript (Catalog Page)
 Path: `src/app/page.tsx`
 
-#### Step 1 (`// TODO RECAP 1`): Controlled Search Input
-Binds a standard HTML text input's value and `onChange` handler to a React state variable. This enables real-time client-side keyword matches.
-1. Define the state:
-```typescript
-const [searchKeyword, setSearchKeyword] = useState<string>("");
-```
-2. Bind to the input tag in the JSX:
-```jsx
-<input
-  type="text"
-  placeholder="Search flowers..."
-  value={searchKeyword}
-  onChange={(e) => setSearchKeyword(e.target.value)}
-  className="input-field"
-/>
-```
-
-#### Step 2 (`// TODO RECAP 2`): Category Filter Tabs
-Updates an active category state when user clicks on a category button (e.g., "Roses", "Lilies", etc.).
-1. Define the state:
-```typescript
-const [activeCategory, setActiveCategory] = useState<FlowerCategory>("all");
-```
-2. Configure buttons to trigger state modifications:
-```jsx
-<button
-  onClick={() => setActiveCategory("Roses")}
-  className={activeCategory === "Roses" ? "bg-indigo-600 text-white shadow-sm" : "..."}
->
-  Roses
-</button>
-```
-
----
-
-### Phase 2: Asynchronous Data Fetching & TypeScript (Catalog Page)
-Path: `src/app/page.tsx`
-
-#### Step 3 (`// TODO RECAP 3`): Data Fetching on Mount
+#### Step 1 (`// TODO RECAP 1`): Data Fetching on Mount
 Fetches the entire flower catalog from the API when the component first renders, managing `loading`, `error`, and `flowers` array states.
 ```typescript
 useEffect(() => {
@@ -78,7 +49,7 @@ useEffect(() => {
 }, []);
 ```
 
-#### Step 4 (`// TODO RECAP 4`): AbortController Cleanup
+#### Step 2 (`// TODO RECAP 2`): AbortController Cleanup
 Prevents memory leaks and state updates on unmounted components by returning a clean-up handler to abort active fetches.
 1. Instantiate the AbortController at the beginning of the effect:
 ```typescript
@@ -99,10 +70,10 @@ return () => {
 
 ---
 
-### Phase 3: Client Routing & Page Guards
-Paths: `src/components/Navigation.tsx`, `src/app/login/page.tsx`, `src/app/flowers/[category]/[id]/page.tsx`, `src/app/dashboard/page.tsx`
+### Phase 2: Client Routing, Layouts & Guards
+Paths: `src/components/Navigation.tsx`, `src/app/flowers/[id]/page.tsx`, `src/app/login/page.tsx`, `src/app/dashboard/page.tsx`
 
-#### Step 5 (`// TODO RECAP 5`): Next.js Link Navigation
+#### Step 3 (`// TODO RECAP 3`): Next.js Link Navigation
 *File: `src/components/Navigation.tsx`*
 Enables Single Page Application (SPA) fast routing by replacing generic anchor tags (`<a>`) with Next.js `<Link>` components:
 ```jsx
@@ -111,6 +82,27 @@ import Link from "next/link";
 <Link href="/dashboard" className="text-sm font-semibold hover:text-indigo-600">
   Admin Panel
 </Link>
+```
+
+#### Step 4 (`// TODO RECAP 4`): Resolve Dynamic Segment Promises
+*File: `src/app/flowers/[id]/page.tsx`*
+Resolves dynamic segment promises in client components:
+```typescript
+const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
+
+useEffect(() => {
+  params.then((res) => setResolvedParams(res));
+}, [params]);
+```
+
+#### Step 5 (`// TODO RECAP 5`): Dynamic Product Detail Fetching
+*File: `src/app/flowers/[id]/page.tsx`*
+Fetches single flower detail objects only when the resolved ID parameters change:
+```typescript
+useEffect(() => {
+  if (!resolvedParams?.id) return;
+  // Fetch flower details from `/flowers/${resolvedParams.id}` with loading, error, and abort controller.
+}, [resolvedParams?.id]);
 ```
 
 #### Step 6 (`// TODO RECAP 6`): Programmatic Redirections
@@ -126,28 +118,7 @@ localStorage.setItem("isLoggedIn", "true");
 router.push("/dashboard");
 ```
 
-#### Step 7 (`// TODO RECAP 7`): Resolve Dynamic Segment Promises
-*File: `src/app/flowers/[category]/[id]/page.tsx`*
-Resolves dynamic segment promises in client components:
-```typescript
-const [resolvedParams, setResolvedParams] = useState<{ category: string; id: string } | null>(null);
-
-useEffect(() => {
-  params.then((res) => setResolvedParams(res));
-}, [params]);
-```
-
-#### Step 8 (`// TODO RECAP 8`): Dependency-Tracked Detail Fetching
-*File: `src/app/flowers/[category]/[id]/page.tsx`*
-Fetches single flower detail objects only when the resolved ID parameters change:
-```typescript
-useEffect(() => {
-  if (!resolvedParams?.id) return;
-  // Fetch flower details from `/flowers/${resolvedParams.id}` with loading, error, and abort controller.
-}, [resolvedParams?.id]);
-```
-
-#### Step 9 (`// TODO RECAP 9`): Administrative Client Guards
+#### Step 7 (`// TODO RECAP 7`): Administrative Client Guards
 *File: `src/app/dashboard/page.tsx`*
 Protects user panels by verifying session credentials from local storage. Non-authenticated sessions are redirected:
 ```typescript
@@ -163,10 +134,10 @@ useEffect(() => {
 
 ---
 
-### Phase 4: React Hook Form & Axios CRUD (Dashboard Page)
+### Phase 3: Forms & REST API CRUD Operations (Dashboard Page)
 Path: `src/app/dashboard/page.tsx`
 
-#### Step 10 (`// TODO RECAP 10`): Initialize Form Hooks
+#### Step 8 (`// TODO RECAP 8`): Initialize Form Hooks
 Creates uncontrolled form hook instances bound to typescript models with default values configuration:
 ```typescript
 const {
@@ -176,11 +147,11 @@ const {
   reset,
   formState: { errors },
 } = useForm<FlowerFormInput>({
-  defaultValues: { name: "", price: 0, category: "Roses", description: "", image: "" },
+  defaultValues: { name: "", price: 0, description: "", image: "" },
 });
 ```
 
-#### Step 11 (`// TODO RECAP 11`): Register Form Validations
+#### Step 9 (`// TODO RECAP 9`): Register Form Validations
 Configures input field limits (e.g. required field bounds, minLength, numerical min values) and prints error feedbacks:
 ```jsx
 <input
@@ -194,7 +165,7 @@ Configures input field limits (e.g. required field bounds, minLength, numerical 
 {errors.name && <p className="input-error">⚠ {errors.name.message}</p>}
 ```
 
-#### Step 12 (`// TODO RECAP 12`): Implement POST Request (Create)
+#### Step 10 (`// TODO RECAP 10`): Implement POST Request (Create)
 Saves new listings to the database API and appends the returned objects to the client array state:
 ```typescript
 const response = await axios.post<Flower>(API_URL, payload);
@@ -202,13 +173,14 @@ setFlowers((prev) => [response.data, ...prev]);
 reset();
 ```
 
-#### Step 13 (`// TODO RECAP 13`): Implement PUT Request (Update / Edit Mode)
+#### Step 11 (`// TODO RECAP 11`): Implement PUT Request (Update / Edit Mode)
 Loads records into inputs to update active entries on the API when editing mode is enabled:
 1. Load form fields:
 ```typescript
 const startEdit = (flower: Flower) => {
   setEditingId(flower.id);
   setValue("name", flower.name);
+  setValue("price", flower.price);
   // ...other fields
 };
 ```
@@ -222,13 +194,60 @@ setEditingId(null);
 reset();
 ```
 
-#### Step 14 (`// TODO RECAP 14`): Implement DELETE Request
+#### Step 12 (`// TODO RECAP 12`): Implement DELETE Request
 Fires DELETE requests to remove entries from the server and excludes the deleted objects from local array lists on confirmation:
 ```typescript
 if (confirm("Are you sure?")) {
   await axios.delete(`${API_URL}/${id}`);
   setFlowers((prev) => prev.filter((f) => f.id !== id));
 }
+```
+
+---
+
+### Phase 4: Client-Side Interactive Filtering & Search API (Capping Exercises)
+Path: `src/app/page.tsx`
+
+#### Step 13 (`// TODO RECAP 13`): Controlled Search Input
+Binds a text search input's value and `onChange` handler to a React `searchKeyword` state variable:
+```typescript
+const [searchKeyword, setSearchKeyword] = useState<string>("");
+```
+
+#### Step 14 (`// TODO RECAP 14`): API-Side Search Fetching
+Integrates the `searchKeyword` state directly as a dependency inside the data fetching `useEffect` hook. Instead of client-side filtering, it appends the search parameter to the API URL query (e.g. `?search=pink`), fetching matches from the database on key modifications while resolving concurrency using the `AbortController` cancellation token.
+```typescript
+useEffect(() => {
+  const abortController = new AbortController();
+
+  const fetchFlowers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const url = searchKeyword.trim()
+        ? `${API_URL}?search=${encodeURIComponent(searchKeyword.trim())}`
+        : API_URL;
+
+      const response = await axios.get<Flower[]>(url, {
+        signal: abortController.signal,
+      });
+      setFlowers(response.data);
+    } catch (err: any) {
+      if (err.name !== "CanceledError" && err.message !== "canceled") {
+        setError(err.message || "Failed to load flowers.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFlowers();
+
+  return () => {
+    abortController.abort();
+  };
+}, [searchKeyword]);
 ```
 
 ---
@@ -243,4 +262,4 @@ if (confirm("Are you sure?")) {
    ```bash
    npm run dev
    ```
-3. Test catalog searches, category filters, detail pages, authentication redirects, and dashboard CRUD additions/edits/deletions.
+3. Test catalog search bar (confirm API requests are triggered for search), detail pages, authentication redirects, and dashboard CRUD additions/edits/deletions.
