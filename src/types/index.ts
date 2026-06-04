@@ -1,10 +1,7 @@
-export type FlowerCategory = "all" | "Roses" | "Lilies" | "Tulips" | "Sunflowers";
-
 export interface Flower {
   id: string;
   name: string;
   price: number;
-  category: string;
   description: string;
   image: string;
 }
@@ -12,7 +9,6 @@ export interface Flower {
 export interface FlowerFormInput {
   name: string;
   price: number;
-  category: string;
   description: string;
   image: string;
 }

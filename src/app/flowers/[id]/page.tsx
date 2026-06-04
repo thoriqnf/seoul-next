@@ -8,16 +8,15 @@ import { Navigation } from "@/components/Navigation";
 
 interface PageProps {
   params: Promise<{
-    category: string;
     id: string;
   }>;
 }
 
 export default function FlowerDetailPage({ params }: PageProps) {
   // ==========================================
-  // TODO RECAP 7: Resolve the dynamic segment parameters from the params promise
+  // TODO RECAP 5: Resolve the dynamic segment parameters from the params promise
   // ==========================================
-  const [resolvedParams, setResolvedParams] = useState<{ category: string; id: string } | null>(null);
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 
   useEffect(() => {
     params.then((res) => setResolvedParams(res));
@@ -28,7 +27,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 8: Fetch single flower detail on resolved ID change inside useEffect
+  // TODO RECAP 6: Fetch single flower detail on resolved ID change inside useEffect
   // ==========================================
   useEffect(() => {
     if (!resolvedParams?.id) return;
@@ -61,9 +60,6 @@ export default function FlowerDetailPage({ params }: PageProps) {
     };
   }, [resolvedParams?.id]);
 
-  const categorySlug = flower?.category ? flower.category.toLowerCase() : "default";
-  const badgeClass = `shop-badge badge-${categorySlug}`;
-
   return (
     <>
       <Navigation />
@@ -91,7 +87,6 @@ export default function FlowerDetailPage({ params }: PageProps) {
             <div className="flex-1 flex flex-col justify-between py-2">
               <div>
                 <div className="flex justify-between items-center mb-4">
-                  <div className="h-5 w-16 bg-slate-100 dark:bg-zinc-800 rounded-md" />
                   <div className="h-6 w-12 bg-slate-100 dark:bg-zinc-800 rounded-md" />
                 </div>
                 <div className="h-7 w-2/3 bg-slate-100 dark:bg-zinc-800 rounded-lg mb-4" />
@@ -120,7 +115,6 @@ export default function FlowerDetailPage({ params }: PageProps) {
               <div>
                 {/* Meta details tag line */}
                 <div className="flex items-center justify-between gap-4 mb-4">
-                  <span className={badgeClass}>{flower.category || "General"}</span>
                   <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400">
                     ${Number(flower.price).toFixed(2)}
                   </span>

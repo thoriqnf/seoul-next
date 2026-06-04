@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Flower, FlowerFormInput, FlowerCategory } from "@/types";
+import { Flower, FlowerFormInput } from "@/types";
 import { Navigation } from "@/components/Navigation";
 import { FlowerItem } from "@/components/FlowerItem";
 
 const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
-const CATEGORIES: Exclude<FlowerCategory, "all">[] = ["Roses", "Lilies", "Tulips", "Sunflowers"];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -24,7 +23,7 @@ export default function DashboardPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 9: Protect route inside client-side useEffect mount check
+  // TODO RECAP 7: Protect route inside client-side useEffect mount check
   // ==========================================
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -70,7 +69,7 @@ export default function DashboardPage() {
   }, [isChecking]);
 
   // ==========================================
-  // TODO RECAP 10: Initialize useForm with types and defaults
+  // TODO RECAP 8: Initialize useForm with types and defaults
   // ==========================================
   const {
     register,
@@ -82,7 +81,6 @@ export default function DashboardPage() {
     defaultValues: {
       name: "",
       price: 0,
-      category: "Roses",
       description: "",
       image: "",
     },
@@ -90,13 +88,12 @@ export default function DashboardPage() {
 
   // ==========================================
   // Form submission handler: handles both POST (Create) and PUT (Edit)
-  // TODO RECAP 12: Implement Axios POST submit logic
-  // TODO RECAP 13: Implement Axios PUT submit & Edit Mode populate/cancel logic
+  // TODO RECAP 10: Implement Axios POST submit logic
+  // TODO RECAP 11: Implement Axios PUT submit & Edit Mode populate/cancel logic
   // ==========================================
   const onSubmit = async (data: FlowerFormInput) => {
     try {
       setActionLoading(true);
-      // Enforce numeric conversion for float pricing
       const payload = {
         ...data,
         price: Number(data.price),
@@ -127,7 +124,6 @@ export default function DashboardPage() {
     setEditingId(flower.id);
     setValue("name", flower.name);
     setValue("price", flower.price);
-    setValue("category", flower.category);
     setValue("description", flower.description);
     setValue("image", flower.image);
   };
@@ -139,7 +135,7 @@ export default function DashboardPage() {
   };
 
   // ==========================================
-  // TODO RECAP 14: Implement Axios DELETE logic with browser confirm alert
+  // TODO RECAP 12: Implement Axios DELETE logic with browser confirm alert
   // ==========================================
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this flower product?")) return;
@@ -149,7 +145,6 @@ export default function DashboardPage() {
       await axios.delete(`${API_URL}/${id}`);
       setFlowers((prev) => prev.filter((flower) => flower.id !== id));
       
-      // If currently editing the deleted flower, exit edit mode
       if (editingId === id) {
         cancelEdit();
       }
@@ -179,7 +174,7 @@ export default function DashboardPage() {
       <main className="shop-container">
         {/* Header Dashboard Info */}
         <header className="mb-10 border-b border-slate-200 dark:border-neutral-800 pb-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-50">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-550">
             Admin Panel
           </h1>
           <p className="mt-2 text-slate-500 dark:text-zinc-400 text-sm">
@@ -201,7 +196,7 @@ export default function DashboardPage() {
               <div>
                 <label className="input-label">Flower Name</label>
                 {/* ========================================== */}
-                {/* TODO RECAP 11: Register form fields with constraints and output errors */}
+                {/* TODO RECAP 9: Register form fields with constraints and output errors */}
                 {/* ========================================== */}
                 <input
                   type="text"
@@ -214,24 +209,6 @@ export default function DashboardPage() {
                 />
                 {errors.name && (
                   <p className="input-error">⚠ {errors.name.message}</p>
-                )}
-              </div>
-
-              {/* Product Category dropdown */}
-              <div>
-                <label className="input-label">Category</label>
-                <select
-                  {...register("category", { required: "Category is required" })}
-                  className="input-field"
-                >
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && (
-                  <p className="input-error">⚠ {errors.category.message}</p>
                 )}
               </div>
 
@@ -346,7 +323,6 @@ export default function DashboardPage() {
                   <thead className="admin-thead">
                     <tr>
                       <th className="admin-th">Flower Details</th>
-                      <th className="admin-th">Category</th>
                       <th className="admin-th">Price</th>
                       <th className="admin-th text-right px-6">Actions</th>
                     </tr>

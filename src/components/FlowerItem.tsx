@@ -1,9 +1,6 @@
 import { FlowerItemProps } from "@/types";
 
 export function FlowerItem({ flower, onEdit, onDelete, disabled }: FlowerItemProps) {
-  const categorySlug = flower.category ? flower.category.toLowerCase() : "default";
-  const badgeClass = `shop-badge badge-${categorySlug}`;
-
   return (
     <tr>
       <td className="admin-td">
@@ -17,9 +14,6 @@ export function FlowerItem({ flower, onEdit, onDelete, disabled }: FlowerItemPro
           </div>
           <span className="font-bold text-slate-800 dark:text-zinc-100 line-clamp-1">{flower.name}</span>
         </div>
-      </td>
-      <td className="admin-td">
-        <span className={badgeClass}>{flower.category || "General"}</span>
       </td>
       <td className="admin-td font-semibold text-slate-900 dark:text-zinc-50">
         ${Number(flower.price).toFixed(2)}

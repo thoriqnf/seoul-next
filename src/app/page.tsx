@@ -2,31 +2,25 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Flower, FlowerCategory } from "@/types";
+import { Flower } from "@/types";
 import { Navigation } from "@/components/Navigation";
 import { FlowerCard } from "@/components/FlowerCard";
 
 const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
-const CATEGORIES: FlowerCategory[] = ["all", "Roses", "Lilies", "Tulips", "Sunflowers"];
 
 export default function Home() {
-  // ==========================================
-  // TODO RECAP 1: Initialize searchKeyword controlled state variable
-  // ==========================================
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-
-  // ==========================================
-  // TODO RECAP 2: Initialize activeCategory filter state variable
-  // ==========================================
-  const [activeCategory, setActiveCategory] = useState<FlowerCategory>("all");
-
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 3: Fetch flowers list from API using useEffect on mount
-  // TODO RECAP 4: Implement network request cancellation using AbortController
+  // TODO RECAP 13: Initialize searchKeyword controlled state variable
+  // ==========================================
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+
+  // ==========================================
+  // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
+  // TODO RECAP 2: Implement network request cancellation using AbortController
   // ==========================================
   useEffect(() => {
     const abortController = new AbortController();
@@ -56,20 +50,20 @@ export default function Home() {
     };
   }, []);
 
-  // Event Handlers for controlled search input
+  // ==========================================
+  // TODO RECAP 13: Handle text search input event updates
+  // ==========================================
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(e.target.value);
   };
 
-  // Derive filtered flower list based on keyword search and selected category
+  // ==========================================
+  // TODO RECAP 14: Filter flowers listing dynamically by keyword match
+  // ==========================================
   const filteredFlowers = flowers.filter((flower) => {
-    const matchesKeyword = flower.name
+    return flower.name
       ? flower.name.toLowerCase().includes(searchKeyword.toLowerCase())
       : false;
-    const matchesCategory =
-      activeCategory === "all" ||
-      (flower.category && flower.category.toLowerCase() === activeCategory.toLowerCase());
-    return matchesKeyword && matchesCategory;
   });
 
   return (
@@ -85,14 +79,16 @@ export default function Home() {
             Fresh & Handcrafted Blooms
           </h1>
           <p className="mt-2.5 text-slate-500 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-            Recap Project Day: Experience a beautifully structured catalog with live client-side searching, tab filter query matches, and asynchronous network states.
+            Recap Project Day: Experience a beautifully structured catalog with client-side searching, dynamic detail views, and asynchronous network fetching.
           </p>
         </header>
 
-        {/* Search and Filters Layout */}
+        {/* Search Input Box */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
-          {/* Search Input Box */}
           <div className="w-full md:max-w-xs">
+            {/* ========================================== */}
+            {/* TODO RECAP 13: Bind search input value & onChange handler */}
+            {/* ========================================== */}
             <input
               type="text"
               placeholder="Search flowers..."
@@ -100,23 +96,6 @@ export default function Home() {
               onChange={handleSearchChange}
               className="input-field"
             />
-          </div>
-
-          {/* Category Filtering Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-white dark:bg-zinc-900 p-1.5 rounded-xl border border-slate-200 dark:border-neutral-800">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-semibold select-none cursor-pointer transition-all ${
-                  activeCategory === cat
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800/50"
-                }`}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </button>
-            ))}
           </div>
         </div>
 
@@ -157,8 +136,8 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center p-16 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
             <span className="text-4xl mb-3">🌸</span>
             <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">No Flowers Found</h3>
-            <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
-              Try modifying your search text or selecting a different category tab.
+            <p className="text-xs mt-1 text-slate-400 dark:text-zinc-550">
+              Try modifying your search text.
             </p>
           </div>
         )}
@@ -166,6 +145,9 @@ export default function Home() {
         {/* Flowers Grid Catalog */}
         {!loading && !error && filteredFlowers.length > 0 && (
           <div className="shop-grid">
+            {/* ========================================== */}
+            {/* TODO RECAP 14: Map filtered flowers array to FlowerCard components */}
+            {/* ========================================== */}
             {filteredFlowers.map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />
             ))}
