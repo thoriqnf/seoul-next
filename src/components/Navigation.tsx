@@ -1,44 +1,68 @@
 "use client";
 
 import Link from "next/link";
-
-// ==========================================
-// TODO ROUTING 3: Replace standard <a> tags with Next.js <Link> components
-// ==========================================
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function Navigation() {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkLogin = () => {
+      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+    };
+
+    checkLogin();
+    // Listen for custom/storage changes to sync login button text dynamically
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+    window.dispatchEvent(new Event("storage"));
+    router.push("/login");
+  };
+
   return (
     <header className="w-full border-b border-slate-200 bg-white dark:border-neutral-800 dark:bg-zinc-900">
-      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
-        <span className="font-bold text-slate-900 dark:text-zinc-50 text-sm">Demo App</span>
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
+        <Link href="/" className="font-extrabold text-indigo-600 dark:text-indigo-400 text-lg tracking-tight">
+          🌸 FlowerShop
+        </Link>
         <nav className="flex items-center gap-6">
+          {/* ========================================== */}
+          {/* TODO RECAP 5: Use Next.js Link components instead of standard <a> tags */}
+          {/* ========================================== */}
           <Link
             href="/"
-            className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
-            Home
-          </Link>
-          <Link
-            href="/posts"
-            className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-          >
-            Posts
+            Catalog
           </Link>
           <Link
             href="/dashboard"
-            className="text-sm text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
-            Dashboard
+            Admin Panel
           </Link>
-          {/* ========================================== */}
-          {/* TODO CRUD 2: Add client-side Navigation link to '/products' */}
-          {/* ========================================== */}
-          <Link
-            href="/products"
-            className="text-sm text-slate-650 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-          >
-            Products
-          </Link>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline cursor-pointer bg-transparent border-none p-0"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
+              Login
+            </Link>
+          )}
         </nav>
       </div>
     </header>
