@@ -14,27 +14,24 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 13: Initialize searchKeyword controlled state variable (strict string type)
+  // TODO RECAP 12: Initialize searchKeyword controlled state variable
   // ==========================================
-  const [searchKeyword, setSearchKeyword] = useState<any>("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   // ==========================================
   // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
-  // TODO RECAP 2: Implement network request cancellation using AbortController to prevent memory leaks
-  // TODO RECAP 14: Integrate search query parameter inside data fetching effect (depends on searchKeyword)
+  // TODO RECAP 13: Integrate search query parameter inside data fetching effect
   // ==========================================
   useEffect(() => {
-    // 1. Initialize AbortController signal
-    // 2. Perform axios GET call to API_URL (with search query parameter if searchKeyword is present)
-    // 3. Set flowers array, error, and loading states
-    // 4. Return cleanup function to abort fetch on unmount
+    // 1. Perform axios GET call to API_URL (with search query parameter if searchKeyword is present)
+    // 2. Set flowers array, error, and loading states
     setLoading(false);
   }, []);
 
   // ==========================================
-  // TODO RECAP 13: Handle text search input event updates (typed Event parameter)
+  // TODO RECAP 12: Handle text search input event updates
   // ==========================================
-  const handleSearchChange = (e: any) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Update searchKeyword state with input value
   };
 
@@ -59,13 +56,13 @@ export default function Home() {
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
           <div className="w-full md:max-w-xs">
             {/* ========================================== */}
-            {/* TODO RECAP 13: Bind search input value & onChange handler */}
+            {/* ========================================== */}
+            {/* TODO RECAP 12: Bind search input value & onChange handler */}
             {/* ========================================== */}
             <input
               type="text"
               placeholder="Search flowers..."
-              value={searchKeyword}
-              onChange={handleSearchChange}
+              // Bind value and onChange here
               className="input-field"
             />
           </div>
@@ -108,7 +105,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center p-16 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
             <span className="text-4xl mb-3">🌸</span>
             <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">No Flowers Found</h3>
-            <p className="text-xs mt-1 text-slate-400 dark:text-zinc-550">
+            <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
               Try modifying your search text.
             </p>
           </div>
@@ -118,7 +115,7 @@ export default function Home() {
         {!loading && !error && flowers.length > 0 && (
           <div className="shop-grid">
             {/* ========================================== */}
-            {/* TODO RECAP 14: Map filtered flowers array to FlowerCard components */}
+            {/* TODO RECAP 13: Map flowers array to FlowerCard components */}
             {/* ========================================== */}
             {flowers.map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />

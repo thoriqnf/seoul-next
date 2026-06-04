@@ -34,7 +34,7 @@ export function Navigation() {
         </Link>
         <nav className="flex items-center gap-6">
           {/* ========================================== */}
-          {/* TODO RECAP 3: Use Next.js Link components instead of standard <a> tags */}
+          {/* TODO RECAP 2: Use Next.js Link components instead of standard <a> tags */}
           {/* ========================================== */}
           <a
             href="/"

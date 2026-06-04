@@ -2,38 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import axios from "axios";
 import { Flower } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default function FlowerDetailPage({ params }: PageProps) {
+export default function FlowerDetailPage() {
   // ==========================================
-  // TODO RECAP 4: Resolve the dynamic segment parameters from the params promise
+  // TODO RECAP 3: Retrieve dynamic route parameters using the useParams hook inside client component
   // ==========================================
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-
-  useEffect(() => {
-    // Resolve the params promise and store the result in resolvedParams state
-  }, [params]);
+  const params: any = { id: "" };
+  const id = params.id;
 
   const [flower, setFlower] = useState<Flower | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 5: Fetch single flower detail on resolved ID change inside useEffect
+  // TODO RECAP 4: Fetch single flower detail on ID change inside useEffect
   // ==========================================
   useEffect(() => {
-    // Perform axios.get details fetch from API, manage state variables,
-    // and cleanup using AbortController on resolvedParams change
+    // Perform axios.get details fetch from API, manage state variables
     setLoading(false);
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -77,7 +68,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
         {!loading && !error && flower && (
           <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-xs flex flex-col md:flex-row gap-6 md:gap-8 p-6">
             {/* Left Side: Flower Image wrapper */}
-            <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-150 dark:bg-zinc-850 rounded-xl overflow-hidden">
+            <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-100 dark:bg-zinc-800 rounded-xl overflow-hidden">
               {flower.image ? (
                 <img src={flower.image} alt={flower.name} className="h-full w-full object-cover" />
               ) : (
@@ -95,7 +86,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
                   </span>
                 </div>
 
-                <h1 className="text-2xl font-extrabold text-slate-800 dark:text-zinc-150 mb-3">
+                <h1 className="text-2xl font-extrabold text-slate-800 dark:text-zinc-100 mb-3">
                   {flower.name}
                 </h1>
 
