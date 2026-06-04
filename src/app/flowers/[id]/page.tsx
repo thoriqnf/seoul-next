@@ -2,37 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import axios from "axios";
 import { Flower } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default function FlowerDetailPage({ params }: PageProps) {
+export default function FlowerDetailPage() {
   // ==========================================
-  // TODO RECAP 4: Resolve the dynamic segment parameters from the params promise
+  // TODO RECAP 3: Retrieve dynamic route parameters using the useParams hook inside client component
   // ==========================================
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-
-  useEffect(() => {
-    params.then((res) => setResolvedParams(res));
-  }, [params]);
+  const params = useParams<{ id: string }>();
+  const id = params.id;
 
   const [flower, setFlower] = useState<Flower | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 5: Fetch single flower detail on resolved ID change inside useEffect
+  // TODO RECAP 4: Fetch single flower detail on ID change inside useEffect
   // ==========================================
   useEffect(() => {
-    if (!resolvedParams?.id) return;
-
-    const abortController = new AbortController();
+    if (!id) return;
 
     const fetchFlowerDetail = async () => {
       try {
@@ -40,25 +30,18 @@ export default function FlowerDetailPage({ params }: PageProps) {
         setError(null);
 
         const response = await axios.get<Flower>(
-          `https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${resolvedParams.id}`,
-          { signal: abortController.signal }
+          `https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${id}`
         );
         setFlower(response.data);
       } catch (err: any) {
-        if (err.name !== "CanceledError" && err.message !== "canceled") {
-          setError(err.message || "Failed to load flower details.");
-        }
+        setError(err.message || "Failed to load flower details.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchFlowerDetail();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [resolvedParams?.id]);
+  }, [id]);
 
   return (
     <>
@@ -102,7 +85,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
         {!loading && !error && flower && (
           <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-xs flex flex-col md:flex-row gap-6 md:gap-8 p-6">
             {/* Left Side: Flower Image wrapper */}
-            <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-150 dark:bg-zinc-850 rounded-xl overflow-hidden">
+            <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-100 dark:bg-zinc-800 rounded-xl overflow-hidden">
               {flower.image ? (
                 <img src={flower.image} alt={flower.name} className="h-full w-full object-cover" />
               ) : (

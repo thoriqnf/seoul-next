@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 7: Protect route inside client-side useEffect mount check
+  // TODO RECAP 6: Protect route inside client-side useEffect mount check
   // ==========================================
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -43,33 +43,24 @@ export default function DashboardPage() {
   useEffect(() => {
     if (isChecking) return;
 
-    const abortController = new AbortController();
     const fetchFlowers = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get<Flower[]>(API_URL, {
-          signal: abortController.signal,
-        });
+        const response = await axios.get<Flower[]>(API_URL);
         setFlowers(response.data);
       } catch (err: any) {
-        if (err.name !== "CanceledError" && err.message !== "canceled") {
-          setError(err.message || "Failed to load flowers.");
-        }
+        setError(err.message || "Failed to load flowers.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchFlowers();
-
-    return () => {
-      abortController.abort();
-    };
   }, [isChecking]);
 
   // ==========================================
-  // TODO RECAP 8: Initialize useForm with types and defaults
+  // TODO RECAP 7: Initialize useForm with types and defaults
   // ==========================================
   const {
     register,
@@ -88,8 +79,8 @@ export default function DashboardPage() {
 
   // ==========================================
   // Form submission handler: handles both POST (Create) and PUT (Edit)
-  // TODO RECAP 10: Implement Axios POST submit logic
-  // TODO RECAP 11: Implement Axios PUT submit & Edit Mode populate/cancel logic
+  // TODO RECAP 9: Implement Axios POST submit logic
+  // TODO RECAP 10: Implement Axios PUT submit & Edit Mode populate/cancel logic
   // ==========================================
   const onSubmit = async (data: FlowerFormInput) => {
     try {
@@ -135,7 +126,7 @@ export default function DashboardPage() {
   };
 
   // ==========================================
-  // TODO RECAP 12: Implement Axios DELETE logic with browser confirm alert
+  // TODO RECAP 11: Implement Axios DELETE logic with browser confirm alert
   // ==========================================
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this flower?")) return;
@@ -174,7 +165,7 @@ export default function DashboardPage() {
       <main className="shop-container">
         {/* Header Dashboard Info */}
         <header className="mb-10 border-b border-slate-200 dark:border-neutral-800 pb-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-550">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-100">
             Admin Panel
           </h1>
           <p className="mt-2 text-slate-500 dark:text-zinc-400 text-sm">
@@ -196,7 +187,7 @@ export default function DashboardPage() {
               <div>
                 <label className="input-label">Flower Name</label>
                 {/* ========================================== */}
-                {/* TODO RECAP 9: Register form fields with constraints and output errors */}
+                {/* TODO RECAP 8: Register form fields with constraints and output errors */}
                 {/* ========================================== */}
                 <input
                   type="text"
@@ -310,7 +301,7 @@ export default function DashboardPage() {
               <div className="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
                 <span className="text-3xl mb-2">🌸</span>
                 <h3 className="font-bold text-slate-850 dark:text-zinc-200 text-sm">Inventory is Empty</h3>
-                <p className="text-xs mt-1 text-slate-400 dark:text-zinc-550">
+                <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
                   Use the entry form to add your first flower arrangement.
                 </p>
               </div>

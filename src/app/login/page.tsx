@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 6: Initialize useRouter hook for programmatic redirect
+  // TODO RECAP 5: Initialize useRouter hook for programmatic redirect
   // ==========================================
   const router = useRouter();
 
@@ -50,7 +50,7 @@ export default function LoginPage() {
           </header>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs font-semibold text-red-655 dark:text-red-400 rounded-xl">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs font-semibold text-red-600 dark:text-red-400 rounded-xl">
               ⚠ {error}
             </div>
           )}
