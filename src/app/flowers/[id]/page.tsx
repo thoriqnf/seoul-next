@@ -14,7 +14,7 @@ interface PageProps {
 
 export default function FlowerDetailPage({ params }: PageProps) {
   // ==========================================
-  // TODO RECAP 5: Resolve the dynamic segment parameters from the params promise
+  // TODO RECAP 4: Resolve the dynamic segment parameters from the params promise
   // ==========================================
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 
@@ -27,7 +27,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
-  // TODO RECAP 6: Fetch single flower detail on resolved ID change inside useEffect
+  // TODO RECAP 5: Fetch single flower detail on resolved ID change inside useEffect
   // ==========================================
   useEffect(() => {
     if (!resolvedParams?.id) return;
@@ -46,7 +46,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
         setFlower(response.data);
       } catch (err: any) {
         if (err.name !== "CanceledError" && err.message !== "canceled") {
-          setError(err.message || "Failed to load product details.");
+          setError(err.message || "Failed to load flower details.");
         }
       } finally {
         setLoading(false);
@@ -75,7 +75,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
         {error && (
           <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
             <span className="text-3xl mb-2">⚠</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Product Details</h3>
+            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flower Details</h3>
             <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
           </div>
         )}
@@ -101,7 +101,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
         {/* Flower Details Display Container */}
         {!loading && !error && flower && (
           <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-xs flex flex-col md:flex-row gap-6 md:gap-8 p-6">
-            {/* Left Side: Product Image wrapper */}
+            {/* Left Side: Flower Image wrapper */}
             <div className="w-full md:w-1/2 h-72 md:h-80 bg-slate-150 dark:bg-zinc-850 rounded-xl overflow-hidden">
               {flower.image ? (
                 <img src={flower.image} alt={flower.name} className="h-full w-full object-cover" />
@@ -110,7 +110,7 @@ export default function FlowerDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            {/* Right Side: Product Details wrapper */}
+            {/* Right Side: Flower Details wrapper */}
             <div className="flex-1 flex flex-col justify-between py-2">
               <div>
                 {/* Meta details tag line */}

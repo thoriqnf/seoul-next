@@ -21,6 +21,7 @@ export default function Home() {
   // ==========================================
   // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
   // TODO RECAP 2: Implement network request cancellation using AbortController
+  // TODO RECAP 14: Integrate search query parameter inside data fetching effect
   // ==========================================
   useEffect(() => {
     const abortController = new AbortController();
@@ -30,7 +31,11 @@ export default function Home() {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get<Flower[]>(API_URL, {
+        const url = searchKeyword.trim()
+          ? `${API_URL}?search=${encodeURIComponent(searchKeyword.trim())}`
+          : API_URL;
+
+        const response = await axios.get<Flower[]>(url, {
           signal: abortController.signal,
         });
         setFlowers(response.data);
@@ -48,7 +53,7 @@ export default function Home() {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [searchKeyword]);
 
   // ==========================================
   // TODO RECAP 13: Handle text search input event updates
@@ -56,15 +61,6 @@ export default function Home() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(e.target.value);
   };
-
-  // ==========================================
-  // TODO RECAP 14: Filter flowers listing dynamically by keyword match
-  // ==========================================
-  const filteredFlowers = flowers.filter((flower) => {
-    return flower.name
-      ? flower.name.toLowerCase().includes(searchKeyword.toLowerCase())
-      : false;
-  });
 
   return (
     <>
@@ -103,7 +99,7 @@ export default function Home() {
         {error && (
           <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
             <span className="text-3xl mb-2">⚠</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Products</h3>
+            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flowers</h3>
             <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
           </div>
         )}
@@ -132,7 +128,7 @@ export default function Home() {
         )}
 
         {/* Empty Catalog View */}
-        {!loading && !error && filteredFlowers.length === 0 && (
+        {!loading && !error && flowers.length === 0 && (
           <div className="flex flex-col items-center justify-center p-16 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
             <span className="text-4xl mb-3">🌸</span>
             <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">No Flowers Found</h3>
@@ -143,12 +139,12 @@ export default function Home() {
         )}
 
         {/* Flowers Grid Catalog */}
-        {!loading && !error && filteredFlowers.length > 0 && (
+        {!loading && !error && flowers.length > 0 && (
           <div className="shop-grid">
             {/* ========================================== */}
             {/* TODO RECAP 14: Map filtered flowers array to FlowerCard components */}
             {/* ========================================== */}
-            {filteredFlowers.map((flower) => (
+            {flowers.map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />
             ))}
           </div>

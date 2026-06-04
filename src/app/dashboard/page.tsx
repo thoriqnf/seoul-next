@@ -138,7 +138,7 @@ export default function DashboardPage() {
   // TODO RECAP 12: Implement Axios DELETE logic with browser confirm alert
   // ==========================================
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this flower product?")) return;
+    if (!confirm("Are you sure you want to delete this flower?")) return;
 
     try {
       setActionLoading(true);
@@ -192,7 +192,7 @@ export default function DashboardPage() {
             </h2>
             
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              {/* Product Name Input */}
+              {/* Flower Name Input */}
               <div>
                 <label className="input-label">Flower Name</label>
                 {/* ========================================== */}
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Product Price Input */}
+              {/* Flower Price Input */}
               <div>
                 <label className="input-label">Price ($)</label>
                 <input
@@ -230,7 +230,7 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Product Image URL input */}
+              {/* Flower Image URL input */}
               <div>
                 <label className="input-label">Image URL</label>
                 <input
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Product Description Textarea */}
+              {/* Flower Description Textarea */}
               <div>
                 <label className="input-label">Description</label>
                 <textarea
@@ -267,7 +267,7 @@ export default function DashboardPage() {
                   disabled={actionLoading}
                   className="btn-primary"
                 >
-                  {actionLoading ? "Saving..." : editingId ? "Update Product" : "Create Product"}
+                  {actionLoading ? "Saving..." : editingId ? "Update Flower" : "Create Flower"}
                 </button>
                 {editingId && (
                   <button
