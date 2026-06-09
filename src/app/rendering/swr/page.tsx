@@ -8,11 +8,15 @@ import { FlowerCard } from "@/components/FlowerCard";
 
 // ==========================================
 // TODO SSG 5: Configure custom fetcher helper and initialize SWR fetch hooks
+// Configure options to control SWR revalidation behavior:
+// - revalidateOnFocus: Automatically refetch when the user refocuses the browser window/tab.
+// - refreshInterval: Periodically poll and refetch data (e.g., every 5 seconds).
+// - revalidateOnReconnect: Refetch when the user regains network connectivity.
 // ==========================================
 // const fetcher = ...;
 
 export default function SWRDemoPage() {
-  // const { data, error, isLoading } = ...;
+  // const { data, error, isLoading } = useSWR(..., fetcher, { ...options });
 
   return (
     <>
