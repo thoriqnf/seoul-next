@@ -8,8 +8,25 @@ import { Navigation } from "@/components/Navigation";
 // ==========================================
 // export const dynamicParams = ...;
 
+// interface DummyProduct {
+//   id: number;
+//   title: string;
+//   price: number;
+//   description: string;
+//   thumbnail: string;
+// }
+//
 // async function getFlower(id: string): Promise<Flower> {
-//   ...
+//   const response = await fetch(`https://dummyjson.com/products/${id}`);
+//   if (!response.ok) throw new Error("Flower not found");
+//   const product: DummyProduct = await response.json();
+//   return {
+//     id: String(product.id),
+//     name: product.title,
+//     price: product.price,
+//     description: product.description,
+//     image: product.thumbnail,
+//   };
 // }
 
 // ==========================================
