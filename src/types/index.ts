@@ -23,3 +23,11 @@ export interface FlowerItemProps {
   onDelete: (id: string) => void;
   disabled: boolean;
 }
+
+export interface Announcement {
+  id: string;
+  title: string;
+  message: string;
+  type: "info" | "warning" | "success";
+}
+
