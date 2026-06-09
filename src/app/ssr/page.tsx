@@ -1,104 +1,43 @@
-import { Suspense } from "react";
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Flower, Announcement } from "@/types";
 import { FlowerCard } from "@/components/FlowerCard";
 
-// ========================================================
-// Helper: Simulate delay for streaming demonstration
-// ========================================================
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// ========================================================
-// API Fetching Helpers (RSC Server-side fetches)
-// ========================================================
+// ==========================================
+// SSR Fetch Helpers
+// ==========================================
 async function getFlowers(): Promise<Flower[]> {
   // ==========================================
-  // TODO SSR 2: Implement direct Server-Side data fetching from MockAPI URL:
+  // TODO SSR 2: Fetch the flower list from the URL:
   // "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers"
-  // Disable caching using custom fetch options { cache: "no-store" }
+  // Make sure to opt-out of static building caching by setting cache: "no-store"
   // ==========================================
   return [];
 }
 
 async function getAnnouncements(): Promise<Announcement[]> {
-  // SSR Fetching (simulating secondary parallel resource)
-  await delay(500); // Small artificial database latency
+  // Simulate network delay for parallel fetch
+  await new Promise((resolve) => setTimeout(resolve, 600));
   return [
     {
       id: "ann-1",
-      title: "🌸 Mid-Season Special Offer",
-      message: "Enjoy 20% discount on all Tulips and Lilies using coupon code SPRING20 at checkout.",
+      title: "🌸 Spring Catalog Active",
+      message: "The new catalog has been pre-rendered directly on the server.",
       type: "success",
     },
     {
       id: "ann-2",
-      title: "🚛 Delivery Schedule Update",
-      message: "Please note that logistics might face slight delays due to current seasonal demand.",
-      type: "warning",
+      title: "🚛 Delivery Regions",
+      message: "Logistics are serving normal routes, pre-calculated server-side.",
+      type: "info",
     },
   ];
 }
 
-// ========================================================
-// Sub-components: Streaming Demo (Slow reviews component)
-// ========================================================
-async function SlowReviewsComponent() {
-  // Simulate slow third-party API / database call (2 seconds delay)
-  await delay(2000);
-
-  const reviews = [
-    { id: "rev-1", user: "Sophia Miller", comment: "The bouquet arrived perfectly fresh! Beautiful arrangement.", rating: 5 },
-    { id: "rev-2", user: "Liam Davis", comment: "Very fast delivery, although the wrapping could be sturdier.", rating: 4 },
-    { id: "rev-3", user: "Emma Wilson", comment: "Extremely pleased with the vibrant orchids. Highly recommended!", rating: 5 },
-  ];
-
-  return (
-    <div className="space-y-4">
-      {reviews.map((review) => (
-        <div
-          key={review.id}
-          className="p-4 rounded-xl border border-slate-200 dark:border-neutral-850 bg-white dark:bg-zinc-900 transition-all hover:border-indigo-500"
-        >
-          <div className="flex justify-between items-center mb-1">
-            <span className="font-semibold text-sm text-slate-800 dark:text-zinc-200">{review.user}</span>
-            <span className="text-amber-500 text-xs font-bold">{"★".repeat(review.rating)}</span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">{review.comment}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ReviewsSkeleton() {
-  return (
-    <div className="space-y-4 animate-pulse">
-      {[1, 2, 3].map((i) => (
-        <div key={i} className="p-4 rounded-xl border border-slate-200 dark:border-neutral-800/60 bg-slate-50/50 dark:bg-zinc-900/50">
-          <div className="flex justify-between items-center mb-2">
-            <div className="h-4 w-24 bg-slate-200 dark:bg-zinc-800 rounded-md" />
-            <div className="h-4 w-12 bg-slate-200 dark:bg-zinc-800 rounded-md" />
-          </div>
-          <div className="h-3 w-full bg-slate-100 dark:bg-zinc-850 rounded-md mb-1.5" />
-          <div className="h-3 w-4/5 bg-slate-100 dark:bg-zinc-850 rounded-md" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ========================================================
-// Client Demonstration Wrapper (Hydration & Window Errors)
-// We put this in a separate Client Component defined below
-// ========================================================
-import { ClientDemoComponents } from "./ClientDemoComponents";
-
-// ========================================================
-// Main Server Page Component
-// ========================================================
-export default async function SSRDemoPage() {
+export default async function SSRMainHub() {
   // ==========================================
-  // TODO SSR 3: Use Promise.all to fetch both getFlowers() and getAnnouncements() in parallel
+  // TODO SSR 3: Perform parallel fetching of getFlowers() and getAnnouncements()
+  // using Promise.all to fetch both arrays concurrently
   // ==========================================
   const flowers: Flower[] = [];
   const announcements: Announcement[] = [];
@@ -107,77 +46,93 @@ export default async function SSRDemoPage() {
     <>
       <Navigation />
       <main className="shop-container py-8 max-w-5xl mx-auto px-4">
-        {/* Page Hero */}
+        {/* Header Hero */}
         <header className="mb-10 text-center md:text-left">
           <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-2 rounded-full border border-indigo-100 dark:border-indigo-900/50">
-            Next.js App Router Lectures
+            Week 3 Day 2 - SSR Hub
           </span>
           <h1 className="mt-5 text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-50">
-            Server-Side Rendering (SSR) & streaming
+            Server-Side Rendering (SSR)
           </h1>
-          <p className="mt-2.5 text-slate-500 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-            Welcome to the SSR learning space! All details on this page are pre-rendered on the server, loaded concurrently, or streamed via React Suspense.
+          <p className="mt-2 text-slate-500 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
+            Data on this page is fetched directly from the server. Explore the topics below to learn about advanced App Router techniques.
           </p>
         </header>
 
-        {/* Parallel Fetching & Announcements Area */}
+        {/* Sub-Topics Navigation Grid */}
         <section className="mb-12">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-4 flex items-center gap-2">
-            📢 Parallel Fetch Announcements <span className="text-xs font-normal text-slate-400">(Loaded concurrently)</span>
+          <h2 className="text-base font-bold text-slate-800 dark:text-zinc-100 mb-5">
+            📚 Server-Side Topics
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              href="/ssr/streaming"
+              className="p-5 rounded-2xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-zinc-900 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors"
+            >
+              <h3 className="font-bold text-sm text-indigo-600 dark:text-indigo-400 mb-1">
+                ⚡ 1. SSR Streaming
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
+                Stream heavy or slow component layouts using React Suspense without blocking the main layout.
+              </p>
+            </Link>
+
+            <Link
+              href="/ssr/hydration"
+              className="p-5 rounded-2xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-zinc-900 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors"
+            >
+              <h3 className="font-bold text-sm text-indigo-600 dark:text-indigo-400 mb-1">
+                ⏳ 2. Hydration Mismatch
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
+                Diagnose and resolve content synchronization errors between server markup and client activation.
+              </p>
+            </Link>
+
+            <Link
+              href="/ssr/client-apis"
+              className="p-5 rounded-2xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-zinc-900 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors"
+            >
+              <h3 className="font-bold text-sm text-indigo-600 dark:text-indigo-400 mb-1">
+                🖥️ 3. Safe Client APIs
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
+                Learn to safely reference browser-only globals like window or localStorage without triggering build crashes.
+              </p>
+            </Link>
+          </div>
+        </section>
+
+        {/* Parallel Fetch & Announcements Panel */}
+        <section className="mb-12 border-t border-slate-200 dark:border-neutral-800 pt-8">
+          <h2 className="text-base font-bold text-slate-800 dark:text-zinc-100 mb-4">
+            📢 Server Parallel Fetch Announcements
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {announcements.map((ann) => (
               <div
                 key={ann.id}
-                className={`p-5 rounded-2xl border text-sm leading-relaxed ${
-                  ann.type === "success"
-                    ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-250/30 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-300"
-                    : "bg-amber-50/50 dark:bg-amber-950/20 border-amber-250/30 dark:border-amber-900/40 text-amber-800 dark:text-amber-300"
-                }`}
+                className="p-4 rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-200"
               >
-                <h3 className="font-bold text-sm mb-1">{ann.title}</h3>
-                <p className="text-xs opacity-90">{ann.message}</p>
+                <h3 className="font-semibold text-xs text-slate-550 dark:text-zinc-300 mb-1">
+                  {ann.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">{ann.message}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Main Catalog Rendering & Streaming Reviews */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {/* Main Catalog (SSR Loaded) */}
-          <div className="lg:col-span-2">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-4">
-              🌸 Flower Catalog <span className="text-xs font-normal text-slate-400">(SSR Fetched)</span>
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {flowers.slice(0, 4).map((flower) => (
-                <FlowerCard key={flower.id} flower={flower} />
-              ))}
-            </div>
-          </div>
-
-          {/* Slow Component with Suspense Streaming */}
-          <div className="lg:col-span-1">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-4">
-              💬 Customer Reviews <span className="text-xs font-normal text-slate-400">(SSR Streamed)</span>
-            </h2>
-            {/* ========================================== */}
-            {/* TODO SSR 4: Wrap the <SlowReviewsComponent /> inside a React <Suspense> boundary */}
-            {/* Provide the <ReviewsSkeleton /> as the loading fallback spinner */}
-            {/* ========================================== */}
-            <SlowReviewsComponent />
-          </div>
-        </div>
-
-        {/* Common SSR Problems Demos */}
-        <section className="border-t border-slate-200 dark:border-neutral-800 pt-10">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-2">
-            🛠 Handling Common SSR Difficulties
+        {/* Basic Flower Catalog Rendering */}
+        <section className="mb-12">
+          <h2 className="text-base font-bold text-slate-800 dark:text-zinc-100 mb-4">
+            🌸 Server-Rendered Flowers
           </h2>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 mb-6">
-            Understand how server-side pre-rendering interacts with client-only modules and browser environments.
-          </p>
-          <ClientDemoComponents />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {flowers.slice(0, 3).map((flower) => (
+              <FlowerCard key={flower.id} flower={flower} />
+            ))}
+          </div>
         </section>
       </main>
     </>
