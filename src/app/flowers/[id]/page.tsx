@@ -29,10 +29,11 @@ export default function FlowerDetailPage() {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get<Flower>(
-          `https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${id}`
-        );
-        setFlower(response.data);
+        // Commented out legacy fetching to focus on SSG implementation
+        // const response = await axios.get<Flower>(
+        //   `https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${id}`
+        // );
+        // setFlower(response.data);
       } catch (err: any) {
         setError(err.message || "Failed to load flower details.");
       } finally {

@@ -9,13 +9,10 @@ import { FlowerCard } from "@/components/FlowerCard";
 // ==========================================
 // TODO SSG 5: Configure custom fetcher helper and initialize SWR fetch hooks
 // ==========================================
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+// const fetcher = ...;
 
 export default function SWRDemoPage() {
-  const { data, error, isLoading } = useSWR<Flower[]>(
-    "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers",
-    fetcher
-  );
+  // const { data, error, isLoading } = ...;
 
   return (
     <>
@@ -40,47 +37,9 @@ export default function SWRDemoPage() {
         {/* ========================================== */}
         {/* TODO SSG 6: Render fetch loaders, error feedbacks, or SWR item grids */}
         {/* ========================================== */}
-
-        {/* Loading Spinner Skeleton */}
-        {isLoading && (
-          <div className="shop-grid">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="shop-card animate-pulse border border-slate-200 dark:border-neutral-800/80">
-                <div className="h-48 w-full bg-slate-100 dark:bg-zinc-800/80" />
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="h-4 w-12 bg-slate-100 dark:bg-zinc-800 rounded-md" />
-                      <div className="h-4 w-8 bg-slate-150 dark:bg-zinc-800 rounded-md" />
-                    </div>
-                    <div className="h-5 w-2/3 bg-slate-100 dark:bg-zinc-800 rounded-lg mb-2" />
-                    <div className="h-4 w-full bg-slate-50 dark:bg-zinc-800/50 rounded-md mb-1" />
-                    <div className="h-4 w-4/5 bg-slate-50 dark:bg-zinc-800/50 rounded-md" />
-                  </div>
-                  <div className="h-8 w-full bg-slate-100 dark:bg-zinc-800 rounded-xl mt-6" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Error Feedback Component */}
-        {error && (
-          <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
-            <span className="text-3xl mb-2">⚠</span>
-            <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flowers</h3>
-            <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error.message || "Unknown error."}</p>
-          </div>
-        )}
-
-        {/* Catalog Grid View */}
-        {!isLoading && !error && data && (
-          <div className="shop-grid">
-            {data.slice(0, 6).map((flower) => (
-              <FlowerCard key={flower.id} flower={flower} />
-            ))}
-          </div>
-        )}
+        <div className="text-center py-12 text-xs text-slate-400 border border-dashed border-slate-200 dark:border-neutral-800 rounded-2xl">
+          Implement SWR client data fetching hook and render items here.
+        </div>
       </main>
     </>
   );

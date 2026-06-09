@@ -5,11 +5,11 @@ import { Flower } from "@/types";
 // ==========================================
 // TODO SSG 4: Export revalidate configuration key for ISR page layout cache refresh
 // ==========================================
-export const revalidate = 10;
+// export const revalidate = ...;
 
 async function getFlowers(): Promise<Flower[]> {
   const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers", {
-    next: { revalidate: 10 },
+    // next: { revalidate: ... }
   });
   if (!response.ok) throw new Error("Failed to fetch flowers");
   return response.json();
