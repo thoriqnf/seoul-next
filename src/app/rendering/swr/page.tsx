@@ -40,10 +40,45 @@ export default function SWRDemoPage() {
 
         {/* ========================================== */}
         {/* TODO SSG 6: Render fetch loaders, error feedbacks, or SWR item grids */}
+        {/* 1. If `isLoading` is true, render a fallback loading indicator (e.g. skeleton card list or spinner) */}
+        {/* 2. If `error` is returned, render an error message block */}
+        {/* 3. If `data` is resolved, map the array to render FlowerCard components */}
         {/* ========================================== */}
-        <div className="text-center py-12 text-xs text-slate-400 border border-dashed border-slate-200 dark:border-neutral-800 rounded-2xl">
-          Implement SWR client data fetching hook and render items here.
+
+        {/* Loading Spinner Skeleton (Uncomment and bind to SWR loading state) */}
+        {/*
+        <div className="shop-grid">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="shop-card animate-pulse border border-slate-200 dark:border-neutral-800/80">
+              <div className="h-48 w-full bg-slate-100 dark:bg-zinc-800/80" />
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="h-5 w-2/3 bg-slate-100 dark:bg-zinc-800 rounded-lg mb-2" />
+                  <div className="h-4 w-full bg-slate-50 dark:bg-zinc-800/50 rounded-md" />
+                </div>
+                <div className="h-8 w-full bg-slate-100 dark:bg-zinc-800 rounded-xl mt-6" />
+              </div>
+            </div>
+          ))}
         </div>
+        */}
+
+        {/* Error Feedback Element (Uncomment and bind to SWR error state) */}
+        {/*
+        <div className="flex flex-col items-center justify-center p-12 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
+          <span className="text-3xl mb-2">⚠</span>
+          <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Flowers</h3>
+        </div>
+        */}
+
+        {/* Catalog Grid View (Uncomment and bind to SWR data state) */}
+        {/*
+        <div className="shop-grid">
+          {data?.slice(0, 6).map((flower) => (
+            <FlowerCard key={flower.id} flower={flower} />
+          ))}
+        </div>
+        */}
       </main>
     </>
   );
