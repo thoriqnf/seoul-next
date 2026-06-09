@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { FlowerCardProps } from "@/types";
 
 export function FlowerCard({ flower }: FlowerCardProps) {
@@ -32,7 +32,7 @@ export function FlowerCard({ flower }: FlowerCardProps) {
           </p>
         </div>
         <Link
-          href={`/flowers/${flower.id}`}
+          to={`/flowers/${flower.id}`}
           className="btn-primary py-2 text-xs"
         >
           View Details

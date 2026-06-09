@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 
 export default function LoginPage() {
@@ -10,32 +8,25 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ==========================================
-  // TODO RECAP 5: Initialize useRouter hook for programmatic redirect
-  // ==========================================
-  const router: any = useRouter();
+  const navigate = useNavigate();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    // Mock authentication check
-    // setTimeout(() => {
     if (email.trim() === "admin@example.com" && password === "password123") {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userEmail", email.trim());
       // Sync header state across windows/components
       window.dispatchEvent(new Event("storage"));
-      // TODO RECAP 5: Use router.push to programmatically redirect to "/dashboard"
-      router.push("/dashboard");
+      navigate("/dashboard");
     } else {
       setError(
         "Invalid email or password. Hint: admin@example.com / password123",
       );
       setLoading(false);
     }
-    // }, 600);
   };
 
   return (

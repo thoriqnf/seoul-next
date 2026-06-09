@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Flower, FlowerFormInput } from "@/types";
@@ -11,7 +9,7 @@ import { FlowerItem } from "@/components/FlowerItem";
 const API_URL = "http://localhost:5000/flowers";
 
 export default function DashboardPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
@@ -22,26 +20,18 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // ==========================================
-  // TODO RECAP 6: Protect route inside client-side useEffect mount check
-  // ==========================================
   useEffect(() => {
-    // Verify session credentials from localStorage. If not authenticated, redirect to /login
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     const email = localStorage.getItem("userEmail");
 
     if (isLoggedIn !== "true") {
-      router.push("/login");
+      navigate("/login");
     } else {
       setUserEmail(email);
       setIsChecking(false);
     }
-    setIsChecking(false);
-  }, [router]);
+  }, [navigate]);
 
-  // ==========================================
-  // Fetch flowers for the dashboard listings
-  // ==========================================
   const fetchFlowers = async () => {
     try {
       setLoading(true);
@@ -54,23 +44,19 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (isChecking) return;
-
     fetchFlowers();
   }, [isChecking]);
 
-  // ==========================================
-  // TODO RECAP 7: Initialize useForm with types and defaults
-  // ==========================================
-  // Replace this mock hook with real useForm<FlowerFormInput> initialization:
   const {
     register,
     handleSubmit,
     setValue,
     reset,
     formState: { errors },
-  }: any = useForm({
+  } = useForm<FlowerFormInput>({
     defaultValues: {
       name: "",
       price: 0,
@@ -79,11 +65,6 @@ export default function DashboardPage() {
     },
   });
 
-  // ==========================================
-  // Form submission handler: handles both POST (Create) and PUT (Edit)
-  // TODO RECAP 9: Implement Axios POST submit logic
-  // TODO RECAP 10: Implement Axios PUT submit & Edit Mode populate/cancel logic
-  // ==========================================
   const onSubmit = async (data: FlowerFormInput) => {
     const payload = {
       ...data,
@@ -100,14 +81,13 @@ export default function DashboardPage() {
         reset();
       }
       fetchFlowers();
-    } catch (error) {
-      console.log("error", error);
+    } catch (err) {
+      console.error("error submitting flower form:", err);
     } finally {
       setActionLoading(false);
     }
   };
 
-  // Populate form with item details to trigger Edit Mode
   const startEdit = (flower: Flower) => {
     setEditingId(flower.id);
     setValue("name", flower.name);
@@ -116,20 +96,17 @@ export default function DashboardPage() {
     setValue("description", flower.description);
   };
 
-  // Cancel edit mode and reset form inputs
   const cancelEdit = () => {
     setEditingId(null);
     reset();
   };
 
-  // ==========================================
-  // TODO RECAP 11: Implement Axios DELETE logic with browser confirm alert
-  // ==========================================
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this flower arrangement?");
     if (!confirmDelete) return;
 
     try {
+      setActionLoading(true);
       await axios.delete(`${API_URL}/${id}`);
 
       if (editingId === id) {
@@ -189,13 +166,9 @@ export default function DashboardPage() {
               {/* Flower Name Input */}
               <div>
                 <label className="input-label">Flower Name</label>
-                {/* ========================================== */}
-                {/* TODO RECAP 8: Register form fields with constraints and output errors */}
-                {/* ========================================== */}
                 <input
                   type="text"
                   placeholder="e.g. Red Rose Bouquet"
-                  // TODO RECAP 8: Register the "name" field with required and minLength: 3 constraints
                   {...register("name", {
                     required: "Flower Name is required",
                     minLength: {
@@ -217,10 +190,9 @@ export default function DashboardPage() {
                   type="number"
                   step="0.01"
                   placeholder="29.99"
-                  // TODO RECAP 8: Register the "price" field with required and min: 1 constraints
                   {...register("price", {
-                    required: "price is required",
-                    minLength: {
+                    required: "Price is required",
+                    min: {
                       value: 1,
                       message: "Flower price minimal $1",
                     },
@@ -238,7 +210,6 @@ export default function DashboardPage() {
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
-                  // TODO RECAP 8: Register the "image" field with required constraint
                   {...register("image", {
                     required: "Flower image is required",
                   })}
@@ -254,7 +225,6 @@ export default function DashboardPage() {
                 <label className="input-label">Description</label>
                 <textarea
                   placeholder="Provide floral arrangement descriptions..."
-                  // TODO RECAP 8: Register the "description" field with required and minLength: 10 constraints
                   {...register("description", {
                     required: "Flower Description is required",
                     minLength: {

@@ -1,39 +1,25 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { Flower } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
-export default function FlowerDetailPage() {
-  // ==========================================
-  // TODO RECAP 3: Retrieve dynamic route parameters using the useParams hook inside client component
-  // ==========================================
-  const params: any = useParams();
-  console.log("params", params);
-  const id = params.id;
-  console.log("id", id);
-  const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
-
+export default function DetailPage() {
+  const { id } = useParams<{ id: string }>();
   const [flower, setFlower] = useState<Flower | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ==========================================
-  // TODO RECAP 4: Fetch single flower detail on ID change inside useEffect
-  // ==========================================
   useEffect(() => {
-    // Perform axios.get details fetch from API, manage state variables
-
     if (!id) return;
     const fetchFlowerDetail = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await axios.get(`http://localhost:5000/flowers/${id}`);
         setFlower(response.data);
-      } catch (error) {
-        console.log("error", error);
+      } catch (err: any) {
+        setError(err.message || "Failed to load flower details.");
       } finally {
         setLoading(false);
       }
@@ -42,8 +28,6 @@ export default function FlowerDetailPage() {
     fetchFlowerDetail();
   }, [id]);
 
-  console.log("flower", flower);
-
   return (
     <>
       <Navigation />
@@ -51,7 +35,7 @@ export default function FlowerDetailPage() {
         {/* Navigation Action Back Button */}
         <div className="mb-6 flex">
           <Link
-            href="/"
+            to="/"
             className="btn-secondary py-2 text-xs flex items-center gap-1.5 active:scale-95 transition-all"
           >
             ← Back to Catalog

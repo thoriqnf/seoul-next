@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Flower } from "@/types";
@@ -8,43 +6,33 @@ import { FlowerCard } from "@/components/FlowerCard";
 
 const API_URL = "http://localhost:5000/flowers";
 
-export default function Home() {
+export default function HomePage() {
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // ==========================================
-  // TODO RECAP 12: Initialize searchKeyword controlled state variable
-  // ==========================================
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  // ==========================================
-  // TODO RECAP 1: Fetch flowers list from API using useEffect on mount
-  // TODO RECAP 13: Integrate search query parameter inside data fetching effect
-  // ==========================================
-  const fetchFlowers = async () => {
+  const fetchFlowers = async (keyword: string) => {
     try {
-      const response = await axios.get(API_URL);
-      console.log("response", response);
+      setLoading(true);
+      setError(null);
+      // json-server supports full-text search via ?q=
+      const url = keyword ? `${API_URL}?q=${encodeURIComponent(keyword)}` : API_URL;
+      const response = await axios.get(url);
       setFlowers(response.data);
-    } catch (error: any) {
-      setError(error.message || "Please call admin");
+    } catch (err: any) {
+      setError(err.message || "Failed to load flowers. Please call admin");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // 1. Perform axios GET call to API_URL (with search query parameter if searchKeyword is present)
-    // 2. Set flowers array, error, and loading states
-    setLoading(false);
+    fetchFlowers(searchKeyword);
+  }, [searchKeyword]);
 
-    fetchFlowers();
-  }, []);
-
-  // ==========================================
-  // TODO RECAP 12: Handle text search input event updates
-  // ==========================================
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Update searchKeyword state with input value
+    setSearchKeyword(e.target.value);
   };
 
   return (
@@ -69,14 +57,11 @@ export default function Home() {
         {/* Search Input Box */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
           <div className="w-full md:max-w-xs">
-            {/* ========================================== */}
-            {/* ========================================== */}
-            {/* TODO RECAP 12: Bind search input value & onChange handler */}
-            {/* ========================================== */}
             <input
               type="text"
               placeholder="Search flowers..."
-              // Bind value and onChange here
+              value={searchKeyword}
+              onChange={handleSearchChange}
               className="input-field"
             />
           </div>
@@ -108,7 +93,7 @@ export default function Home() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="h-4 w-12 bg-slate-100 dark:bg-zinc-800 rounded-md" />
-                      <div className="h-4 w-8 bg-slate-150 dark:bg-zinc-800 rounded-md" />
+                      <div className="h-4 w-8 bg-slate-155 dark:bg-zinc-800 rounded-md" />
                     </div>
                     <div className="h-5 w-2/3 bg-slate-100 dark:bg-zinc-800 rounded-lg mb-2" />
                     <div className="h-4 w-full bg-slate-50 dark:bg-zinc-800/50 rounded-md mb-1" />
@@ -137,9 +122,6 @@ export default function Home() {
         {/* Flowers Grid Catalog */}
         {!loading && !error && flowers.length > 0 && (
           <div className="shop-grid">
-            {/* ========================================== */}
-            {/* TODO RECAP 13: Map flowers array to FlowerCard components */}
-            {/* ========================================== */}
             {flowers.map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />
             ))}

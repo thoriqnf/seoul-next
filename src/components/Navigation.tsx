@@ -1,11 +1,8 @@
-"use client";
-
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Navigation() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
@@ -14,7 +11,6 @@ export function Navigation() {
     };
 
     checkLogin();
-    // Listen for custom/storage changes to sync login button text dynamically
     window.addEventListener("storage", checkLogin);
     return () => window.removeEventListener("storage", checkLogin);
   }, []);
@@ -23,36 +19,27 @@ export function Navigation() {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
     window.dispatchEvent(new Event("storage"));
-    router.push("/login");
+    navigate("/login");
   };
 
   return (
     <header className="w-full border-b border-slate-200 bg-white dark:border-neutral-800 dark:bg-zinc-900">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         <Link
-          href="/"
+          to="/"
           className="font-extrabold text-indigo-600 dark:text-indigo-400 text-lg tracking-tight"
         >
           🌸 FlowerShop
         </Link>
         <nav className="flex items-center gap-6">
-          {/* ========================================== */}
-          {/* TODO RECAP 2: Use Next.js Link components instead of standard <a> tags */}
-          {/* ========================================== */}
-          {/* <Link
-            href="/"
-            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-          >
-            Catalog
-          </Link> */}
           <button
-            onClick={() => router.push("/")}
-            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            onClick={() => navigate("/")}
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors bg-transparent border-none p-0 cursor-pointer"
           >
             Catalog
           </button>
           <Link
-            href="/dashboard"
+            to="/dashboard"
             className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Admin Panel
@@ -65,12 +52,12 @@ export function Navigation() {
               Logout
             </button>
           ) : (
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Login
-            </a>
+            </Link>
           )}
         </nav>
       </div>
