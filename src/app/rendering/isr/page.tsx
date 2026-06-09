@@ -4,6 +4,9 @@ import { Flower } from "@/types";
 
 // ==========================================
 // TODO SSG 4: Export revalidate configuration key for ISR page layout cache refresh
+// Unlike standard SSG (which pre-renders HTML once at build time and stays frozen),
+// ISR (Incremental Static Regeneration) allows you to revalidate and update static pages
+// in the background at designated intervals (e.g., every 10 seconds) without rebuilding the entire app.
 // ==========================================
 // export const revalidate = ...;
 
