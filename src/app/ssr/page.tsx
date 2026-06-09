@@ -4,20 +4,35 @@ import { Flower, Announcement } from "@/types";
 import { FlowerCard } from "@/components/FlowerCard";
 
 // ==========================================
+// Types & Interfaces
+// ==========================================
+interface DummyProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  thumbnail: string;
+}
+
+interface DummyJSONResponse {
+  products: DummyProduct[];
+}
+
+// ==========================================
 // SSR Fetch Helpers
 // ==========================================
-async function getFlowers(): Promise<Flower[]> {
+async function getProducts(): Promise<Flower[]> {
   const response = await fetch("https://dummyjson.com/products?limit=10", {
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch products");
-  const data = await response.json();
-  return data.products.map((p: any) => ({
-    id: String(p.id),
-    name: p.title,
-    price: p.price,
-    description: p.description,
-    image: p.thumbnail,
+  const data: DummyJSONResponse = await response.json();
+  return data.products.map((product: DummyProduct) => ({
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail,
   }));
 }
 
@@ -42,8 +57,8 @@ async function getAnnouncements(): Promise<Announcement[]> {
 
 export default async function SSRMainHub() {
   // Parallel fetch using Promise.all
-  const [flowers, announcements] = await Promise.all([
-    getFlowers(),
+  const [products, announcements] = await Promise.all([
+    getProducts(),
     getAnnouncements(),
   ]);
 
@@ -134,7 +149,7 @@ export default async function SSRMainHub() {
             🌸 Server-Rendered Flowers
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {flowers.slice(0, 3).map((flower) => (
+            {products.slice(0, 3).map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />
             ))}
           </div>
