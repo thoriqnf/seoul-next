@@ -8,13 +8,22 @@ import { FlowerCard } from "@/components/FlowerCard";
 
 // ==========================================
 // TODO SSG 5: Configure custom fetcher helper and initialize SWR fetch hooks
+// Configure options to control SWR revalidation behavior:
+// - revalidateOnFocus: Automatically refetch when the user refocuses the browser window/tab.
+// - refreshInterval: Periodically poll and refetch data (e.g., every 5 seconds).
+// - revalidateOnReconnect: Refetch when the user regains network connectivity.
 // ==========================================
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function SWRDemoPage() {
   const { data, error, isLoading } = useSWR<Flower[]>(
     "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers",
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: true,      // Refetch when tab gets focus
+      refreshInterval: 5000,        // Poll and refetch every 5 seconds
+      revalidateOnReconnect: true,  // Refetch when network reconnects
+    }
   );
 
   return (
