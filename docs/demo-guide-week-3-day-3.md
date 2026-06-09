@@ -58,9 +58,16 @@ export const dynamicParams = false; // IDs other than 1, 2, 3 return 404
 
 // Fetch data directly in the Server Component
 async function getFlower(id: string): Promise<Flower> {
-  const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${id}`);
+  const response = await fetch(`https://dummyjson.com/products/${id}`);
   if (!response.ok) throw new Error("Flower not found");
-  return response.json();
+  const product = await response.json();
+  return {
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail,
+  };
 }
 ```
 
@@ -81,15 +88,31 @@ export const revalidate = 10; // Revalidate static cache every 10 seconds
 
 #### Step 5 (`// TODO SSG 5`): Setup useSWR Fetch Hook
 *File: `src/app/rendering/swr/page.tsx`*
-Initialize the SWR hook with a helper fetcher function (which uses standard fetch or Axios):
+Initialize the SWR hook with a helper fetcher function (which maps dynamic JSON data to Flower shapes):
 ```typescript
 import useSWR from "swr";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((data: { products: any[] }) =>
+      data.products.map((product) => ({
+        id: String(product.id),
+        name: product.title,
+        price: product.price,
+        description: product.description,
+        image: product.thumbnail,
+      }))
+    );
 
 const { data, error, isLoading } = useSWR<Flower[]>(
-  "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers",
-  fetcher
+  "https://dummyjson.com/products?limit=10",
+  fetcher,
+  {
+    revalidateOnFocus: true,
+    refreshInterval: 5000,
+    revalidateOnReconnect: true,
+  }
 );
 ```
 
