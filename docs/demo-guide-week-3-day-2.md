@@ -95,7 +95,7 @@ Wrap slow-loading server components in a `<Suspense>` boundary. The static surro
 ```jsx
 import { Suspense } from "react";
 
-<Suspense fallback={<ReviewsSkeleton />}>
+<Suspense fallback={<div className="text-xs text-slate-500 animate-pulse py-4 text-center">Loading reviews...</div>}>
   <SlowReviewsComponent />
 </Suspense>
 ```
