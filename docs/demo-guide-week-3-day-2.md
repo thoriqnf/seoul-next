@@ -48,11 +48,18 @@ export interface Announcement {
 Mark the Server Component functional body as `async` and execute native `fetch` requests directly:
 ```typescript
 async function getFlowers(): Promise<Flower[]> {
-  const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers", {
+  const response = await fetch("https://dummyjson.com/products?limit=10", {
     cache: "no-store", // Opt-out of static building caching to fetch live records
   });
-  if (!response.ok) throw new Error("Failed to fetch flowers");
-  return response.json();
+  if (!response.ok) throw new Error("Failed to fetch products");
+  const data = await response.json();
+  return data.products.map((p: any) => ({
+    id: String(p.id),
+    name: p.title,
+    price: p.price,
+    description: p.description,
+    image: p.thumbnail,
+  }));
 }
 ```
 

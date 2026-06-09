@@ -8,8 +8,9 @@ import { FlowerCard } from "@/components/FlowerCard";
 // ==========================================
 async function getFlowers(): Promise<Flower[]> {
   // ==========================================
-  // TODO SSR 2: Fetch the flower list from the URL:
-  // "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers"
+  // TODO SSR 2: Fetch the product list from DummyJSON endpoint:
+  // "https://dummyjson.com/products?limit=10"
+  // Map fields (title -> name, thumbnail -> image, stringified id -> id)
   // Make sure to opt-out of static building caching by setting cache: "no-store"
   // ==========================================
   return [];
