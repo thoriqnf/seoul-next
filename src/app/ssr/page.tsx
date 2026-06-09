@@ -4,9 +4,24 @@ import { Flower, Announcement } from "@/types";
 import { FlowerCard } from "@/components/FlowerCard";
 
 // ==========================================
+// Types & Interfaces
+// ==========================================
+interface DummyProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  thumbnail: string;
+}
+
+interface DummyJSONResponse {
+  products: DummyProduct[];
+}
+
+// ==========================================
 // SSR Fetch Helpers
 // ==========================================
-async function getFlowers(): Promise<Flower[]> {
+async function getProducts(): Promise<Flower[]> {
   // ==========================================
   // TODO SSR 2: Fetch the product list from DummyJSON endpoint:
   // "https://dummyjson.com/products?limit=10"
@@ -37,10 +52,10 @@ async function getAnnouncements(): Promise<Announcement[]> {
 
 export default async function SSRMainHub() {
   // ==========================================
-  // TODO SSR 3: Perform parallel fetching of getFlowers() and getAnnouncements()
+  // TODO SSR 3: Perform parallel fetching of getProducts() and getAnnouncements()
   // using Promise.all to fetch both arrays concurrently
   // ==========================================
-  const flowers: Flower[] = [];
+  const products: Flower[] = [];
   const announcements: Announcement[] = [];
 
   return (
@@ -130,7 +145,7 @@ export default async function SSRMainHub() {
             🌸 Server-Rendered Flowers
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {flowers.slice(0, 3).map((flower) => (
+            {products.slice(0, 3).map((flower) => (
               <FlowerCard key={flower.id} flower={flower} />
             ))}
           </div>

@@ -47,18 +47,30 @@ export interface Announcement {
 *File: `src/app/ssr/page.tsx`*
 Mark the Server Component functional body as `async` and execute native `fetch` requests directly:
 ```typescript
-async function getFlowers(): Promise<Flower[]> {
+interface DummyProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  thumbnail: string;
+}
+
+interface DummyJSONResponse {
+  products: DummyProduct[];
+}
+
+async function getProducts(): Promise<Flower[]> {
   const response = await fetch("https://dummyjson.com/products?limit=10", {
     cache: "no-store", // Opt-out of static building caching to fetch live records
   });
   if (!response.ok) throw new Error("Failed to fetch products");
-  const data = await response.json();
-  return data.products.map((p: any) => ({
-    id: String(p.id),
-    name: p.title,
-    price: p.price,
-    description: p.description,
-    image: p.thumbnail,
+  const data: DummyJSONResponse = await response.json();
+  return data.products.map((product: DummyProduct) => ({
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail,
   }));
 }
 ```
@@ -67,8 +79,8 @@ async function getFlowers(): Promise<Flower[]> {
 *File: `src/app/ssr/page.tsx`*
 Instead of sequentially awaiting fetches which blocks resources, run requests concurrently using `Promise.all`:
 ```typescript
-const [flowers, announcements] = await Promise.all([
-  getFlowers(),
+const [products, announcements] = await Promise.all([
+  getProducts(),
   getAnnouncements(),
 ]);
 ```
