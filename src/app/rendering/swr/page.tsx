@@ -13,11 +13,22 @@ import { FlowerCard } from "@/components/FlowerCard";
 // - refreshInterval: Periodically poll and refetch data (e.g., every 5 seconds).
 // - revalidateOnReconnect: Refetch when the user regains network connectivity.
 // ==========================================
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((data: { products: any[] }) =>
+      data.products.map((product) => ({
+        id: String(product.id),
+        name: product.title,
+        price: product.price,
+        description: product.description,
+        image: product.thumbnail,
+      }))
+    );
 
 export default function SWRDemoPage() {
   const { data, error, isLoading } = useSWR<Flower[]>(
-    "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers",
+    "https://dummyjson.com/products?limit=10",
     fetcher,
     {
       revalidateOnFocus: true,      // Refetch when tab gets focus

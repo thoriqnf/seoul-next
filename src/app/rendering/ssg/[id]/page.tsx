@@ -8,12 +8,27 @@ import { Navigation } from "@/components/Navigation";
 // ==========================================
 export const dynamicParams = false;
 
+interface DummyProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  thumbnail: string;
+}
+
 async function getFlower(id: string): Promise<Flower> {
-  const response = await fetch(`https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers/${id}`);
+  const response = await fetch(`https://dummyjson.com/products/${id}`);
   if (!response.ok) {
     throw new Error("Flower not found");
   }
-  return response.json();
+  const product: DummyProduct = await response.json();
+  return {
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail,
+  };
 }
 
 // ==========================================

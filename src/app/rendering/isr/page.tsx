@@ -10,12 +10,31 @@ import { Flower } from "@/types";
 // ==========================================
 export const revalidate = 10;
 
+interface DummyProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  thumbnail: string;
+}
+
+interface DummyJSONResponse {
+  products: DummyProduct[];
+}
+
 async function getFlowers(): Promise<Flower[]> {
-  const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers", {
+  const response = await fetch("https://dummyjson.com/products?limit=10", {
     next: { revalidate: 10 },
   });
   if (!response.ok) throw new Error("Failed to fetch flowers");
-  return response.json();
+  const data: DummyJSONResponse = await response.json();
+  return data.products.map((product) => ({
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail,
+  }));
 }
 
 export default async function ISRDemoPage() {
