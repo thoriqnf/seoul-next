@@ -12,14 +12,12 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 // API Fetching Helpers (RSC Server-side fetches)
 // ========================================================
 async function getFlowers(): Promise<Flower[]> {
-  // SSR Fetching
-  const response = await fetch("https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers", {
-    cache: "no-store", // Opt-out of static caching to demonstrate live server-side rendering
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch flowers");
-  }
-  return response.json();
+  // ==========================================
+  // TODO SSR 2: Implement direct Server-Side data fetching from MockAPI URL:
+  // "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers"
+  // Disable caching using custom fetch options { cache: "no-store" }
+  // ==========================================
+  return [];
 }
 
 async function getAnnouncements(): Promise<Announcement[]> {
@@ -99,11 +97,11 @@ import { ClientDemoComponents } from "./ClientDemoComponents";
 // Main Server Page Component
 // ========================================================
 export default async function SSRDemoPage() {
-  // Parallel Fetching: flowers and announcements in parallel
-  const [flowers, announcements] = await Promise.all([
-    getFlowers(),
-    getAnnouncements(),
-  ]);
+  // ==========================================
+  // TODO SSR 3: Use Promise.all to fetch both getFlowers() and getAnnouncements() in parallel
+  // ==========================================
+  const flowers: Flower[] = [];
+  const announcements: Announcement[] = [];
 
   return (
     <>
@@ -163,9 +161,11 @@ export default async function SSRDemoPage() {
             <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-4">
               💬 Customer Reviews <span className="text-xs font-normal text-slate-400">(SSR Streamed)</span>
             </h2>
-            <Suspense fallback={<ReviewsSkeleton />}>
-              <SlowReviewsComponent />
-            </Suspense>
+            {/* ========================================== */}
+            {/* TODO SSR 4: Wrap the <SlowReviewsComponent /> inside a React <Suspense> boundary */}
+            {/* Provide the <ReviewsSkeleton /> as the loading fallback spinner */}
+            {/* ========================================== */}
+            <SlowReviewsComponent />
           </div>
         </div>
 

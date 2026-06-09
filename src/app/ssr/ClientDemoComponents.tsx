@@ -4,34 +4,17 @@ import { useEffect, useState } from "react";
 
 export function ClientDemoComponents() {
   // ==========================================
-  // States for Hydration Mismatch Fix
+  // TODO SSR 5: Initialize a state variable fixedTime, and set it inside useEffect
+  // to prevent hydration mismatch with server rendering local times.
   // ==========================================
   const [fixedTime, setFixedTime] = useState<string>("");
 
-  useEffect(() => {
-    // Only set the time after client mounting completes
-    setFixedTime(new Date().toLocaleTimeString());
-  }, []);
-
   // ==========================================
-  // States for window / localStorage access
+  // TODO SSR 6: Guard window/localStorage API usage using a typeof check or useEffect
+  // and load browser width & key value of "isLoggedIn" from localStorage safely
   // ==========================================
   const [browserWidth, setBrowserWidth] = useState<number | null>(null);
   const [storedTheme, setStoredTheme] = useState<string>("default");
-
-  useEffect(() => {
-    // Safe client-only environment access
-    if (typeof window !== "undefined") {
-      setBrowserWidth(window.innerWidth);
-      
-      const savedTheme = localStorage.getItem("isLoggedIn") === "true" ? "Authorized User" : "Guest Mode";
-      setStoredTheme(savedTheme);
-
-      const handleResize = () => setBrowserWidth(window.innerWidth);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
