@@ -32,19 +32,6 @@ async function SlowReviewsComponent() {
   );
 }
 
-function ReviewsSkeleton() {
-  return (
-    <div className="space-y-4 animate-pulse">
-      {[1, 2].map((i) => (
-        <div key={i} className="p-4 rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-100 dark:bg-zinc-900/50">
-          <div className="h-4 w-24 bg-slate-200 dark:bg-zinc-800 rounded-md mb-2" />
-          <div className="h-3 w-full bg-slate-150 dark:bg-zinc-850 rounded-md" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function StreamingPage() {
   return (
     <>
@@ -69,7 +56,7 @@ export default function StreamingPage() {
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
             Customer Reviews Feed
           </h2>
-          <Suspense fallback={<ReviewsSkeleton />}>
+          <Suspense fallback={<div className="text-xs text-slate-500 animate-pulse py-4 text-center">Loading reviews from server...</div>}>
             <SlowReviewsComponent />
           </Suspense>
         </div>
