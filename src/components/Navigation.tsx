@@ -54,6 +54,15 @@ export function Navigation() {
           >
             SSR Demo
           </Link>
+          {/* ========================================== */}
+          {/* TODO SSG 1: Add Link to rendering page */}
+          {/* ========================================== */}
+          <Link
+            href="/rendering"
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          >
+            Rendering Demo
+          </Link>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
