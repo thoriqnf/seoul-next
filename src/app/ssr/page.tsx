@@ -28,7 +28,21 @@ async function getProducts(): Promise<Flower[]> {
   // Map fields (title -> name, thumbnail -> image, stringified id -> id)
   // Make sure to opt-out of static building caching by setting cache: "no-store"
   // ==========================================
-  return [];
+
+  const response = await fetch("https://dummyjson.com/products?limit=10", {
+    cache: "no-store"
+  })
+  if (!response.ok) throw new Error("failed to fetch")
+  const data: DummyJSONResponse = await response.json()
+  console.log('data', data)
+
+  return data.products.map((product: DummyProduct) => ({
+    id: String(product.id),
+    name: product.title,
+    price: product.price,
+    description: product.description,
+    image: product.thumbnail
+  }))
 }
 
 async function getAnnouncements(): Promise<Announcement[]> {
@@ -55,8 +69,11 @@ export default async function SSRMainHub() {
   // TODO SSR 3: Perform parallel fetching of getProducts() and getAnnouncements()
   // using Promise.all to fetch both arrays concurrently
   // ==========================================
-  const products: Flower[] = [];
-  const announcements: Announcement[] = [];
+  // const products: Flower[] = await getProducts();
+  // const announcements: Announcement[] = await getAnnouncements();
+
+  const [products, announcements] = await Promise.all([getProducts(), getAnnouncements()])
+
 
   return (
     <>

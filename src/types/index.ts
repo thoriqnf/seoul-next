@@ -28,4 +28,9 @@ export interface FlowerItemProps {
 // TODO SSR 1: Define the Announcement interface with id, title, message, and type ("info" | "warning" | "success")
 // ==========================================
 
-
+export interface Announcement {
+  id: string;
+  title: string;
+  message: string;
+  type: "info" | "warning" | "success";
+}

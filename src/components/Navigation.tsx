@@ -51,6 +51,12 @@ export function Navigation() {
           {/* ========================================== */}
           {/* TODO SSR 1: Add a Link pointing to "/ssr" with text "SSR Demo" */}
           {/* ========================================== */}
+          <Link
+            href="/ssr"
+            className="text-sm font-semibold text-slate-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          >
+            SSR Demo
+          </Link>
           {isLoggedIn ? (
             <button
               onClick={handleLogout}

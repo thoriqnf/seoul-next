@@ -32,6 +32,29 @@ async function SlowReviewsComponent() {
   );
 }
 
+// ==========================================
+// Loading Skeleton Component
+// ==========================================
+function ReviewsSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {[1, 2].map((i) => (
+        <div
+          key={i}
+          className="p-4 rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-zinc-900/50"
+        >
+          <div className="flex justify-between items-center mb-2">
+            <div className="h-3 w-24 bg-slate-200 dark:bg-zinc-800 rounded" />
+            <div className="h-3 w-12 bg-slate-200 dark:bg-zinc-800 rounded" />
+          </div>
+          <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-full mb-1.5" />
+          <div className="h-3 bg-slate-200 dark:bg-zinc-800 rounded w-2/3" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function StreamingPage() {
   return (
     <>
@@ -60,7 +83,9 @@ export default function StreamingPage() {
           {/* TODO SSR 4: Wrap the <SlowReviewsComponent /> inside a React <Suspense> boundary */}
           {/* Provide a simple inline div text loader as the loading fallback */}
           {/* ========================================== */}
-          <SlowReviewsComponent />
+          <Suspense fallback={<ReviewsSkeleton />}>
+            <SlowReviewsComponent />
+          </Suspense>
         </div>
       </main>
     </>
