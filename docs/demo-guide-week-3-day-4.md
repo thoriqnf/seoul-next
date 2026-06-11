@@ -25,7 +25,8 @@ This guide walks you through building a cohesive, premium **News Portal** inspir
 
 #### Step 1 (`// TODO RECAP RENDER 1`): useSWR Caching & Fetching
 *File: `src/app/news/feed/page.tsx`*
-Use SWR in client components to fetch and cache live feeds, updating automatically in the background when the user returns to the browser tab:
+Use SWR in client components to fetch and cache live feeds, updating automatically in the background when the user returns to the browser tab.
+
 ```typescript
 import useSWR from "swr";
 
@@ -33,11 +34,19 @@ const { data, error, isLoading } = useSWR<NewsArticle[]>(
   "https://dummyjson.com/posts?limit=10&skip=8",
   fetcher,
   {
-    revalidateOnFocus: true,
-    refreshInterval: 15000
+    revalidateOnFocus: true,     // Revalidate when browser gets focus
+    refreshInterval: 15000,      // Poll and refresh every 15 seconds
+    revalidateOnReconnect: true, // Revalidate when internet reconnects
+    dedupingInterval: 2000,      // Deduplicate requests with same key within 2s
   }
 );
 ```
+
+##### SWR Configuration Settings Explained:
+*   **`revalidateOnFocus: true`**: Automatically triggers a validation fetch when the user returns to the browser tab or focuses the window. This ensures the user is immediately shown fresh content without manual page refreshes.
+*   **`refreshInterval: 15000`**: Automatically polls the API server in the background every 15 seconds (15,000 ms) to load new content automatically.
+*   **`revalidateOnReconnect: true`**: When the network drops and then recovers (e.g. from offline back to online), SWR will automatically re-fetch the data to restore sync.
+*   **`dedupingInterval: 2000`**: Deduplicates identical API request keys that occur within a 2-second timeframe. This prevents duplicate client requests to the server (e.g. during fast client-side navigation actions).
 
 #### Step 2 (`// TODO RECAP RENDER 2`): Navigation Re-branding & Search Bind
 *File: `src/components/Navigation.tsx`*
