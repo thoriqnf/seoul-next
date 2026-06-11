@@ -58,8 +58,7 @@ function FeedContent() {
     : `https://dummyjson.com/posts?limit=12&skip=8`;
 
   // ==========================================
-  // TODO RECAP 7: Setup useSWR fetch hook
-  // Fetch real-time cached news records from API and manage load state
+  // TODO RECAP RENDER 7: Set up useSWR to fetch from API, enabling automated focus revalidation and background caching updates
   // ==========================================
   const { data, error, isLoading } = useSWR(apiUrl, fetcher, {
     revalidateOnFocus: true, // revalidate cache when browser gains focus

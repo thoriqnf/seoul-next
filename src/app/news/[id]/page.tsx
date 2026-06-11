@@ -19,8 +19,7 @@ const NEWS_IMAGES = [
 ];
 
 // ==========================================
-// TODO RECAP 3: SSG Static Parameter Generator
-// Pre-generate static route configurations during production build time
+// TODO RECAP RENDER 3: Define generateStaticParams to pre-build articles 1, 2, and 3 during compile time
 // ==========================================
 export async function generateStaticParams() {
   return [
@@ -173,8 +172,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         </article>
 
         {/* ========================================== */}
-        {/* TODO RECAP 4: Asynchronous Streaming with React Suspense */}
-        {/* Stream slow-loading comments list after the main article UI renders */}
+        {/* TODO RECAP RENDER 4: Wrap CommentsSection inside a Suspense boundary with a skeleton fallback to enable HTML streaming */}
         {/* ========================================== */}
         <Suspense
           fallback={

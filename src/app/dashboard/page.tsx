@@ -19,8 +19,7 @@ export default function DashboardPage() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   // ==========================================
-  // TODO RECAP 8: Administrative Client-Side Auth Guard
-  // Verify user's session credentials from local storage and redirect if unauthorized
+  // TODO RECAP RENDER 8: Protect admin page by verifying user credentials in localStorage, programmatically redirecting unauthorized sessions to login page
   // ==========================================
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -66,7 +65,7 @@ export default function DashboardPage() {
   });
 
   // ==========================================
-  // TODO RECAP 10: Implement Axios PUT request to update breaking news headline
+  // TODO RECAP RENDER 10: Implement Axios PUT handler to update the local database with form values to trigger ISR revalidation cycles
   // ==========================================
   const onSubmit = async (data: FormInput) => {
     try {
@@ -138,7 +137,7 @@ export default function DashboardPage() {
                   New Headline Title
                 </label>
                 {/* ========================================== */}
-                {/* TODO RECAP 9: Register input constraints */}
+                {/* TODO RECAP RENDER 9: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form */}
                 {/* ========================================== */}
                 <input
                   type="text"

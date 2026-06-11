@@ -118,6 +118,9 @@ export function Navigation() {
       {/* Secondary Category Navigation Row */}
       <div className="border-t border-slate-100 dark:border-neutral-900 bg-white dark:bg-zinc-950 overflow-x-auto scrollbar-none">
         <div className="mx-auto max-w-6xl px-4 h-10 flex items-center gap-6 text-xs font-bold text-slate-500 dark:text-zinc-400 whitespace-nowrap">
+          {/* ========================================== */}
+          {/* TODO RECAP RENDER 2: Use Next.js Link components instead of standard <a> tags to enable client-side SPA transitions */}
+          {/* ========================================== */}
           <Link href="/" className="hover:text-[#00828A] dark:hover:text-teal-400 transition-colors text-slate-800 dark:text-zinc-100">
             News
           </Link>

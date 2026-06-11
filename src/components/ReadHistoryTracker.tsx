@@ -7,6 +7,9 @@ export function ReadHistoryTracker({ postId }: { postId: string }) {
   const [isRead, setIsRead] = useState<boolean>(false);
 
   useEffect(() => {
+    // ==========================================
+    // TODO RECAP RENDER 5: Implement safety checks inside useEffect to read/write localStorage without causing SSR global object or hydration mismatch crashes
+    // ==========================================
     // Safely interact with client-only window/localStorage inside useEffect after mounting
     if (typeof window !== "undefined") {
       // 1. Sync reading status for the post
@@ -35,11 +38,11 @@ export function ReadHistoryTracker({ postId }: { postId: string }) {
           <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
         </span>
         <span className="font-semibold">
-          {isRead ? "Anda membaca ulang artikel ini" : "Anda sedang membaca artikel ini"}
+          {isRead ? "You are re-reading this article" : "You are currently reading this article"}
         </span>
       </div>
       <div>
-        Total dibaca sesi ini: <span className="font-mono font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">{readCount}</span>
+        Total articles read this session: <span className="font-mono font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">{readCount}</span>
       </div>
     </div>
   );

@@ -3,8 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { BreakingNews } from "@/types";
 
 // ==========================================
-// TODO RECAP 6: Export static revalidation interval key
-// Next.js ISR will rebuild this page in the background if accessed after 10 seconds
+// TODO RECAP RENDER 6: Export static cache revalidation interval key to enable ISR background updates every 10 seconds
 // ==========================================
 export const revalidate = 10;
 
