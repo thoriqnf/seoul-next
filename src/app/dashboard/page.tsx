@@ -51,7 +51,7 @@ export default function DashboardPage() {
   }, [isChecking]);
 
   // ==========================================
-  // TODO RECAP 9: Initialize react-hook-form with validation constraints
+  // TODO RECAP RENDER 9: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form
   // ==========================================
   const {
     register,
