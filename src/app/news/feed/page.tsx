@@ -60,12 +60,9 @@ function FeedContent() {
   // ==========================================
   // TODO RECAP RENDER 1: Set up useSWR to fetch from API, enabling automated focus revalidation and background caching updates
   // ==========================================
-  const { data, error, isLoading } = useSWR(apiUrl, fetcher, {
-    revalidateOnFocus: true,     // revalidate cache when browser gains focus
-    refreshInterval: 15000,      // refresh cache in background every 15 seconds
-    revalidateOnReconnect: true, // revalidate cache when internet connection is restored
-    dedupingInterval: 2000,      // deduplicate requests with the same key within 2 seconds
-  });
+  const data = null as any;
+  const error = null as any;
+  const isLoading = true;
 
   const rawPosts = data?.posts || [];
   const articles: NewsArticle[] = rawPosts.map(mapPostToArticle);
