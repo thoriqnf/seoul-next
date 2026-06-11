@@ -89,7 +89,7 @@ function FeedContent() {
             <div key={i} className="animate-pulse border border-slate-100 dark:border-neutral-900 rounded-2xl p-4 bg-white dark:bg-zinc-950/40">
               <div className="h-36 w-full bg-slate-100 dark:bg-zinc-800 rounded-xl mb-3" />
               <div className="h-4 w-3/4 bg-slate-200 dark:bg-zinc-800 rounded-md mb-2" />
-              <div className="h-3 w-1/2 bg-slate-150 dark:bg-zinc-800 rounded-md" />
+              <div className="h-3 w-1/2 bg-slate-200 dark:bg-zinc-800 rounded-md" />
             </div>
           ))}
         </div>

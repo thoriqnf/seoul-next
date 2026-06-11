@@ -42,7 +42,7 @@ export default function LoginPage() {
             <span className="text-xl md:text-2xl font-extrabold text-[#00828A] tracking-tighter block mb-2">
               kumparin<span className="text-teal-400">.</span>
             </span>
-            <h1 className="text-lg font-extrabold text-slate-800 dark:text-zinc-150">
+            <h1 className="text-lg font-extrabold text-slate-800 dark:text-zinc-100">
               Sign In to Admin Panel
             </h1>
             <p className="text-xs text-slate-500 mt-1">

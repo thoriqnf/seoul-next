@@ -16,9 +16,9 @@ export function TrendingSidebar({ articles }: TrendingSidebarProps) {
   return (
     <aside className="w-full">
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-neutral-800 pb-3 mb-4">
+      <div className="flex items-center justify-between w-full border-b border-slate-100 dark:border-neutral-800 pb-3 mb-4">
         <div className="flex items-center border-l-4 border-red-500 pl-2">
-          <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-150 tracking-tight">
+          <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight">
             Trending
           </h2>
         </div>
