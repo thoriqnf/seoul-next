@@ -105,24 +105,7 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Additional category shelf */}
-        <section className="mt-12 pt-8 border-t border-slate-100 dark:border-neutral-900">
-          <div className="flex items-center border-l-4 border-red-500 pl-2 mb-6">
-            <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight">
-              Science & Environment
-            </h2>
-          </div>
-          {/* Placeholder cards for visual completeness */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="rounded-2xl border border-slate-100 dark:border-neutral-900 p-4 bg-slate-50/50 dark:bg-zinc-900/20">
-                <div className="h-32 bg-slate-100 dark:bg-zinc-800 rounded-xl mb-3 animate-pulse" />
-                <div className="h-4 bg-slate-200 dark:bg-zinc-850 w-3/4 rounded-md mb-2" />
-                <div className="h-3 bg-slate-150 dark:bg-zinc-850 w-1/2 rounded-md" />
-              </div>
-            ))}
-          </div>
-        </section>
+
       </main>
     </>
   );
