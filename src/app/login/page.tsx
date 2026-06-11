@@ -38,9 +38,9 @@ export default function LoginPage() {
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-16 flex flex-col justify-center font-sans">
         <div className="bg-white dark:bg-zinc-950/40 border border-slate-200/65 dark:border-neutral-800/85 rounded-2xl p-8 shadow-sm">
           <header className="mb-6 text-center">
-            {/* Kumparan Logo Style */}
+            {/* Kumparin Logo Style */}
             <span className="text-xl md:text-2xl font-extrabold text-[#00828A] tracking-tighter block mb-2">
-              kumparan<span className="text-teal-400">.</span>
+              kumparin<span className="text-teal-400">.</span>
             </span>
             <h1 className="text-lg font-extrabold text-slate-800 dark:text-zinc-150">
               Sign In to Admin Panel

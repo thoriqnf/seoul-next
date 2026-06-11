@@ -42,16 +42,16 @@ async function getArticle(id: string): Promise<NewsArticle> {
   const post = await response.json();
 
   const authors = [
-    { name: "kumparanNEWS", verified: true },
-    { name: "kumparanBISNIS", verified: true },
-    { name: "kumparanTECH", verified: true },
-    { name: "kumparanBOLA", verified: true },
-    { name: "kumparanHIBURAN", verified: true },
+    { name: "kumparinNEWS", verified: true },
+    { name: "kumparinBISNIS", verified: true },
+    { name: "kumparinTECH", verified: true },
+    { name: "kumparinBOLA", verified: true },
+    { name: "kumparinHIBURAN", verified: true },
   ];
   const authorMeta = authors[(post.userId || 0) % authors.length];
   const minutes = (post.id * 7) % 60;
   const hours = (post.id * 3) % 24;
-  const timeAgoStr = hours === 0 ? `${minutes} menit` : `${hours} jam`;
+  const timeAgoStr = hours === 0 ? `${minutes} minutes ago` : `${hours} hours ago`;
 
   return {
     id: String(post.id),
@@ -92,7 +92,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           href="/"
           className="text-xs font-bold text-slate-400 hover:text-[#00828A] transition-colors mb-6 inline-flex items-center gap-1"
         >
-          ← Beranda
+          ← Home
         </Link>
 
         {/* Article Header */}
@@ -129,7 +129,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 )}
               </div>
               <span className="text-[10px] text-slate-400 dark:text-zinc-500">
-                {article.timeAgo} • Dibaca {article.views * 3} kali
+                {article.timeAgo} • Read {article.views * 3} times
               </span>
             </div>
           </div>

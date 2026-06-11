@@ -1,6 +1,6 @@
-# Developer Guide: Week 3 Day 4 Recap Project (Kumparan-Style News Portal)
+# Developer Guide: Week 3 Day 4 Recap Project (Kumparin-Style News Portal)
 
-This guide walks you through building a cohesive, premium **News Portal** inspired by the Indonesian news site **Kumparan**. The project recaps all the Next.js App Router rendering strategies and client optimization techniques covered throughout Week 3 (SSR, Parallel Fetching, Streaming/Suspense, SSG, ISR, SWR, and Hydration debugging) in **10 progressive steps**.
+This guide walks you through building a cohesive, premium **News Portal** inspired by the Indonesian news site **Kumparin**. The project recaps all the Next.js App Router rendering strategies and client optimization techniques covered throughout Week 3 (SSR, Parallel Fetching, Streaming/Suspense, SSG, ISR, SWR, and Hydration debugging) in **10 progressive steps**.
 
 ---
 

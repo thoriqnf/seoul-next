@@ -26,7 +26,7 @@ export function TrendingSidebar({ articles }: TrendingSidebarProps) {
           href="/news/feed"
           className="text-xs font-semibold text-[#00828A] hover:underline transition-all"
         >
-          Lihat lainnya →
+          See more →
         </Link>
       </div>
 

@@ -19,19 +19,19 @@ const NEWS_IMAGES = [
   "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&auto=format&fit=crop&q=70",
 ];
 
-// Helper mapper to associate raw posts with Kumparan author details
+// Helper mapper to associate raw posts with Kumparin author details
 function mapPostToArticle(post: any): NewsArticle {
   const authors = [
-    { name: "kumparanNEWS", verified: true },
-    { name: "kumparanBISNIS", verified: true },
-    { name: "kumparanTECH", verified: true },
-    { name: "kumparanBOLA", verified: true },
-    { name: "kumparanHIBURAN", verified: true },
+    { name: "kumparinNEWS", verified: true },
+    { name: "kumparinBISNIS", verified: true },
+    { name: "kumparinTECH", verified: true },
+    { name: "kumparinBOLA", verified: true },
+    { name: "kumparinHIBURAN", verified: true },
   ];
   const authorMeta = authors[(post.userId || 0) % authors.length];
   const minutes = (post.id * 7) % 60;
   const hours = (post.id * 3) % 24;
-  const timeAgoStr = hours === 0 ? `${minutes} menit` : `${hours} jam`;
+  const timeAgoStr = hours === 0 ? `${minutes} minutes ago` : `${hours} hours ago`;
 
   return {
     id: String(post.id),

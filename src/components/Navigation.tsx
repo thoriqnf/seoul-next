@@ -37,13 +37,13 @@ export function Navigation() {
     <header className="w-full border-b border-slate-100 bg-white dark:border-neutral-800/80 dark:bg-zinc-950 sticky top-0 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
       {/* Top Navbar Row */}
       <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between gap-4">
-        {/* Kumparan Style Logo */}
+        {/* Kumparin Style Logo */}
         <Link href="/" className="flex flex-col shrink-0">
           <span className="text-[9px] font-medium tracking-tight text-slate-400 dark:text-zinc-500 uppercase leading-none">
             Truth and Facts in News
           </span>
           <span className="text-xl md:text-2xl font-extrabold text-[#00828A] tracking-tighter leading-tight flex items-center">
-            kumparan<span className="text-teal-400 font-black">.</span>
+            kumparin<span className="text-teal-400 font-black">.</span>
           </span>
         </Link>
 

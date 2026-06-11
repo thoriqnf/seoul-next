@@ -3,20 +3,20 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { TrendingSidebar } from "@/components/TrendingSidebar";
 import { NewsArticle } from "@/types";
 
-// Helper mapper to associate raw DummyJSON posts with Kumparan author details
+// Helper mapper to associate raw DummyJSON posts with Kumparin author details
 function mapPostToArticle(post: any): NewsArticle {
   const authors = [
-    { name: "kumparanNEWS", verified: true },
-    { name: "kumparanBISNIS", verified: true },
-    { name: "kumparanTECH", verified: true },
-    { name: "kumparanBOLA", verified: true },
-    { name: "kumparanHIBURAN", verified: true },
+    { name: "kumparinNEWS", verified: true },
+    { name: "kumparinBISNIS", verified: true },
+    { name: "kumparinTECH", verified: true },
+    { name: "kumparinBOLA", verified: true },
+    { name: "kumparinHIBURAN", verified: true },
   ];
   const authorMeta = authors[(post.userId || 0) % authors.length];
   // Calculate relative realistic time ago based on id
   const minutes = (post.id * 7) % 60;
   const hours = (post.id * 3) % 24;
-  const timeAgoStr = hours === 0 ? `${minutes} menit` : `${hours} jam`;
+  const timeAgoStr = hours === 0 ? `${minutes} minutes ago` : `${hours} hours ago`;
 
   return {
     id: String(post.id),
@@ -66,23 +66,23 @@ export default async function Home() {
         {/* Banner Topic Row */}
         <div className="flex flex-wrap gap-2 mb-6">
           <span className="text-xs font-bold text-white bg-[#00828A] px-3 py-1.5 rounded-full shrink-0">
-            Terbaru
+            Latest
           </span>
           <span className="text-xs font-bold text-slate-600 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-900 px-3 py-1.5 rounded-full border border-slate-200/40 dark:border-neutral-800/80 shrink-0">
-            Fokus: Pemulihan Ekonomi
+            Focus: Economic Recovery
           </span>
           <span className="text-xs font-bold text-slate-600 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-900 px-3 py-1.5 rounded-full border border-slate-200/40 dark:border-neutral-800/80 shrink-0">
-            Teknologi Digital
+            Digital Technology
           </span>
         </div>
 
-        {/* Kumparan-Style Split Layout (70% Left Main Feed, 30% Right Sidebar) */}
+        {/* Kumparin-Style Split Layout (70% Left Main Feed, 30% Right Sidebar) */}
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
           {/* Left Main Column: Hero and Grid cards */}
           <div className="lg:col-span-7 space-y-6">
             <div className="flex items-center border-l-4 border-red-500 pl-2 mb-2">
               <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight">
-                Pilihan Redaksi
+                Editor's Choice
               </h2>
             </div>
 
@@ -109,7 +109,7 @@ export default async function Home() {
         <section className="mt-12 pt-8 border-t border-slate-100 dark:border-neutral-900">
           <div className="flex items-center border-l-4 border-red-500 pl-2 mb-6">
             <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight">
-              Sains & Lingkungan
+              Science & Environment
             </h2>
           </div>
           {/* Placeholder cards for visual completeness */}
