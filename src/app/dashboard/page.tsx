@@ -4,26 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Flower, FlowerFormInput } from "@/types";
 import { Navigation } from "@/components/Navigation";
-import { FlowerItem } from "@/components/FlowerItem";
+import { BreakingNews } from "@/types";
 
-const API_URL = "https://64ca45bd700d50e3c7049e2f.mockapi.io/flowers";
+interface FormInput {
+  title: string;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-
-  // CRUD States
-  const [flowers, setFlowers] = useState<Flower[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [actionLoading, setActionLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [currentHeadline, setCurrentHeadline] = useState<string>("");
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   // ==========================================
-  // TODO RECAP 6: Protect route inside client-side useEffect mount check
+  // TODO RECAP 8: Administrative Client-Side Auth Guard
+  // Verify user's session credentials from local storage and redirect if unauthorized
   // ==========================================
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -37,112 +34,60 @@ export default function DashboardPage() {
     }
   }, [router]);
 
-  // ==========================================
-  // Fetch flowers for the dashboard listings
-  // ==========================================
+  // Fetch current breaking news from json-server on load to display in dashboard
   useEffect(() => {
     if (isChecking) return;
 
-    const fetchFlowers = async () => {
+    const fetchCurrentHeadline = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        const response = await axios.get<Flower[]>(API_URL);
-        setFlowers(response.data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load flowers.");
-      } finally {
-        setLoading(false);
+        const response = await axios.get<BreakingNews>("http://localhost:4000/breaking-news");
+        setCurrentHeadline(response.data.title);
+      } catch (err) {
+        console.warn("Local API server is offline. Using offline default display.");
+        setCurrentHeadline("Warning: Local json-server offline.");
       }
     };
 
-    fetchFlowers();
+    fetchCurrentHeadline();
   }, [isChecking]);
 
   // ==========================================
-  // TODO RECAP 7: Initialize useForm with types and defaults
+  // TODO RECAP 9: Initialize react-hook-form with validation constraints
   // ==========================================
   const {
     register,
     handleSubmit,
     setValue,
-    reset,
     formState: { errors },
-  } = useForm<FlowerFormInput>({
+  } = useForm<FormInput>({
     defaultValues: {
-      name: "",
-      price: 0,
-      description: "",
-      image: "",
+      title: "",
     },
   });
 
   // ==========================================
-  // Form submission handler: handles both POST (Create) and PUT (Edit)
-  // TODO RECAP 9: Implement Axios POST submit logic
-  // TODO RECAP 10: Implement Axios PUT submit & Edit Mode populate/cancel logic
+  // TODO RECAP 10: Implement Axios PUT request to update breaking news headline
   // ==========================================
-  const onSubmit = async (data: FlowerFormInput) => {
+  const onSubmit = async (data: FormInput) => {
     try {
-      setActionLoading(true);
-      const payload = {
-        ...data,
-        price: Number(data.price),
+      setIsSaving(true);
+      const payload: BreakingNews = {
+        title: data.title,
+        timestamp: new Date().toLocaleTimeString(),
       };
 
-      if (editingId) {
-        // PUT (Update) operation
-        const response = await axios.put<Flower>(`${API_URL}/${editingId}`, payload);
-        setFlowers((prev) =>
-          prev.map((flower) => (flower.id === editingId ? response.data : flower))
-        );
-        setEditingId(null);
-      } else {
-        // POST (Create) operation
-        const response = await axios.post<Flower>(API_URL, payload);
-        setFlowers((prev) => [response.data, ...prev]);
-      }
-      reset();
+      const response = await axios.put<BreakingNews>(
+        "http://localhost:4000/breaking-news",
+        payload
+      );
+
+      setCurrentHeadline(response.data.title);
+      setValue("title", "");
+      alert("Breaking News headline successfully updated! You can now test the 10-second revalidation at /news/breaking.");
     } catch (err: any) {
-      alert(err.message || "Failed to save flower arrangement.");
+      alert("Failed to update Breaking News. Ensure that 'npm run api' (json-server) is running on port 4000.");
     } finally {
-      setActionLoading(false);
-    }
-  };
-
-  // Populate form with item details to trigger Edit Mode
-  const startEdit = (flower: Flower) => {
-    setEditingId(flower.id);
-    setValue("name", flower.name);
-    setValue("price", flower.price);
-    setValue("description", flower.description);
-    setValue("image", flower.image);
-  };
-
-  // Cancel edit mode and reset form inputs
-  const cancelEdit = () => {
-    setEditingId(null);
-    reset();
-  };
-
-  // ==========================================
-  // TODO RECAP 11: Implement Axios DELETE logic with browser confirm alert
-  // ==========================================
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this flower?")) return;
-
-    try {
-      setActionLoading(true);
-      await axios.delete(`${API_URL}/${id}`);
-      setFlowers((prev) => prev.filter((flower) => flower.id !== id));
-      
-      if (editingId === id) {
-        cancelEdit();
-      }
-    } catch (err: any) {
-      alert(err.message || "Failed to delete flower arrangement.");
-    } finally {
-      setActionLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -150,9 +95,9 @@ export default function DashboardPage() {
     return (
       <>
         <Navigation />
-        <main className="shop-container text-center py-24">
-          <p className="text-sm text-slate-500 dark:text-zinc-400 animate-pulse font-semibold">
-            Checking credentials session...
+        <main className="mx-auto max-w-xl px-4 py-24 text-center">
+          <p className="text-xs text-slate-400 dark:text-zinc-500 animate-pulse font-semibold">
+            Verifying administrator session...
           </p>
         </main>
       </>
@@ -162,176 +107,82 @@ export default function DashboardPage() {
   return (
     <>
       <Navigation />
-      <main className="shop-container">
-        {/* Header Dashboard Info */}
-        <header className="mb-10 border-b border-slate-200 dark:border-neutral-800 pb-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-100">
-            Admin Panel
-          </h1>
-          <p className="mt-2 text-slate-500 dark:text-zinc-400 text-sm">
-            Authenticated as: <span className="font-bold text-slate-800 dark:text-zinc-200">{userEmail}</span>
-          </p>
+      <main className="mx-auto max-w-3xl px-4 py-8">
+        {/* Dashboard Header */}
+        <header className="mb-8 border-b border-slate-100 dark:border-neutral-900 pb-5 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-50">
+              Admin Panel
+            </h1>
+            <p className="mt-1.5 text-xs text-slate-500 dark:text-zinc-400">
+              Authenticated as: <span className="font-extrabold text-[#00828A] dark:text-teal-400">{userEmail}</span>
+            </p>
+          </div>
         </header>
 
-        {/* Form and Table Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-          
-          {/* Left Side: Create / Update Form Card */}
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-6 shadow-xs lg:col-span-1">
-            <h2 className="text-lg font-extrabold text-slate-800 dark:text-zinc-100 mb-5">
-              {editingId ? "Edit Flower Details" : "Add Flower Arrangement"}
-            </h2>
-            
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              {/* Flower Name Input */}
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+          {/* Form Card (Left/60%) */}
+          <div className="md:col-span-3 bg-white dark:bg-zinc-950/40 border border-slate-200/60 dark:border-neutral-800/80 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-1.5 mb-4">
+              <span className="w-1.5 h-4 bg-[#00828A] rounded"></span>
+              <h2 className="text-sm font-extrabold text-slate-800 dark:text-zinc-200">
+                Update Breaking News Headline
+              </h2>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Headline Text Input */}
               <div>
-                <label className="input-label">Flower Name</label>
+                <label className="block text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
+                  New Headline Title
+                </label>
                 {/* ========================================== */}
-                {/* TODO RECAP 8: Register form fields with constraints and output errors */}
+                {/* TODO RECAP 9: Register input constraints */}
                 {/* ========================================== */}
                 <input
                   type="text"
-                  placeholder="e.g. Red Rose Bouquet"
-                  {...register("name", {
-                    required: "Flower name is required",
-                    minLength: { value: 3, message: "Name must be at least 3 characters" },
+                  placeholder="e.g. Presidential Summit officially opens in Jakarta"
+                  {...register("title", {
+                    required: "News headline is required",
+                    minLength: {
+                      value: 10,
+                      message: "Headline must be at least 10 characters",
+                    },
                   })}
-                  className="input-field"
+                  className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-neutral-800 text-xs bg-slate-50 dark:bg-zinc-900 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-[#00828A]"
                 />
-                {errors.name && (
-                  <p className="input-error">⚠ {errors.name.message}</p>
-                )}
-              </div>
-
-              {/* Flower Price Input */}
-              <div>
-                <label className="input-label">Price ($)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="29.99"
-                  {...register("price", {
-                    required: "Price is required",
-                    min: { value: 1, message: "Price must be at least $1.00" },
-                  })}
-                  className="input-field"
-                />
-                {errors.price && (
-                  <p className="input-error">⚠ {errors.price.message}</p>
-                )}
-              </div>
-
-              {/* Flower Image URL input */}
-              <div>
-                <label className="input-label">Image URL</label>
-                <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  {...register("image", { required: "Image URL is required" })}
-                  className="input-field"
-                />
-                {errors.image && (
-                  <p className="input-error">⚠ {errors.image.message}</p>
-                )}
-              </div>
-
-              {/* Flower Description Textarea */}
-              <div>
-                <label className="input-label">Description</label>
-                <textarea
-                  placeholder="Provide floral arrangement descriptions..."
-                  {...register("description", {
-                    required: "Description is required",
-                    minLength: { value: 10, message: "Description must be at least 10 characters" },
-                  })}
-                  className="textarea-field"
-                />
-                {errors.description && (
-                  <p className="input-error">⚠ {errors.description.message}</p>
+                {errors.title && (
+                  <p className="text-[10px] text-red-500 font-semibold mt-1">
+                    ⚠ {errors.title.message}
+                  </p>
                 )}
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex flex-col gap-2 mt-2">
-                <button
-                  type="submit"
-                  disabled={actionLoading}
-                  className="btn-primary"
-                >
-                  {actionLoading ? "Saving..." : editingId ? "Update Flower" : "Create Flower"}
-                </button>
-                {editingId && (
-                  <button
-                    type="button"
-                    onClick={cancelEdit}
-                    disabled={actionLoading}
-                    className="btn-secondary"
-                  >
-                    Cancel Edit
-                  </button>
-                )}
-              </div>
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="w-full h-10 rounded-full bg-[#00828A] hover:bg-[#006e75] text-white text-xs font-bold transition-colors shadow-sm disabled:bg-slate-300 dark:disabled:bg-zinc-800 shrink-0 cursor-pointer"
+              >
+                {isSaving ? "Saving changes..." : "Update News Headline"}
+              </button>
             </form>
           </div>
 
-          {/* Right Side: Listings CRUD Table */}
-          <div className="lg:col-span-2 flex flex-col gap-6 w-full">
-            <h2 className="text-lg font-extrabold text-slate-800 dark:text-zinc-100">
-              Arrangement Inventory
-            </h2>
-
-            {/* Error Feedback Component */}
-            {error && (
-              <div className="flex flex-col items-center justify-center p-10 text-center text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl">
-                <span className="text-2xl mb-1">⚠</span>
-                <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm">Failed to Load Listings</h3>
-                <p className="text-xs mt-1 text-slate-500 dark:text-zinc-400">{error}</p>
+          {/* Current Live Headline Card (Right/40%) */}
+          <div className="md:col-span-2 space-y-4">
+            <div className="bg-slate-50 dark:bg-zinc-900/30 border border-slate-200/40 dark:border-neutral-800/60 rounded-2xl p-5">
+              <h3 className="text-[10px] font-extrabold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mb-3">
+                CURRENT HEADLINE
+              </h3>
+              <div className="p-3 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-neutral-800/80 rounded-xl text-xs text-slate-800 dark:text-zinc-200 font-bold leading-snug">
+                {currentHeadline || "Loading headline..."}
               </div>
-            )}
-
-            {/* Loading Spinner table row */}
-            {loading && !error && (
-              <div className="admin-table-container animate-pulse">
-                <div className="h-48 bg-white dark:bg-zinc-900" />
-              </div>
-            )}
-
-            {/* Empty inventory listing message */}
-            {!loading && !error && flowers.length === 0 && (
-              <div className="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl">
-                <span className="text-3xl mb-2">🌸</span>
-                <h3 className="font-bold text-slate-850 dark:text-zinc-200 text-sm">Inventory is Empty</h3>
-                <p className="text-xs mt-1 text-slate-400 dark:text-zinc-500">
-                  Use the entry form to add your first flower arrangement.
-                </p>
-              </div>
-            )}
-
-            {/* Inventory CRUD Table Grid */}
-            {!loading && !error && flowers.length > 0 && (
-              <div className="admin-table-container shadow-xs">
-                <table className="admin-table">
-                  <thead className="admin-thead">
-                    <tr>
-                      <th className="admin-th">Flower Details</th>
-                      <th className="admin-th">Price</th>
-                      <th className="admin-th text-right px-6">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {flowers.map((flower) => (
-                      <FlowerItem
-                        key={flower.id}
-                        flower={flower}
-                        onEdit={startEdit}
-                        onDelete={handleDelete}
-                        disabled={actionLoading}
-                      />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+              <p className="text-[9px] text-slate-400 dark:text-zinc-500 mt-3 leading-relaxed">
+                The text above is fetched directly from the local json-server database (port 4000). Updating it modifies the local file database.
+              </p>
+            </div>
           </div>
         </div>
       </main>

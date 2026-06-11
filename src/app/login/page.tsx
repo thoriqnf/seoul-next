@@ -10,9 +10,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ==========================================
-  // TODO RECAP 5: Initialize useRouter hook for programmatic redirect
-  // ==========================================
   const router = useRouter();
 
   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +17,7 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    // Mock authentication check
+    // Mock authentication check with 600ms latency
     setTimeout(() => {
       if (email.trim() === "admin@example.com" && password === "password123") {
         localStorage.setItem("isLoggedIn", "true");
@@ -39,18 +36,22 @@ export default function LoginPage() {
     <>
       <Navigation />
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-16 flex flex-col justify-center font-sans">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-8 shadow-xs">
+        <div className="bg-white dark:bg-zinc-950/40 border border-slate-200/65 dark:border-neutral-800/85 rounded-2xl p-8 shadow-sm">
           <header className="mb-6 text-center">
-            <h1 className="text-2xl font-extrabold text-slate-800 dark:text-zinc-50">
-              Sign In
+            {/* Kumparan Logo Style */}
+            <span className="text-xl md:text-2xl font-extrabold text-[#00828A] tracking-tighter block mb-2">
+              kumparan<span className="text-teal-400">.</span>
+            </span>
+            <h1 className="text-lg font-extrabold text-slate-800 dark:text-zinc-150">
+              Sign In to Admin Panel
             </h1>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Access the administrative dashboard panel.
+            <p className="text-xs text-slate-500 mt-1">
+              Authenticate to manage news broadcasts and configurations.
             </p>
           </header>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs font-semibold text-red-600 dark:text-red-400 rounded-xl">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200/50 text-[11px] font-semibold text-red-600 dark:text-red-400 rounded-xl">
               ⚠ {error}
             </div>
           )}
@@ -63,7 +64,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com"
                 required
                 className="input-field"
@@ -77,7 +78,7 @@ export default function LoginPage() {
               <input
                 type="password"
                 value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 className="input-field"
@@ -87,13 +88,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2"
+              className="btn-primary w-full mt-2 shrink-0 cursor-pointer"
             >
               {loading ? "Signing in..." : "Login"}
             </button>
           </form>
 
-          <footer className="mt-6 border-t border-slate-100 dark:border-neutral-800/80 pt-4 text-center">
+          <footer className="mt-6 border-t border-slate-100 dark:border-neutral-900 pt-4 text-center">
             <p className="text-[10px] text-slate-400 leading-normal">
               Demo Credentials:<br />
               <span className="font-semibold text-slate-550 dark:text-zinc-400">admin@example.com</span> / <span className="font-semibold text-slate-550 dark:text-zinc-400">password123</span>

@@ -1,33 +1,42 @@
-export interface Flower {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-}
-
-export interface FlowerFormInput {
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-}
-
-export interface FlowerCardProps {
-  flower: Flower;
-}
-
-export interface FlowerItemProps {
-  flower: Flower;
-  onEdit: (flower: Flower) => void;
-  onDelete: (id: string) => void;
-  disabled: boolean;
-}
-
-export interface Announcement {
+export interface NewsArticle {
   id: string;
   title: string;
-  message: string;
-  type: "info" | "warning" | "success";
+  body: string;
+  tags: string[];
+  views: number;
+  userId: number;
+  image?: string;
+  author: string;
+  authorImage?: string;
+  timeAgo: string;
+  verified: boolean;
 }
 
+export interface NewsComment {
+  id: string;
+  body: string;
+  postId: number;
+  user: {
+    id: number;
+    username: string;
+    fullName?: string;
+  };
+}
+
+export interface BreakingNews {
+  title: string;
+  timestamp: string;
+}
+
+export interface ArticleCardProps {
+  article: NewsArticle;
+  isHero?: boolean;
+}
+
+export interface TrendingSidebarProps {
+  articles: NewsArticle[];
+}
+
+export interface CommentsSectionProps {
+  postId: string;
+}
