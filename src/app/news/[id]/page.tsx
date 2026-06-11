@@ -19,7 +19,7 @@ const NEWS_IMAGES = [
 ];
 
 // ==========================================
-// TODO RECAP RENDER 3: Define generateStaticParams to pre-build articles 1, 2, and 3 during compile time
+// TODO RECAP RENDER 8: Define generateStaticParams to pre-build articles 1, 2, and 3 during compile time
 // ==========================================
 export async function generateStaticParams() {
   return [
@@ -172,7 +172,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         </article>
 
         {/* ========================================== */}
-        {/* TODO RECAP RENDER 4: Wrap CommentsSection inside a Suspense boundary with a skeleton fallback to enable HTML streaming */}
+        {/* TODO RECAP RENDER 10: Wrap CommentsSection inside a Suspense boundary with a skeleton fallback to enable HTML streaming */}
         {/* ========================================== */}
         <Suspense
           fallback={

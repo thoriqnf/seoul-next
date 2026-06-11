@@ -58,7 +58,7 @@ function FeedContent() {
     : `https://dummyjson.com/posts?limit=12&skip=8`;
 
   // ==========================================
-  // TODO RECAP RENDER 7: Set up useSWR to fetch from API, enabling automated focus revalidation and background caching updates
+  // TODO RECAP RENDER 1: Set up useSWR to fetch from API, enabling automated focus revalidation and background caching updates
   // ==========================================
   const { data, error, isLoading } = useSWR(apiUrl, fetcher, {
     revalidateOnFocus: true, // revalidate cache when browser gains focus

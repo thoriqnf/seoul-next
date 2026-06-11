@@ -8,7 +8,7 @@ export function ReadHistoryTracker({ postId }: { postId: string }) {
 
   useEffect(() => {
     // ==========================================
-    // TODO RECAP RENDER 5: Implement safety checks inside useEffect to read/write localStorage without causing SSR global object or hydration mismatch crashes
+    // TODO RECAP RENDER 6: Implement safety checks inside useEffect to read/write localStorage without causing SSR global object or hydration mismatch crashes
     // ==========================================
     // Safely interact with client-only window/localStorage inside useEffect after mounting
     if (typeof window !== "undefined") {

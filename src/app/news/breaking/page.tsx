@@ -3,7 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { BreakingNews } from "@/types";
 
 // ==========================================
-// TODO RECAP RENDER 6: Export static cache revalidation interval key to enable ISR background updates every 10 seconds
+// TODO RECAP RENDER 3: Export static cache revalidation interval key to enable ISR background updates every 10 seconds
 // ==========================================
 export const revalidate = 10;
 

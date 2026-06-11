@@ -33,7 +33,7 @@ function mapPostToArticle(post: any): NewsArticle {
 
 async function getNewsData(): Promise<{ heroArticles: NewsArticle[]; trendingArticles: NewsArticle[] }> {
   // ==========================================
-  // TODO RECAP RENDER 1: Concurrently fetch news data (posts limit=3) and trending data (posts limit=5 skip=3) using Promise.all
+  // TODO RECAP RENDER 7: Concurrently fetch news data (posts limit=3) and trending data (posts limit=5 skip=3) using Promise.all
   // Then map raw posts to our NewsArticle structures using mapPostToArticle
   // ==========================================
   const [postsRes, trendingRes] = await Promise.all([

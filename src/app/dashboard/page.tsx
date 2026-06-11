@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   // ==========================================
-  // TODO RECAP RENDER 8: Protect admin page by verifying user credentials in localStorage, programmatically redirecting unauthorized sessions to login page
+  // TODO RECAP RENDER 5: Protect admin page by verifying user credentials in localStorage, programmatically redirecting unauthorized sessions to login page
   // ==========================================
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -51,7 +51,7 @@ export default function DashboardPage() {
   }, [isChecking]);
 
   // ==========================================
-  // TODO RECAP RENDER 9: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form
+  // TODO RECAP RENDER 4: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form
   // ==========================================
   const {
     register,
@@ -65,7 +65,7 @@ export default function DashboardPage() {
   });
 
   // ==========================================
-  // TODO RECAP RENDER 10: Implement Axios PUT handler to update the local database with form values to trigger ISR revalidation cycles
+  // TODO RECAP RENDER 9: Implement Axios PUT handler to update the local database with form values to trigger ISR revalidation cycles
   // ==========================================
   const onSubmit = async (data: FormInput) => {
     try {
@@ -137,7 +137,7 @@ export default function DashboardPage() {
                   New Headline Title
                 </label>
                 {/* ========================================== */}
-                {/* TODO RECAP RENDER 9: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form */}
+                {/* TODO RECAP RENDER 4: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form */}
                 {/* ========================================== */}
                 <input
                   type="text"
