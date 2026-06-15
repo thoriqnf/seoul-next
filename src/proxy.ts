@@ -11,13 +11,15 @@ import { SessionData } from "@/types";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Guard dashboard routes specifically (/dashboard and its subpaths)
+  // ==========================================
+  // PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
+  // ==========================================
   if (pathname.startsWith("/dashboard")) {
-    // Retrieve the secure server-set session cookie payload
     const sessionCookie = request.cookies.get("session")?.value;
 
-    // 2. Redirection if user is unauthenticated
-    // If no session cookie is present, redirect user immediately to the login view
+    // ==========================================
+    // PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
+    // ==========================================
     if (!sessionCookie) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
@@ -28,17 +30,16 @@ export function proxy(request: NextRequest) {
       const sessionData: SessionData = JSON.parse(sessionCookie);
       const user = sessionData.user;
 
-      // 3. Enforce general Playroom Access Permission:
-      // Only users with 'admin' (Andy) or 'editor' (Woody/Buzz) roles can enter the dashboard.
-      // Basic customers or unmapped roles (like Sid's 'user' role) are blocked and sent to Sid's Yard.
+      // ==========================================
+      // PROXY AUTH 11: Parse session data and enforce RBAC rules:
+      //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
+      //   - Block non-admin users (role !== admin) from dashboard/admin-only
+      // ==========================================
       if (user.role !== "admin" && user.role !== "editor") {
         const unauthorizedUrl = new URL("/unauthorized", request.url);
         return NextResponse.redirect(unauthorizedUrl);
       }
 
-      // 4. Enforce strict Owner-Only Access Level (RBAC):
-      // Only Andy (admin role) can view the admin-only console files/routes.
-      // Other approved toys (editor role like Woody/Buzz) are redirected to Sid's Yard if they try to look in Andy's chest.
       if (pathname.startsWith("/dashboard/admin-only") && user.role !== "admin") {
         const unauthorizedUrl = new URL("/unauthorized", request.url);
         return NextResponse.redirect(unauthorizedUrl);
