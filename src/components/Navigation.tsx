@@ -33,15 +33,15 @@ export function Navigation() {
   };
 
   return (
-    <header className="w-full border-b border-slate-100 bg-white dark:border-neutral-800/80 dark:bg-zinc-950 sticky top-0 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.02)] font-sans">
+    <header className="w-full border-b border-sky-100 bg-white sticky top-0 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.02)] font-sans">
       <div className="mx-auto max-w-4xl px-4 h-16 flex items-center justify-between gap-4">
-        {/* Toyiverse Brand Logo */}
+        {/* toyStory Brand Logo */}
         <Link href="/" className="flex flex-col shrink-0">
-          <span className="text-[9px] font-extrabold tracking-widest text-indigo-500/80 uppercase leading-none">
-            Online Toy Boutique
+          <span className="text-[9px] font-extrabold tracking-widest text-indigo-400 uppercase leading-none">
+            Andy's Playroom Registry
           </span>
-          <span className="text-lg font-black text-indigo-600 dark:text-indigo-400 tracking-tight leading-tight flex items-center mt-0.5">
-            toyStore<span className="text-amber-400 font-black">.</span>
+          <span className="text-lg font-black text-indigo-900 tracking-tight leading-tight flex items-center mt-0.5">
+            toyStory<span className="text-amber-450 font-black">⭐</span>
           </span>
         </Link>
 
@@ -51,13 +51,13 @@ export function Navigation() {
             <div className="flex items-center gap-4 text-xs font-bold">
               <Link
                 href="/dashboard"
-                className="text-slate-650 dark:text-zinc-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="text-slate-600 hover:text-indigo-600 transition-colors"
               >
-                Store Console
+                Room Console
               </Link>
               <button
                 onClick={handleLogout}
-                className="text-red-650 dark:text-red-400 hover:underline cursor-pointer bg-transparent border-none p-0"
+                className="text-red-500 hover:underline cursor-pointer bg-transparent border-none p-0"
               >
                 Logout
               </button>
@@ -65,7 +65,7 @@ export function Navigation() {
           ) : (
             <Link
               href="/login"
-              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline transition-colors"
+              className="text-xs font-bold text-indigo-600 hover:underline transition-colors"
             >
               Sign In
             </Link>
@@ -74,9 +74,9 @@ export function Navigation() {
           {isLoggedIn && (
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold transition-colors shadow-sm"
+              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-indigo-650 hover:bg-indigo-700 text-white text-[10px] font-black transition-colors shadow-sm"
             >
-              Staff Dashboard
+              Toy Console
             </Link>
           )}
         </div>

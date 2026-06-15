@@ -34,7 +34,10 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Map username to specific roles for RBAC demo purposes
+    // Map username to Toy Story roles for RBAC demo purposes:
+    // - emilys (admin) -> Andy (Owner)
+    // - michaelw (editor) -> Woody/Buzz (Toy)
+    // - others (user) -> Sid (Mutant)
     let role: "admin" | "editor" | "user" = "user";
     if (data.username === "emilys") {
       role = "admin";
