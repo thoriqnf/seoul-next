@@ -1,30 +1,53 @@
-# Developer Guide: Week 4 Day 1 - Proxy and Authentication (RBAC) in Toyiverse
+# Developer Guide: Week 4 Day 1 - Proxy and Authentication (RBAC) in Andy's Playroom
 
-This guide walks you through setting up a secure authentication and authorization pipeline in Next.js using **Route Handlers** (as an API Auth Proxy) and **HTTP-only session cookies**, with **Role-Based Access Control (RBAC)** handled on the client side, all wrapped inside a premium **Online Toy Store ("Toyiverse")** theme.
-
----
-
-## Learning Objectives & Topics Covered
-
-1. **API Route Handlers (Auth Proxy)**: Proxy client-side authentication requests to external services (`https://dummyjson.com/auth/login`) to prevent exposure of third-party API configurations.
-2. **Secure HTTP-Only Cookies**: Save authentication session objects securely inside server-set `HttpOnly` cookies, shielding them from client-side XSS scripting.
-3. **Role-Based Access Control (RBAC)**: Check user permissions in components to render views according to roles:
-   - **Store Owner** (`admin` role): Full access to inventory, financials, and ledger configurations.
-   - **Store Assistant** (`editor` role): Access to basic dashboard, but blocked from financial metrics.
-   - **Customer** (`user` role): Blocked from Staff Console entirely.
-4. **Real-time Client Auth Synchronization**: Bind global state tracking using `useSWR` to share session data seamlessly between navigation bars and layout pages.
-5. **Axios POST Mutations with SWR**: Integrate action-based calls (login and logout) via Axios, trigger cache revalidation via SWR's `mutate` utility, and inspect HTTP-only cookies in developer tools.
+This guide walks you through setting up a secure authentication and authorization pipeline in Next.js using **Route Handlers** (as an API Auth Proxy) and **HTTP-only session cookies**, with **Role-Based Access Control (RBAC)** handled on the client side, all wrapped inside a premium **Toy Story (Andy's Playroom)** theme.
 
 ---
 
-## Step-by-Step Task Walkthrough
+## Slide Presentation: Playroom Implementation Plan
+
+Use the following slide outlines to present the playroom proxy authentication architecture:
+
+### Slide 1: The Guard (`src/proxy.ts`)
+*The Playroom Gatekeeper*
+* **Protects Dashboard Routes**: Intercepts requests on the server matching `/dashboard/:path*`.
+* **Inspects Session Cookie**: Reads the secure, HTTP-only `session` cookie.
+* **Enforces Access Control (RBAC)**:
+  * Redirects unauthenticated occupants to `/login`.
+  * Restricts `/dashboard` to approved toys (Woody, Buzz) and owners (Andy).
+  * Blocks unauthorized users (like Sid) by redirecting them to Sid's Yard `/unauthorized`.
+
+### Slide 2: The Bridge (`src/app/api/auth`)
+*The Secure Proxy Routes*
+* **Login Bridge (`POST /api/auth/login`)**:
+  * Proxies username and password to the external service.
+  * Maps credentials to playroom roles (`emilys` ➡️ Admin/Owner, `michaelw` ➡️ Editor/Toy).
+  * Sets secure, `HttpOnly`, `SameSite=Lax` cookie storing session details.
+* **Logout Bridge (`POST /api/auth/logout`)**: Clears the session on the server by setting the cookie lifespan to a past date.
+* **Session Bridge (`GET /api/auth/me`)**: Parses the active session cookie and returns the user payload to the client.
+
+### Slide 3: The Sync (Client-Side SWR)
+*Real-time Playroom Console Sync*
+* **Subscribes to Session State**: Uses `useSWR("/api/auth/me")` across components to share real-time state.
+* **Optimistic SWR Cache Mutation**:
+  * Triggered via Axios POST calls.
+  * Mutates `/api/auth/me` with session user state on login.
+  * Mutates cache to `null` on logout to trigger instant client redirects.
+* **Component-Level RBAC**: Uses current SWR state to conditionally display dashboard controls (Andy's Toy Chest link vs. Woody/Buzz patrol options).
+
+---
+
+## Step-by-Step Granular Task Sequence
+
+Here is the step-by-step checklist of tasks to implement authentication in the playroom.
 
 ### Phase 1: API Route Handlers (Auth Proxy)
 
-#### Step 1 (`// TODO PROXY AUTH 1`): Proxy Post Request to DummyJSON
-*File: `src/app/api/auth/login/route.ts`*  
-Proxy the client-side login request to the secure external identity service.
+#### Step 1: Forward Login Credentials to DummyJSON
+*File: `src/app/api/auth/login/route.ts` (Marker: `// TODO PROXY AUTH 1`)*
+Extract the username and password from the POST request body and forward them to the external identity service:
 ```typescript
+const { username, password } = await request.json();
 const response = await fetch("https://dummyjson.com/auth/login", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -32,16 +55,23 @@ const response = await fetch("https://dummyjson.com/auth/login", {
 });
 ```
 
-#### Step 2 (`// TODO PROXY AUTH 2`): Map Mocks and Set Secure Cookies
-*File: `src/app/api/auth/login/route.ts`*  
-Assign roles based on username credentials (`emilys` -> `admin` as Store Owner, `michaelw` -> `editor` as Store Assistant), structure a session object, and write it into a secure `HttpOnly` Lax cookie:
+#### Step 2: Extract Session Data and Map Playroom Roles
+*File: `src/app/api/auth/login/route.ts` (Marker: `// TODO PROXY AUTH 2a`)*
+Check if the response is successful. Extract the user details and access token, mapping credentials to Toy Story roles:
 ```typescript
+const data = await response.json();
 let role: "admin" | "editor" | "user" = "user";
-if (data.username === "emilys") role = "admin";
-else if (data.username === "michaelw") role = "editor";
+if (data.username === "emilys") role = "admin"; // Andy
+else if (data.username === "michaelw") role = "editor"; // Woody/Buzz
+```
 
+#### Step 3: Set Secure HttpOnly Session Cookie
+*File: `src/app/api/auth/login/route.ts` (Marker: `// TODO PROXY AUTH 2b`)*
+Structure the session payload and store it inside a secure, `HttpOnly` cookie containing the session object:
+```typescript
+const sessionData = { user: authUser, token: data.accessToken };
 const cookieStore = await cookies();
-cookieStore.set("session", JSON.stringify({ user: authUser, token: data.accessToken }), {
+cookieStore.set("session", JSON.stringify(sessionData), {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax",
@@ -50,9 +80,9 @@ cookieStore.set("session", JSON.stringify({ user: authUser, token: data.accessTo
 });
 ```
 
-#### Step 3 (`// TODO PROXY AUTH 3`): Clear Session Cookie on Logout
-*File: `src/app/api/auth/logout/route.ts`*  
-Flush user sessions on the server by setting the session cookie lifetime to expire.
+#### Step 4: Clear Cookie Lifespan on Logout
+*File: `src/app/api/auth/logout/route.ts` (Marker: `// TODO PROXY AUTH 3`)*
+Delete the session by setting the `session` cookie value to empty and its `maxAge` to `0` on the server:
 ```typescript
 const cookieStore = await cookies();
 cookieStore.set("session", "", {
@@ -64,12 +94,13 @@ cookieStore.set("session", "", {
 });
 ```
 
-#### Step 4 (`// TODO PROXY AUTH 4`): Retrieve Active Session Profile
-*File: `src/app/api/auth/me/route.ts`*  
-Retrieve, parse, and safely return the active profile details from the session cookie.
+#### Step 5: Read and Safely Return Mapped Session User
+*File: `src/app/api/auth/me/route.ts` (Marker: `// TODO PROXY AUTH 4`)*
+Read the `session` cookie, parse the JSON payload, and safely return the mapped user profile object to the client:
 ```typescript
 const cookieStore = await cookies();
 const sessionCookie = cookieStore.get("session");
+if (!sessionCookie) return NextResponse.json(null, { status: 401 });
 const sessionData = JSON.parse(sessionCookie.value);
 return NextResponse.json(sessionData.user);
 ```
@@ -78,37 +109,44 @@ return NextResponse.json(sessionData.user);
 
 ### Phase 2: Client-Side Integrations (SWR & Axios)
 
-#### Step 5 (`// TODO PROXY AUTH 5`): Post Credentials using Axios
-*File: `src/app/login/page.tsx`*  
-Post inputs to the local auth proxy endpoint using Axios, and update the global SWR user cache:
+#### Step 6: Post Login via Axios and Mutate SWR Cache
+*File: `src/app/login/page.tsx` (Marker: `// TODO PROXY AUTH 5`)*
+Post input values to the API route, trigger cache revalidation via SWR's `mutate` utility with the returned user data, and redirect:
 ```typescript
 const response = await axios.post("/api/auth/login", { username, password });
 await mutate("/api/auth/me", response.data, true);
+router.push("/dashboard");
 ```
 
-#### Step 6 (`// TODO PROXY AUTH 6`): Fetch Session State with useSWR
-*File: `src/components/Navigation.tsx`*  
-Fetch the active user session in real-time, sharing state between the navbar and views:
+#### Step 7: Subscribe to Active User State via useSWR
+*File: `src/components/Navigation.tsx` (Marker: `// TODO PROXY AUTH 6`)*
+Fetch the active user session in the navbar to render authenticated state:
 ```typescript
 const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher);
 ```
 
-#### Step 7 (`// TODO PROXY AUTH 7`): Perform Axios Logout & SWR Mutation
-*File: `src/components/Navigation.tsx`*  
-Submit a POST request to `/api/auth/logout` and reset SWR cache optimistically:
+#### Step 8: Clear Auth Proxy and Reset SWR Cache
+*File: `src/components/Navigation.tsx` (Marker: `// TODO PROXY AUTH 7`)*
+Send a request to expire the session cookie and mutate `/api/auth/me` SWR cache to `null`:
 ```typescript
 await axios.post("/api/auth/logout");
 await mutate("/api/auth/me", null, false);
+router.push("/login");
 ```
 
-#### Step 8 (`// TODO PROXY AUTH 8`): Implement SWR Guards and Conditional Displays
-*File: `src/app/dashboard/page.tsx`*  
-Switch local storage auth checks with `useSWR("/api/auth/me")`, and render Owner-only settings links depending on the user's role:
+#### Step 9: Bind SWR Session and Guards
+*File: `src/app/dashboard/page.tsx` (Marker: `// TODO PROXY AUTH 8a`)*
+Subscribe to `/api/auth/me` on the dashboard to authenticate console layouts:
 ```typescript
-const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher);
+const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher);
+```
 
+#### Step 10: Conditional Render Controls Based on Role (RBAC)
+*File: `src/app/dashboard/page.tsx` (Marker: `// TODO PROXY AUTH 8b`)*
+Check the user's role inside components to conditionally toggle dashboard panels:
+```typescript
 {user?.role === "admin" && (
-  <Link href="/dashboard/admin-only">Configure Store Settings</Link>
+  <Link href="/dashboard/admin-only">Open Toy Chest</Link>
 )}
 ```
 
@@ -118,16 +156,15 @@ const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher);
 
 1. **Launch Dev Server**:
    ```bash
-   npm run dev
+   bun dev
    ```
-2. **Log in as Store Owner**:
+2. **Log in as Owner (Andy)**:
    - Username: `emilys`
    - Password: `emilyspass`
-   - Verify that you are greeted as a **Store Owner** and can click "Configure Store Settings" to access the `/dashboard/admin-only` route.
-3. **Log in as Store Assistant**:
+   - Verify access to Andy's Chest `/dashboard/admin-only`.
+3. **Log in as Toy (Woody/Buzz)**:
    - Username: `michaelw`
    - Password: `michaelwspass`
-   - Verify that you are logged in as a **Store Assistant** and the owner controls card is hidden.
+   - Verify chest is locked.
 4. **Inspect Cookie Security**:
-   - Open Chrome DevTools -> Application -> Cookies.
-   - Verify that the `session` cookie has `HTTP` checked (HttpOnly) and cannot be read via `document.cookie` in the Console.
+   - Verify `session` cookie has `HttpOnly` and `SameSite=Lax` flags active in Chrome Developer Tools.
