@@ -11,49 +11,45 @@ import { SessionData } from "@/types";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Guard dashboard routes specifically (/dashboard and its subpaths)
+  // ==========================================
+  // TODO PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
+  // TODO PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
+  // TODO PROXY AUTH 11: Parse session data and enforce RBAC rules:
+  //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
+  //   - Block non-admin users (role !== admin) from dashboard/admin-only
+  // ==========================================
+  /* UNCOMMENT FOR FINISHED IMPLEMENTATION
   if (pathname.startsWith("/dashboard")) {
-    // Retrieve the secure server-set session cookie payload
     const sessionCookie = request.cookies.get("session")?.value;
 
-    // 2. Redirection if user is unauthenticated
-    // If no session cookie is present, redirect user immediately to the login view
     if (!sessionCookie) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
 
     try {
-      // Decode and parse the session payload from the cookie
       const sessionData: SessionData = JSON.parse(sessionCookie);
       const user = sessionData.user;
 
-      // 3. Enforce general Playroom Access Permission:
-      // Only users with 'admin' (Andy) or 'editor' (Woody/Buzz) roles can enter the dashboard.
-      // Basic customers or unmapped roles (like Sid's 'user' role) are blocked and sent to Sid's Yard.
       if (user.role !== "admin" && user.role !== "editor") {
         const unauthorizedUrl = new URL("/unauthorized", request.url);
         return NextResponse.redirect(unauthorizedUrl);
       }
 
-      // 4. Enforce strict Owner-Only Access Level (RBAC):
-      // Only Andy (admin role) can view the admin-only console files/routes.
-      // Other approved toys (editor role like Woody/Buzz) are redirected to Sid's Yard if they try to look in Andy's chest.
       if (pathname.startsWith("/dashboard/admin-only") && user.role !== "admin") {
         const unauthorizedUrl = new URL("/unauthorized", request.url);
         return NextResponse.redirect(unauthorizedUrl);
       }
     } catch (error) {
       console.error("Proxy Auth Verification Error:", error);
-      // In case of cookie corruption or parsing issues, flush the bad cookie
-      // and redirect the user back to the sign-in screen to prevent loading loops.
       const loginRedirect = NextResponse.redirect(new URL("/login", request.url));
       loginRedirect.cookies.delete("session");
       return loginRedirect;
     }
   }
+  */
 
-  // Allow the request to proceed to the destination route
+  // STARTER FALLBACK: Allow all requests to proceed to the destination route by default
   return NextResponse.next();
 }
 
