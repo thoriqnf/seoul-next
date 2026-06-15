@@ -4,40 +4,7 @@ This guide walks you through setting up a secure authentication and authorizatio
 
 ---
 
-## Slide Presentation: Playroom Implementation Plan
-
-Use the following slide outlines to present the playroom proxy authentication architecture:
-
-### Slide 1: The Guard (`src/proxy.ts`)
-*The Playroom Gatekeeper*
-* **Protects Dashboard Routes**: Intercepts requests on the server matching `/dashboard/:path*`.
-* **Inspects Session Cookie**: Reads the secure, HTTP-only `session` cookie.
-* **Enforces Access Control (RBAC)**:
-  * Redirects unauthenticated occupants to `/login`.
-  * Restricts `/dashboard` to approved toys (Woody, Buzz) and owners (Andy).
-  * Blocks unauthorized users (like Sid) by redirecting them to Sid's Yard `/unauthorized`.
-
-### Slide 2: The Bridge (`src/app/api/auth`)
-*The Secure Proxy Routes*
-* **Login Bridge (`POST /api/auth/login`)**:
-  * Proxies username and password to the external service.
-  * Maps credentials to playroom roles (`emilys` ➡️ Admin/Owner, `michaelw` ➡️ Editor/Toy).
-  * Sets secure, `HttpOnly`, `SameSite=Lax` cookie storing session details.
-* **Logout Bridge (`POST /api/auth/logout`)**: Clears the session on the server by setting the cookie lifespan to a past date.
-* **Session Bridge (`GET /api/auth/me`)**: Parses the active session cookie and returns the user payload to the client.
-
-### Slide 3: The Sync (Client-Side SWR)
-*Real-time Playroom Console Sync*
-* **Subscribes to Session State**: Uses `useSWR("/api/auth/me")` across components to share real-time state.
-* **Optimistic SWR Cache Mutation**:
-  * Triggered via Axios POST calls.
-  * Mutates `/api/auth/me` with session user state on login.
-  * Mutates cache to `null` on logout to trigger instant client redirects.
-* **Component-Level RBAC**: Uses current SWR state to conditionally display dashboard controls (Andy's Toy Chest link vs. Woody/Buzz patrol options).
-
----
-
-## Step-by-Step Granular Task Sequence
+## Step-by-Step 
 
 Here is the step-by-step checklist of tasks to implement authentication in the playroom.
 
