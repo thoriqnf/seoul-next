@@ -3,9 +3,11 @@ import { cookies } from "next/headers";
 
 export async function POST() {
   try {
+    // ==========================================
+    // TODO PROXY AUTH 6: Delete the `session` cookie by setting its maxAge to 0
+    // ==========================================
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     const cookieStore = await cookies();
-    
-    // Clear the session cookie by setting its maxAge to 0 and path to "/"
     cookieStore.set("session", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -13,6 +15,7 @@ export async function POST() {
       path: "/",
       maxAge: 0,
     });
+    */
 
     return NextResponse.json({ success: true, message: "Logged out successfully" });
   } catch (error) {

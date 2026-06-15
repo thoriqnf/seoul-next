@@ -11,7 +11,15 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export function Navigation() {
   const router = useRouter();
 
-  // Fetch the active user session in real-time
+  // ==========================================
+  // TODO PROXY AUTH 9: Fetch active session user details in real-time from '/api/auth/me' using useSWR
+  // ==========================================
+  /* UNCOMMENT FOR FINISHED IMPLEMENTATION
+  const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
+    shouldRetryOnError: false,
+  });
+  */
+  // STARTER FALLBACK: Active session fetching so navbar updates out of the box
   const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
@@ -19,17 +27,26 @@ export function Navigation() {
   const isLoggedIn = !!user;
 
   const handleLogout = async () => {
+    // ==========================================
+    // TODO PROXY AUTH 10: Clear the HttpOnly session cookie by calling '/api/auth/logout' via Axios
+    // and mutate the SWR cache '/api/auth/me' to null optimistically
+    // ==========================================
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     try {
-      // Clear HTTP-only session cookie via the auth proxy
       await axios.post("/api/auth/logout");
-
-      // Optimistically update SWR cache to log out the user instantly across components
       await mutate("/api/auth/me", null, false);
-
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
     }
+    */
+
+    // STARTER FALLBACK: Active logout handler so clicking works out of the box
+    try {
+      await axios.post("/api/auth/logout");
+      await mutate("/api/auth/me", null, false);
+      router.push("/login");
+    } catch (err) {}
   };
 
   return (
@@ -51,7 +68,7 @@ export function Navigation() {
             <div className="flex items-center gap-4 text-xs font-bold">
               <Link
                 href="/dashboard"
-                className="text-slate-600 hover:text-indigo-600 transition-colors"
+                className="text-slate-650 hover:text-indigo-600 transition-colors"
               >
                 Room Console
               </Link>

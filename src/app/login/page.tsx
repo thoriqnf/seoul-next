@@ -19,14 +19,17 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
+    // ==========================================
+    // TODO PROXY AUTH 8: Connect form submission to local auth proxy /api/auth/login using Axios
+    // and mutate the global '/api/auth/me' SWR cache key to update user state instantly.
+    // ==========================================
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     try {
-      // Connect form submission to the local auth proxy
       const response = await axios.post("/api/auth/login", {
         username: username.trim(),
         password,
       });
 
-      // Mutate the global SWR cache key to fetch fresh session details immediately
       await mutate("/api/auth/me", response.data, true);
 
       router.push("/dashboard");
@@ -35,6 +38,20 @@ export default function LoginPage() {
         err.response?.data?.error || 
         "Authentication failed. Try emilys / emilyspass or michaelw / michaelwspass"
       );
+      setLoading(false);
+    }
+    */
+
+    // STARTER FALLBACK: Execute the request directly so it works out of the box
+    try {
+      const response = await axios.post("/api/auth/login", {
+        username: username.trim(),
+        password,
+      });
+      await mutate("/api/auth/me", response.data, true);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError("Authentication failed. Use: emilys / emilyspass");
       setLoading(false);
     }
   };
@@ -59,7 +76,7 @@ export default function LoginPage() {
             </header>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-[11px] font-semibold text-red-650 rounded-xl">
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-[11px] font-semibold text-red-655 rounded-xl">
                 ⚠ {error}
               </div>
             )}
@@ -107,10 +124,10 @@ export default function LoginPage() {
                 <p className="font-bold mb-1 text-slate-500">Playroom Credentials:</p>
                 <ul className="space-y-1">
                   <li>
-                    <span className="font-semibold text-slate-600">emilys</span> / <span className="font-semibold text-slate-600">emilyspass</span> (Andy - Owner)
+                    <span className="font-semibold text-slate-650">emilys</span> / <span className="font-semibold text-slate-650">emilyspass</span> (Andy - Owner)
                   </li>
                   <li>
-                    <span className="font-semibold text-slate-600">michaelw</span> / <span className="font-semibold text-slate-600">michaelwspass</span> (Woody/Buzz - Toy)
+                    <span className="font-semibold text-slate-650">michaelw</span> / <span className="font-semibold text-slate-650">michaelwspass</span> (Woody/Buzz - Toy)
                   </li>
                 </ul>
               </div>

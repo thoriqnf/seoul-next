@@ -13,7 +13,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Proxy the login request to DummyJSON
+    // ==========================================
+    // TODO PROXY AUTH 4: Forward (proxy) the login request to the external DummyJSON authentication service
+    // ==========================================
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     const response = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,11 +36,12 @@ export async function POST(request: Request) {
     }
 
     const data = await response.json();
+    */
 
-    // Map username to Toy Story roles for RBAC demo purposes:
-    // - emilys (admin) -> Andy (Owner)
-    // - michaelw (editor) -> Woody/Buzz (Toy)
-    // - others (user) -> Sid (Mutant)
+    // ==========================================
+    // TODO PROXY AUTH 5: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // ==========================================
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     let role: "admin" | "editor" | "user" = "user";
     if (data.username === "emilys") {
       role = "admin";
@@ -60,7 +64,6 @@ export async function POST(request: Request) {
       token: data.accessToken,
     };
 
-    // Store session data securely in an HttpOnly cookie
     const cookieStore = await cookies();
     cookieStore.set("session", JSON.stringify(sessionData), {
       httpOnly: true,
@@ -71,6 +74,34 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(authUser);
+    */
+
+    // STARTER FALLBACK: Return a mock admin profile directly so that frontend runs immediately
+    const mockUser: AuthUser = {
+      id: 1,
+      username: username,
+      email: `${username}@example.com`,
+      firstName: "Starter",
+      lastName: "User",
+      image: "https://dummyjson.com/icon/emilys/128",
+      role: username === "emilys" ? "admin" : username === "michaelw" ? "editor" : "user",
+    };
+
+    const mockSession: SessionData = {
+      user: mockUser,
+      token: "mock-jwt-token",
+    };
+
+    const cookieStore = await cookies();
+    cookieStore.set("session", JSON.stringify(mockSession), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 30,
+    });
+
+    return NextResponse.json(mockUser);
   } catch (error: any) {
     console.error("Login Proxy Error:", error);
     return NextResponse.json(

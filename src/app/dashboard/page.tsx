@@ -13,7 +13,15 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function DashboardPage() {
   const router = useRouter();
   
-  // Use SWR to retrieve the user's authenticated session from HTTP-only cookie
+  // ==========================================
+  // TODO PROXY AUTH 11: Get user session info using useSWR and implement RBAC logic in dashboard layout
+  // ==========================================
+  /* UNCOMMENT FOR FINISHED IMPLEMENTATION
+  const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher, {
+    shouldRetryOnError: false,
+  });
+  */
+  // STARTER FALLBACK: Active session checks so dashboard updates out of the box
   const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
@@ -95,9 +103,45 @@ export default function DashboardPage() {
 
             {/* Role-Based Actions Panel (Right/40%) */}
             <div className="md:col-span-2 space-y-4 w-full">
+              {/* ========================================== */}
+              {/* TODO PROXY AUTH 11 (RBAC JSX): Render different cards based on the user's role:
+                  - If admin: show link to configure store settings
+                  - If editor: show assistant workspace summary */}
+              {/* ========================================== */}
+              {/* UNCOMMENT FOR FINISHED IMPLEMENTATION
               {user?.role === "admin" && (
                 <div className="p-6 bg-indigo-50 border border-indigo-100 rounded-2xl animate-fade-in space-y-3 shadow-xs">
                   <h4 className="text-xs font-black text-indigo-950 flex items-center gap-1.5">
+                    🗝️ Andy's Secret Chest
+                  </h4>
+                  <p className="text-[11px] text-slate-550 leading-relaxed">
+                    You have complete Andy (Owner) permissions. You can open the Toy Chest and view all room logistics settings.
+                  </p>
+                  <Link
+                    href="/dashboard/admin-only"
+                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-650 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
+                  >
+                    Open Toy Chest
+                  </Link>
+                </div>
+              )}
+
+              {user?.role === "editor" && (
+                <div className="p-6 bg-amber-50 border border-amber-100 rounded-2xl space-y-2">
+                  <h4 className="text-xs font-black text-amber-905 flex items-center gap-1.5">
+                    🤠 Toy Patrol Panel
+                  </h4>
+                  <p className="text-[11px] text-amber-800/95 leading-relaxed">
+                    You are signed in as a Toy (Woody / Buzz). You have access to play configurations, but Andy's Secret Toy Chest is locked for this role.
+                  </p>
+                </div>
+              )}
+              */}
+
+              {/* STARTER FALLBACK: Active displays so UI updates out of the box */}
+              {user?.role === "admin" && (
+                <div className="p-6 bg-indigo-50 border border-indigo-100 rounded-2xl animate-fade-in space-y-3 shadow-xs">
+                  <h4 className="text-xs font-black text-indigo-955 flex items-center gap-1.5">
                     🗝️ Andy's Secret Chest
                   </h4>
                   <p className="text-[11px] text-slate-600 leading-relaxed">
