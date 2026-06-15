@@ -13,15 +13,14 @@ export function proxy(request: NextRequest) {
 
   // ==========================================
   // TODO PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
-  // TODO PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
-  // TODO PROXY AUTH 11: Parse session data and enforce RBAC rules:
-  //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
-  //   - Block non-admin users (role !== admin) from dashboard/admin-only
   // ==========================================
   /* UNCOMMENT FOR FINISHED IMPLEMENTATION
   if (pathname.startsWith("/dashboard")) {
     const sessionCookie = request.cookies.get("session")?.value;
 
+    // ==========================================
+    // TODO PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
+    // ==========================================
     if (!sessionCookie) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
@@ -31,6 +30,11 @@ export function proxy(request: NextRequest) {
       const sessionData: SessionData = JSON.parse(sessionCookie);
       const user = sessionData.user;
 
+      // ==========================================
+      // TODO PROXY AUTH 11: Parse session data and enforce RBAC rules:
+      //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
+      //   - Block non-admin users (role !== admin) from dashboard/admin-only
+      // ==========================================
       if (user.role !== "admin" && user.role !== "editor") {
         const unauthorizedUrl = new URL("/unauthorized", request.url);
         return NextResponse.redirect(unauthorizedUrl);

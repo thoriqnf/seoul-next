@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     */
 
     // ==========================================
-    // TODO PROXY AUTH 2: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // TODO PROXY AUTH 2a: Map roles based on username
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     let role: "admin" | "editor" | "user" = "user";
@@ -64,6 +64,9 @@ export async function POST(request: Request) {
       token: data.accessToken,
     };
 
+    // ==========================================
+    // TODO PROXY AUTH 2b: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // ==========================================
     const cookieStore = await cookies();
     cookieStore.set("session", JSON.stringify(sessionData), {
       httpOnly: true,
