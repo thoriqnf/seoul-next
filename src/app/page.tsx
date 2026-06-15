@@ -51,8 +51,8 @@ export default function Home() {
           {/* Playroom Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 text-left w-full">
             {/* Card 1: Woody */}
-            <div className="p-6 bg-white border-2 border-amber-200 border-b-4 border-b-amber-300 rounded-3xl shadow-sm hover:border-amber-450 hover:scale-[1.02] hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center font-bold mb-5 text-2xl border border-amber-100 group-hover:scale-110 transition-transform">
+            <div className="p-6 bg-white border-2 border-amber-200 border-b-4 border-b-amber-300 rounded-3xl shadow-sm hover:border-amber-400 hover:scale-[1.02] hover:shadow-md transition-all group">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold mb-5 text-2xl border border-amber-100 group-hover:scale-110 transition-transform">
                 🤠
               </div>
               <h3 className="text-sm font-black text-indigo-950 uppercase tracking-wider mb-2 font-toy">
@@ -64,7 +64,7 @@ export default function Home() {
             </div>
 
             {/* Card 2: Buzz */}
-            <div className="p-6 bg-white border-2 border-emerald-200 border-b-4 border-b-emerald-300 rounded-3xl shadow-sm hover:border-emerald-450 hover:scale-[1.02] hover:shadow-md transition-all group">
+            <div className="p-6 bg-white border-2 border-emerald-200 border-b-4 border-b-emerald-300 rounded-3xl shadow-sm hover:border-emerald-400 hover:scale-[1.02] hover:shadow-md transition-all group">
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold mb-5 text-2xl border border-emerald-100 group-hover:scale-110 transition-transform">
                 🚀
               </div>
@@ -77,7 +77,7 @@ export default function Home() {
             </div>
 
             {/* Card 3: Sid's Warning */}
-            <div className="p-6 bg-white border-2 border-rose-200 border-b-4 border-b-rose-300 rounded-3xl shadow-sm hover:border-rose-450 hover:scale-[1.02] hover:shadow-md transition-all group">
+            <div className="p-6 bg-white border-2 border-rose-200 border-b-4 border-b-rose-300 rounded-3xl shadow-sm hover:border-rose-400 hover:scale-[1.02] hover:shadow-md transition-all group">
               <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold mb-5 text-2xl border border-rose-100 group-hover:scale-110 transition-transform">
                 💀
               </div>

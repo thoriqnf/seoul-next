@@ -62,7 +62,7 @@ export default function DashboardPage() {
                 Room Console
               </h1>
               <p className="mt-1.5 text-xs text-slate-500 font-medium">
-                Playroom occupant: <span className="font-extrabold text-indigo-650">{user?.firstName} {user?.lastName}</span>
+                Playroom occupant: <span className="font-extrabold text-indigo-600">{user?.firstName} {user?.lastName}</span>
               </p>
             </div>
           </header>
@@ -90,14 +90,14 @@ export default function DashboardPage() {
                   <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-1 font-toy">
                     Assigned Wardrobe Email
                   </span>
-                  <p className="text-xs text-slate-655 font-bold">{user?.email}</p>
+                  <p className="text-xs text-slate-600 font-bold">{user?.email}</p>
                 </div>
 
                 <div>
                   <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-1.5 font-toy">
                     Playroom Access Permission
                   </span>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide bg-indigo-50 border border-indigo-150 text-indigo-700 font-toy shadow-2xs">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide bg-indigo-50 border border-indigo-100 text-indigo-700 font-toy shadow-2xs">
                     {user?.role === "admin" ? "Andy (Owner)" : "Woody / Buzz (Toy)"}
                   </span>
                 </div>
@@ -117,7 +117,7 @@ export default function DashboardPage() {
                   <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5 font-toy">
                     🗝️ Andy's Secret Chest
                   </h4>
-                  <p className="text-xs text-slate-655 leading-relaxed font-semibold">
+                  <p className="text-xs text-slate-600 leading-relaxed font-semibold">
                     You have complete Andy (Owner) permissions. You can open the Toy Chest and view all room logistics settings.
                   </p>
                   <Link
@@ -147,7 +147,7 @@ export default function DashboardPage() {
                   <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5 font-toy">
                     🗝️ Andy's Secret Chest
                   </h4>
-                  <p className="text-xs text-slate-655 leading-relaxed font-semibold">
+                  <p className="text-xs text-slate-600 leading-relaxed font-semibold">
                     You have complete Andy (Owner) permissions. You can open the Toy Chest and view all room logistics settings.
                   </p>
                   <Link

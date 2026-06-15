@@ -68,13 +68,13 @@ export function Navigation() {
             <div className="flex items-center gap-4 text-xs font-extrabold font-toy">
               <Link
                 href="/dashboard"
-                className="text-slate-655 hover:text-indigo-650 transition-colors"
+                className="text-slate-600 hover:text-indigo-600 transition-colors"
               >
                 Room Console
               </Link>
               <button
                 onClick={handleLogout}
-                className="text-rose-500 hover:text-rose-650 hover:underline cursor-pointer bg-transparent border-none p-0 font-extrabold"
+                className="text-rose-500 hover:text-rose-600 hover:underline cursor-pointer bg-transparent border-none p-0 font-extrabold"
               >
                 Logout
               </button>
@@ -82,7 +82,7 @@ export function Navigation() {
           ) : (
             <Link
               href="/login"
-              className="text-xs font-black text-indigo-650 hover:text-indigo-800 transition-colors font-toy"
+              className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy"
             >
               Sign In
             </Link>

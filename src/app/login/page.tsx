@@ -122,12 +122,12 @@ export default function LoginPage() {
             <footer className="mt-8 border-t-2 border-sky-50 pt-5 text-center">
               <div className="text-[10px] text-slate-400 leading-normal font-sans">
                 <p className="font-black mb-2 text-indigo-400 uppercase tracking-widest font-toy text-[9px]">Playroom Credentials</p>
-                <ul className="space-y-1.5 bg-sky-50 p-3 rounded-2xl border border-sky-100 font-semibold text-slate-655">
+                <ul className="space-y-1.5 bg-sky-50 p-3 rounded-2xl border border-sky-100 font-semibold text-slate-600">
                   <li>
-                    <span className="font-bold text-indigo-650">emilys</span> / <span className="font-bold text-indigo-650">emilyspass</span> (Andy - Owner)
+                    <span className="font-bold text-indigo-600">emilys</span> / <span className="font-bold text-indigo-600">emilyspass</span> (Andy - Owner)
                   </li>
                   <li>
-                    <span className="font-bold text-indigo-650">michaelw</span> / <span className="font-bold text-indigo-650">michaelwspass</span> (Woody/Buzz)
+                    <span className="font-bold text-indigo-600">michaelw</span> / <span className="font-bold text-indigo-600">michaelwspass</span> (Woody/Buzz)
                   </li>
                 </ul>
               </div>
