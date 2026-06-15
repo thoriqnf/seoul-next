@@ -41,7 +41,7 @@ export function Navigation() {
             Andy's Playroom Registry
           </span>
           <span className="text-lg font-black text-indigo-900 tracking-tight leading-tight flex items-center mt-0.5">
-            toyStory<span className="text-amber-450 font-black">⭐</span>
+            toyStory<span className="text-amber-400 font-black">⭐</span>
           </span>
         </Link>
 
@@ -74,7 +74,7 @@ export function Navigation() {
           {isLoggedIn && (
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-indigo-650 hover:bg-indigo-700 text-white text-[10px] font-black transition-colors shadow-sm"
+              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black transition-colors shadow-sm"
             >
               Toy Console
             </Link>

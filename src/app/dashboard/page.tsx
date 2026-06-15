@@ -43,7 +43,7 @@ export default function DashboardPage() {
     <>
       <Navigation />
       <main className="min-h-screen bg-sky-50/40 pb-20 font-sans">
-        <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="mx-auto max-w-4xl px-4 py-12">
           {/* Dashboard Header */}
           <header className="mb-8 border-b border-sky-100 pb-6 flex items-center justify-between">
             <div>
@@ -51,7 +51,7 @@ export default function DashboardPage() {
                 Room Console
               </h1>
               <p className="mt-1.5 text-xs text-slate-500">
-                Playroom occupant: <span className="font-extrabold text-indigo-650">{user?.firstName} {user?.lastName}</span>
+                Playroom occupant: <span className="font-extrabold text-indigo-600">{user?.firstName} {user?.lastName}</span>
               </p>
             </div>
           </header>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
                   </p>
                   <Link
                     href="/dashboard/admin-only"
-                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-650 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
+                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
                   >
                     Open Toy Chest
                   </Link>
