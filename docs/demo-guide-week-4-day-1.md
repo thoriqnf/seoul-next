@@ -1,6 +1,6 @@
-# Developer Guide: Week 4 Day 1 - Proxy and Authentication (RBAC)
+# Developer Guide: Week 4 Day 1 - Proxy and Authentication (RBAC) in Toyiverse
 
-This guide walks you through setting up a secure authentication and authorization pipeline in Next.js using **Route Handlers** (as an API Auth Proxy), **HTTP-only session cookies**, and **Middleware** for Route Protection and **Role-Based Access Control (RBAC)**.
+This guide walks you through setting up a secure authentication and authorization pipeline in Next.js using **Route Handlers** (as an API Auth Proxy), **HTTP-only session cookies**, and **Middleware** for Route Protection and **Role-Based Access Control (RBAC)**, all wrapped inside a premium **Online Toy Store ("Toyiverse")** theme.
 
 ---
 
@@ -9,7 +9,10 @@ This guide walks you through setting up a secure authentication and authorizatio
 1. **API Route Handlers (Auth Proxy)**: Proxy client-side authentication requests to external services (`https://dummyjson.com/auth/login`) to prevent exposure of third-party API configurations.
 2. **Secure HTTP-Only Cookies**: Save authentication session objects securely inside server-set `HttpOnly` cookies, shielding them from client-side XSS scripting.
 3. **Next.js Middleware Routing Guards**: Intercept incoming requests to run session verification checks at the routing boundary.
-4. **Role-Based Access Control (RBAC)**: Check user permissions in middleware and components to render views and allow access according to user roles (`admin` vs. `editor` vs. `user`).
+4. **Role-Based Access Control (RBAC)**: Check user permissions in middleware and components to render views according to roles:
+   - **Store Owner** (`admin` role): Full access to inventory, financials, and ledger configurations.
+   - **Store Assistant** (`editor` role): Access to basic dashboard, but blocked from financial metrics.
+   - **Customer** (`user` role): Blocked from Staff Console entirely (redirected to `/unauthorized`).
 5. **Real-time Client Auth Synchronization**: Bind global state tracking using `useSWR` to share session data seamlessly between navigation bars and layout pages.
 6. **Axios POST Mutations with SWR**: Integrate action-based calls (login and logout) via Axios, trigger cache revalidation via SWR's `mutate` utility, and inspect HTTP-only cookies in developer tools.
 
@@ -38,7 +41,7 @@ if (!sessionCookie) {
 
 #### Step 3 (`// TODO PROXY AUTH 3`): Implement RBAC and Sub-Route Guarding
 *File: `src/middleware.ts`*  
-Parse the session JSON. Allow both `admin` and `editor` roles to access the main `/dashboard`. However, restrict `/dashboard/admin-only` strictly to `admin` roles, redirecting others to the `/unauthorized` view.
+Parse the session JSON. Allow both `admin` (Owner) and `editor` (Assistant) roles to access the main `/dashboard`. However, restrict the Owner Control Center `/dashboard/admin-only` strictly to `admin` roles, redirecting others to the `/unauthorized` view.
 ```typescript
 const sessionData = JSON.parse(sessionCookie);
 const user = sessionData.user;
@@ -69,7 +72,7 @@ const response = await fetch("https://dummyjson.com/auth/login", {
 
 #### Step 5 (`// TODO PROXY AUTH 5`): Map Mocks and Set Secure Cookies
 *File: `src/app/api/auth/login/route.ts`*  
-Assign roles based on username credentials (`emilys` -> `admin`, `michaelw` -> `editor`), structure a session object, and write it into a secure `HttpOnly` Lax cookie:
+Assign roles based on username credentials (`emilys` -> `admin` as Store Owner, `michaelw` -> `editor` as Store Assistant), structure a session object, and write it into a secure `HttpOnly` Lax cookie:
 ```typescript
 let role: "admin" | "editor" | "user" = "user";
 if (data.username === "emilys") role = "admin";
@@ -138,12 +141,12 @@ await mutate("/api/auth/me", null, false);
 
 #### Step 11 (`// TODO PROXY AUTH 11`): Implement SWR Guards and Conditional Displays
 *File: `src/app/dashboard/page.tsx`*  
-Switch local storage auth checks with `useSWR("/api/auth/me")`, and render administrative actions depending on the user's role:
+Switch local storage auth checks with `useSWR("/api/auth/me")`, and render Owner-only settings links depending on the user's role:
 ```typescript
 const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher);
 
 {user?.role === "admin" && (
-  <Link href="/dashboard/admin-only">Configure Gateways</Link>
+  <Link href="/dashboard/admin-only">Configure Store Settings</Link>
 )}
 ```
 
@@ -151,48 +154,20 @@ const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher);
 
 ## How to Test & Verify
 
-1. **Launch json-server database**:
-   ```bash
-   npm run api
-   ```
-2. **Launch Dev Server**:
+1. **Launch Dev Server**:
    ```bash
    npm run dev
    ```
-3. **Log in with Admin Account**:
+2. **Log in as Store Owner**:
    - Username: `emilys`
    - Password: `emilyspass`
-   - Verify that you can access `/dashboard` and click "Configure Gateways" to access the `/dashboard/admin-only` route.
-4. **Log in with Editor Account**:
+   - Verify that you are greeted as a **Store Owner** and can click "Configure Store Settings" to access the `/dashboard/admin-only` route.
+3. **Log in as Store Assistant**:
    - Username: `michaelw`
    - Password: `michaelwspass`
-   - Verify that you can access `/dashboard`, but the "Configure Gateways" widget is replaced by the Editor note, and manually navigating to `/dashboard/admin-only` redirects you to `/unauthorized`.
-5. **Log in with standard User Account**:
-   - Accessing `/dashboard` redirects you to `/unauthorized`.
-6. **Inspect Cookie Security**:
+   - Verify that you are logged in as a **Store Assistant** and the owner controls card is hidden. Attempting to manually navigate to `/dashboard/admin-only` will redirect you to `/unauthorized`.
+4. **Log in as Customer**:
+   - Try accessing `/dashboard` with standard user credentials. You will be redirected to `/unauthorized`.
+5. **Inspect Cookie Security**:
    - Open Chrome DevTools -> Application -> Cookies.
    - Verify that the `session` cookie has `HTTP` checked (HttpOnly) and cannot be read via `document.cookie` in the Console.
-
----
-
-## Appendix: Upgrading to Cryptographically Signed Cookies (Advanced Material)
-
-In production, plain JSON strings in cookies are vulnerable to tampering if not signed or encrypted. To secure the session, you can use the `jose` JWT library:
-
-```typescript
-import { SignJWT, jwtVerify } from "jose";
-
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret-key");
-
-// 1. Create a JWT session token in login/route.ts
-const jwtToken = await new SignJWT({ user: authUser })
-  .setProtectedHeader({ alg: "HS256" })
-  .setExpirationTime("30m")
-  .sign(SECRET_KEY);
-
-cookieStore.set("session", jwtToken, { ...cookieOptions });
-
-// 2. Verify and parse the JWT in middleware.ts and me/route.ts
-const { payload } = await jwtVerify(sessionCookie, SECRET_KEY);
-const user = payload.user as AuthUser;
-```

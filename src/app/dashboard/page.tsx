@@ -32,7 +32,7 @@ export default function DashboardPage() {
         <Navigation />
         <main className="mx-auto max-w-xl px-4 py-24 text-center">
           <p className="text-xs text-slate-400 dark:text-zinc-500 animate-pulse font-semibold">
-            Verifying administrator session...
+            Verifying staff credentials...
           </p>
         </main>
       </>
@@ -47,10 +47,10 @@ export default function DashboardPage() {
         <header className="mb-8 border-b border-slate-100 dark:border-neutral-900 pb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-zinc-50">
-              User Console
+              Store Staff Console
             </h1>
             <p className="mt-1.5 text-xs text-slate-500 dark:text-zinc-400">
-              Welcome back, <span className="font-extrabold text-[#00828A] dark:text-teal-400">{user?.firstName} {user?.lastName}</span>
+              Welcome back, <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{user?.firstName} {user?.lastName}</span>
             </p>
           </div>
         </header>
@@ -67,7 +67,7 @@ export default function DashboardPage() {
             <div className="flex-1 space-y-3 text-center md:text-left">
               <div>
                 <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-0.5">
-                  Assigned Identity
+                  Staff Identity
                 </span>
                 <h2 className="text-base font-extrabold text-slate-800 dark:text-zinc-200">
                   {user?.firstName} {user?.lastName} ({user?.username})
@@ -76,17 +76,17 @@ export default function DashboardPage() {
 
               <div>
                 <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-0.5">
-                  Email Address
+                  Corporate Email
                 </span>
-                <p className="text-xs text-slate-600 dark:text-zinc-400 font-medium">{user?.email}</p>
+                <p className="text-xs text-slate-650 dark:text-zinc-400 font-medium">{user?.email}</p>
               </div>
 
               <div>
                 <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-1">
-                  Access Level Role
+                  Store Role Access
                 </span>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#00828A]/10 text-[#00828A] dark:bg-teal-950/30 dark:text-teal-400">
-                  {user?.role}
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-455">
+                  {user?.role === "admin" ? "Store Owner" : "Store Assistant"}
                 </span>
               </div>
             </div>
@@ -95,18 +95,18 @@ export default function DashboardPage() {
           {/* Role-Based Actions Panel (Right/40%) */}
           <div className="md:col-span-2 space-y-4 w-full">
             {user?.role === "admin" && (
-              <div className="p-6 bg-teal-50 dark:bg-teal-950/20 border border-teal-100 dark:border-teal-900/50 rounded-2xl animate-fade-in space-y-3">
-                <h4 className="text-xs font-bold text-teal-800 dark:text-teal-400 flex items-center gap-1.5">
-                  🛡️ Administrator Console
+              <div className="p-6 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl animate-fade-in space-y-3">
+                <h4 className="text-xs font-bold text-indigo-850 dark:text-indigo-400 flex items-center gap-1.5">
+                  🔑 Owner Control Center
                 </h4>
-                <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
-                  You are logged in with full administrative privileges. You can configure core gateway parameters.
+                <p className="text-[11px] text-slate-550 dark:text-zinc-400 leading-relaxed">
+                  You are logged in with full Store Owner privileges. You can configure inventory registries and check ledger settings.
                 </p>
                 <Link
                   href="/dashboard/admin-only"
-                  className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-[#00828A] text-white text-xs font-bold hover:bg-[#006e75] transition-colors shadow-sm cursor-pointer"
+                  className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
                 >
-                  Configure Gateways
+                  Configure Store Settings
                 </Link>
               </div>
             )}
@@ -114,10 +114,10 @@ export default function DashboardPage() {
             {user?.role === "editor" && (
               <div className="p-6 bg-slate-50 dark:bg-zinc-900/40 border border-slate-200/45 dark:border-neutral-800/60 rounded-2xl space-y-2">
                 <h4 className="text-xs font-bold text-slate-650 dark:text-zinc-350 flex items-center gap-1.5">
-                  ✏️ Editor Workspace
+                  📋 Assistant Console
                 </h4>
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
-                  You are logged in as an Editor. You can view content and profiles, but the System Configuration console is hidden from your account scope.
+                  You are logged in as a Store Assistant. You can edit product titles and write description blogs, but financial settings are restricted to the Store Owner role.
                 </p>
               </div>
             )}

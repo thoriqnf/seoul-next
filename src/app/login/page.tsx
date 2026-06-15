@@ -45,15 +45,15 @@ export default function LoginPage() {
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-16 flex flex-col justify-center font-sans">
         <div className="bg-white dark:bg-zinc-950/40 border border-slate-200/65 dark:border-neutral-800/85 rounded-2xl p-8 shadow-sm">
           <header className="mb-6 text-center">
-            {/* Kumparin Logo Style */}
-            <span className="text-xl md:text-2xl font-extrabold text-[#00828A] tracking-tighter block mb-2">
-              kumparin<span className="text-teal-400">.</span>
+            {/* Brand Logo */}
+            <span className="text-xl md:text-2xl font-black text-indigo-600 dark:text-indigo-455 tracking-tighter block mb-2">
+              toyStore<span className="text-amber-400 font-black">.</span>
             </span>
             <h1 className="text-lg font-extrabold text-slate-800 dark:text-zinc-100">
-              Sign In to Admin Panel
+              Staff Sign In
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Authenticate via proxy to manage news broadcasts.
+              Authenticate via proxy to access the Inventory Dashboard.
             </p>
           </header>
 
@@ -95,21 +95,21 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2 shrink-0 cursor-pointer"
+              className="btn-primary w-full mt-2 shrink-0 cursor-pointer bg-indigo-650 hover:bg-indigo-705 text-white h-10 rounded-full font-bold transition-all text-xs"
             >
-              {loading ? "Signing in..." : "Login"}
+              {loading ? "Signing in..." : "Login to Console"}
             </button>
           </form>
 
           <footer className="mt-6 border-t border-slate-100 dark:border-neutral-900 pt-4 text-center">
             <div className="text-[10px] text-slate-400 leading-normal">
-              <p className="font-bold mb-1">Demo RBAC Credentials:</p>
+              <p className="font-bold mb-1">Store Staff Credentials:</p>
               <ul className="space-y-1">
                 <li>
-                  <span className="font-semibold text-slate-650 dark:text-zinc-300">emilys</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">emilyspass</span> (Admin)
+                  <span className="font-semibold text-slate-650 dark:text-zinc-300">emilys</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">emilyspass</span> (Store Owner)
                 </li>
                 <li>
-                  <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelw</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelwspass</span> (Editor)
+                  <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelw</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelwspass</span> (Store Assistant)
                 </li>
               </ul>
             </div>
