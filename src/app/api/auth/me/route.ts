@@ -8,7 +8,7 @@ export async function GET() {
     const sessionCookie = cookieStore.get("session");
 
     // ==========================================
-    // TODO PROXY AUTH 7: Retrieve, parse, and return the session cookie payload.
+    // TODO PROXY AUTH 4: Retrieve, parse, and return the session cookie payload.
     // Return the AuthUser object if authenticated, otherwise return 401.
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION

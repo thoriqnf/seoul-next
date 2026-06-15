@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
 
     // ==========================================
-    // TODO PROXY AUTH 8: Connect form submission to local auth proxy /api/auth/login using Axios
+    // TODO PROXY AUTH 5: Connect form submission to local auth proxy /api/auth/login using Axios
     // and mutate the global '/api/auth/me' SWR cache key to update user state instantly.
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION
@@ -65,7 +65,7 @@ export default function LoginPage() {
             <header className="mb-6 text-center">
               {/* Brand Logo */}
               <span className="text-xl md:text-2xl font-black text-indigo-900 tracking-tighter block mb-2">
-                toyStory<span className="text-amber-450 font-black">⭐</span>
+                toyStory<span className="text-amber-400 font-black">⭐</span>
               </span>
               <h1 className="text-lg font-extrabold text-indigo-950">
                 Staff Sign In
@@ -76,14 +76,14 @@ export default function LoginPage() {
             </header>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-[11px] font-semibold text-red-655 rounded-xl">
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-[11px] font-semibold text-red-600 rounded-xl">
                 ⚠ {error}
               </div>
             )}
 
             <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col">
-                <label className="input-label text-indigo-905">
+                <label className="input-label text-indigo-900">
                   Username
                 </label>
                 <input
@@ -97,7 +97,7 @@ export default function LoginPage() {
               </div>
 
               <div className="flex flex-col">
-                <label className="input-label text-indigo-905">
+                <label className="input-label text-indigo-900">
                   Password
                 </label>
                 <input
@@ -113,7 +113,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full mt-2 shrink-0 cursor-pointer bg-indigo-650 hover:bg-indigo-700 text-white h-10 rounded-full font-black transition-all text-xs"
+                className="btn-primary w-full mt-2 shrink-0 cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white h-10 rounded-full font-black transition-all text-xs"
               >
                 {loading ? "Signing in..." : "Login to Console"}
               </button>
@@ -124,10 +124,10 @@ export default function LoginPage() {
                 <p className="font-bold mb-1 text-slate-500">Playroom Credentials:</p>
                 <ul className="space-y-1">
                   <li>
-                    <span className="font-semibold text-slate-650">emilys</span> / <span className="font-semibold text-slate-650">emilyspass</span> (Andy - Owner)
+                    <span className="font-semibold text-slate-600">emilys</span> / <span className="font-semibold text-slate-600">emilyspass</span> (Andy - Owner)
                   </li>
                   <li>
-                    <span className="font-semibold text-slate-650">michaelw</span> / <span className="font-semibold text-slate-650">michaelwspass</span> (Woody/Buzz - Toy)
+                    <span className="font-semibold text-slate-600">michaelw</span> / <span className="font-semibold text-slate-600">michaelwspass</span> (Woody/Buzz - Toy)
                   </li>
                 </ul>
               </div>

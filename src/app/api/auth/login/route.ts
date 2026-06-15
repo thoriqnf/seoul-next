@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     // ==========================================
-    // TODO PROXY AUTH 4: Forward (proxy) the login request to the external DummyJSON authentication service
+    // TODO PROXY AUTH 1: Forward (proxy) the login request to the external DummyJSON authentication service
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     const response = await fetch("https://dummyjson.com/auth/login", {
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     */
 
     // ==========================================
-    // TODO PROXY AUTH 5: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // TODO PROXY AUTH 2: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     let role: "admin" | "editor" | "user" = "user";

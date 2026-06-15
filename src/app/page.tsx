@@ -31,13 +31,13 @@ export default function Home() {
           <div className="mt-8 flex gap-4">
             <Link
               href="/dashboard"
-              className="h-11 px-6 rounded-full bg-indigo-650 hover:bg-indigo-700 text-white text-xs font-black transition-all shadow-md shadow-indigo-200 flex items-center justify-center cursor-pointer hover:scale-[1.02]"
+              className="h-11 px-6 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition-all shadow-md shadow-indigo-200 flex items-center justify-center cursor-pointer hover:scale-[1.02]"
             >
               Enter Andy's Room
             </Link>
             <Link
               href="/login"
-              className="h-11 px-6 rounded-full border border-indigo-250 bg-white text-indigo-750 text-xs font-black hover:bg-indigo-50 transition-all flex items-center justify-center cursor-pointer"
+              className="h-11 px-6 rounded-full border border-indigo-300 bg-white text-indigo-800 text-xs font-black hover:bg-indigo-50 transition-all flex items-center justify-center cursor-pointer"
             >
               Sign In Panel
             </Link>
@@ -53,7 +53,7 @@ export default function Home() {
               <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-2">
                 Woody's Round-Up
               </h3>
-              <p className="text-[11px] text-slate-550 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 "Reach for the sky!" Join the Sheriff to secure Andy's room. Managing resources here requires at least a Store Assistant / Toy role.
               </p>
             </div>
@@ -66,7 +66,7 @@ export default function Home() {
               <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-2">
                 Star Command
               </h3>
-              <p className="text-[11px] text-slate-550 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 "To infinity and beyond!" Buzz helps log all cosmic API calls and secure local HttpOnly cookie payloads against browser alien hacks.
               </p>
             </div>
@@ -79,7 +79,7 @@ export default function Home() {
               <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider mb-2">
                 Sid's Yard Warning
               </h3>
-              <p className="text-[11px] text-slate-550 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 Danger ahead! Sid wants to disassemble our toys. Sid's account role is classified as a "Customer / User" and will be locked out of the room.
               </p>
             </div>

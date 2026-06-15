@@ -14,7 +14,7 @@ export default function DashboardPage() {
   const router = useRouter();
   
   // ==========================================
-  // TODO PROXY AUTH 11: Get user session info using useSWR and implement RBAC logic in dashboard layout
+  // TODO PROXY AUTH 8: Get user session info using useSWR and implement RBAC logic in dashboard layout
   // ==========================================
   /* UNCOMMENT FOR FINISHED IMPLEMENTATION
   const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher, {
@@ -51,7 +51,7 @@ export default function DashboardPage() {
     <>
       <Navigation />
       <main className="min-h-screen bg-sky-50/40 pb-20 font-sans">
-        <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="mx-auto max-w-4xl px-4 py-12">
           {/* Dashboard Header */}
           <header className="mb-8 border-b border-sky-100 pb-6 flex items-center justify-between">
             <div>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                 Room Console
               </h1>
               <p className="mt-1.5 text-xs text-slate-500">
-                Playroom occupant: <span className="font-extrabold text-indigo-650">{user?.firstName} {user?.lastName}</span>
+                Playroom occupant: <span className="font-extrabold text-indigo-600">{user?.firstName} {user?.lastName}</span>
               </p>
             </div>
           </header>
@@ -104,7 +104,7 @@ export default function DashboardPage() {
             {/* Role-Based Actions Panel (Right/40%) */}
             <div className="md:col-span-2 space-y-4 w-full">
               {/* ========================================== */}
-              {/* TODO PROXY AUTH 11 (RBAC JSX): Render different cards based on the user's role:
+              {/* TODO PROXY AUTH 8 (RBAC JSX): Render different cards based on the user's role:
                   - If admin: show link to configure store settings
                   - If editor: show assistant workspace summary */}
               {/* ========================================== */}
@@ -119,7 +119,7 @@ export default function DashboardPage() {
                   </p>
                   <Link
                     href="/dashboard/admin-only"
-                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-650 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
+                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
                   >
                     Open Toy Chest
                   </Link>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
 
               {user?.role === "editor" && (
                 <div className="p-6 bg-amber-50 border border-amber-100 rounded-2xl space-y-2">
-                  <h4 className="text-xs font-black text-amber-905 flex items-center gap-1.5">
+                  <h4 className="text-xs font-black text-amber-900 flex items-center gap-1.5">
                     🤠 Toy Patrol Panel
                   </h4>
                   <p className="text-[11px] text-amber-800/95 leading-relaxed">
@@ -141,7 +141,7 @@ export default function DashboardPage() {
               {/* STARTER FALLBACK: Active displays so UI updates out of the box */}
               {user?.role === "admin" && (
                 <div className="p-6 bg-indigo-50 border border-indigo-100 rounded-2xl animate-fade-in space-y-3 shadow-xs">
-                  <h4 className="text-xs font-black text-indigo-955 flex items-center gap-1.5">
+                  <h4 className="text-xs font-black text-indigo-900 flex items-center gap-1.5">
                     🗝️ Andy's Secret Chest
                   </h4>
                   <p className="text-[11px] text-slate-600 leading-relaxed">
@@ -149,7 +149,7 @@ export default function DashboardPage() {
                   </p>
                   <Link
                     href="/dashboard/admin-only"
-                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-650 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
+                    className="w-full h-9 inline-flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-black hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
                   >
                     Open Toy Chest
                   </Link>

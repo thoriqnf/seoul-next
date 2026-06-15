@@ -6,12 +6,12 @@ export default function NotFound() {
     <>
       <Navigation />
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-20 flex flex-col items-center justify-center font-sans text-center">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-8 shadow-sm w-full">
+        <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm w-full">
           <span className="text-4xl">🔍</span>
-          <h1 className="mt-4 text-2xl font-bold text-slate-900 dark:text-zinc-50">
+          <h1 className="mt-4 text-2xl font-bold text-slate-900">
             Page Not Found
           </h1>
-          <p className="mt-2 text-sm text-slate-500 dark:text-zinc-400">
+          <p className="mt-2 text-sm text-slate-500">
             The page you are looking for does not exist or has been moved.
           </p>
           <div className="mt-8">

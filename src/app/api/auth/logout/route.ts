@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function POST() {
   try {
     // ==========================================
-    // TODO PROXY AUTH 6: Delete the `session` cookie by setting its maxAge to 0
+    // TODO PROXY AUTH 3: Delete the `session` cookie by setting its maxAge to 0
     // ==========================================
     /* UNCOMMENT FOR FINISHED IMPLEMENTATION
     const cookieStore = await cookies();
