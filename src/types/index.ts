@@ -40,3 +40,19 @@ export interface TrendingSidebarProps {
 export interface CommentsSectionProps {
   postId: string;
 }
+
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  role: "admin" | "editor" | "user";
+}
+
+export interface SessionData {
+  user: AuthUser;
+  token: string;
+}
+

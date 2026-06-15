@@ -2,28 +2,36 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR, { mutate } from "swr";
+import axios from "axios";
+import { AuthUser } from "@/types";
+
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export function Navigation() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  useEffect(() => {
-    const checkLogin = () => {
-      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-    };
+  // Fetch the active user session in real-time
+  const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
+    shouldRetryOnError: false,
+  });
 
-    checkLogin();
-    window.addEventListener("storage", checkLogin);
-    return () => window.removeEventListener("storage", checkLogin);
-  }, []);
+  const isLoggedIn = !!user;
 
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false);
-    window.dispatchEvent(new Event("storage"));
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      // Clear HTTP-only session cookie via the auth proxy
+      await axios.post("/api/auth/logout");
+
+      // Optimistically update SWR cache to log out the user instantly across components
+      await mutate("/api/auth/me", null, false);
+
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -91,7 +99,7 @@ export function Navigation() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer bg-transparent border-none p-0"
+                className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer bg-transparent border-none p-0 animate-fade-in"
               >
                 Logout
               </button>
@@ -118,9 +126,6 @@ export function Navigation() {
       {/* Secondary Category Navigation Row */}
       <div className="border-t border-slate-100 dark:border-neutral-900 bg-white dark:bg-zinc-950 overflow-x-auto scrollbar-none">
         <div className="mx-auto max-w-6xl px-4 h-10 flex items-center gap-6 text-xs font-bold text-slate-500 dark:text-zinc-400 whitespace-nowrap">
-          {/* ========================================== */}
-          {/* TODO RECAP RENDER 2: Use Next.js Link components instead of standard <a> tags to enable client-side SPA transitions */}
-          {/* ========================================== */}
           <Link href="/" className="hover:text-[#00828A] dark:hover:text-teal-400 transition-colors text-slate-800 dark:text-zinc-100">
             News
           </Link>

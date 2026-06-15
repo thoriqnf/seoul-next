@@ -2,34 +2,41 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { mutate } from "swr";
 import { Navigation } from "@/components/Navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
-  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    // Mock authentication check with 600ms latency
-    setTimeout(() => {
-      if (email.trim() === "admin@example.com" && password === "password123") {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", email.trim());
-        // Sync header state across windows/components
-        window.dispatchEvent(new Event("storage"));
-        router.push("/dashboard");
-      } else {
-        setError("Invalid email or password. Hint: admin@example.com / password123");
-        setLoading(false);
-      }
-    }, 600);
+    try {
+      // Connect form submission to the local auth proxy
+      const response = await axios.post("/api/auth/login", {
+        username: username.trim(),
+        password,
+      });
+
+      // Mutate the global SWR cache key to fetch fresh session details immediately
+      await mutate("/api/auth/me", response.data, true);
+
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error || 
+        "Authentication failed. Try emilys / emilyspass or michaelw / michaelwspass"
+      );
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +53,7 @@ export default function LoginPage() {
               Sign In to Admin Panel
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              Authenticate to manage news broadcasts and configurations.
+              Authenticate via proxy to manage news broadcasts.
             </p>
           </header>
 
@@ -59,13 +66,13 @@ export default function LoginPage() {
           <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col">
               <label className="input-label">
-                Email Address
+                Username
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="e.g. emilys"
                 required
                 className="input-field"
               />
@@ -95,10 +102,17 @@ export default function LoginPage() {
           </form>
 
           <footer className="mt-6 border-t border-slate-100 dark:border-neutral-900 pt-4 text-center">
-            <p className="text-[10px] text-slate-400 leading-normal">
-              Demo Credentials:<br />
-              <span className="font-semibold text-slate-550 dark:text-zinc-400">admin@example.com</span> / <span className="font-semibold text-slate-550 dark:text-zinc-400">password123</span>
-            </p>
+            <div className="text-[10px] text-slate-400 leading-normal">
+              <p className="font-bold mb-1">Demo RBAC Credentials:</p>
+              <ul className="space-y-1">
+                <li>
+                  <span className="font-semibold text-slate-650 dark:text-zinc-300">emilys</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">emilyspass</span> (Admin)
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelw</span> / <span className="font-semibold text-slate-650 dark:text-zinc-300">michaelwspass</span> (Editor)
+                </li>
+              </ul>
+            </div>
           </footer>
         </div>
       </main>

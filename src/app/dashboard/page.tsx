@@ -3,39 +3,39 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
 import axios from "axios";
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
-import { BreakingNews } from "@/types";
+import { BreakingNews, AuthUser } from "@/types";
 
 interface FormInput {
   title: string;
 }
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState<boolean>(true);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  
+  // Use SWR to retrieve the user's authenticated session from HTTP-only cookie
+  const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher, {
+    shouldRetryOnError: false,
+  });
+
   const [currentHeadline, setCurrentHeadline] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  // ==========================================
-  // TODO RECAP RENDER 5: Protect admin page by verifying user credentials in localStorage, programmatically redirecting unauthorized sessions to login page
-  // ==========================================
+  // Client-side guard fallback if SWR catches authentication failure
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    const email = localStorage.getItem("userEmail");
-
-    if (isLoggedIn !== "true") {
+    if (error) {
       router.push("/login");
-    } else {
-      setUserEmail(email);
-      setIsChecking(false);
     }
-  }, [router]);
+  }, [error, router]);
 
-  // Fetch current breaking news from json-server on load to display in dashboard
+  // Fetch current breaking news from json-server once authenticated
   useEffect(() => {
-    if (isChecking) return;
+    if (!user) return;
 
     const fetchCurrentHeadline = async () => {
       try {
@@ -48,11 +48,9 @@ export default function DashboardPage() {
     };
 
     fetchCurrentHeadline();
-  }, [isChecking]);
+  }, [user]);
 
-  // ==========================================
-  // TODO RECAP RENDER 4: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form
-  // ==========================================
+  // Form setups
   const {
     register,
     handleSubmit,
@@ -64,9 +62,6 @@ export default function DashboardPage() {
     },
   });
 
-  // ==========================================
-  // TODO RECAP RENDER 9: Implement Axios PUT handler to update the local database with form values to trigger ISR revalidation cycles
-  // ==========================================
   const onSubmit = async (data: FormInput) => {
     try {
       setIsSaving(true);
@@ -90,7 +85,8 @@ export default function DashboardPage() {
     }
   };
 
-  if (isChecking) {
+  // Render a loading state during validation
+  if (isLoading || (!user && !error)) {
     return (
       <>
         <Navigation />
@@ -114,7 +110,10 @@ export default function DashboardPage() {
               Admin Panel
             </h1>
             <p className="mt-1.5 text-xs text-slate-500 dark:text-zinc-400">
-              Authenticated as: <span className="font-extrabold text-[#00828A] dark:text-teal-400">{userEmail}</span>
+              Authenticated as: <span className="font-extrabold text-[#00828A] dark:text-teal-400">{user?.email}</span> 
+              <span className="ml-2 px-2 py-0.5 bg-slate-100 dark:bg-zinc-800 text-[10px] rounded-full font-bold uppercase text-slate-600 dark:text-zinc-300">
+                {user?.role}
+              </span>
             </p>
           </div>
         </header>
@@ -136,9 +135,6 @@ export default function DashboardPage() {
                 <label className="block text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
                   New Headline Title
                 </label>
-                {/* ========================================== */}
-                {/* TODO RECAP RENDER 4: Bind input field state and register validation limits (required and minimum string length of 10) via react-hook-form */}
-                {/* ========================================== */}
                 <input
                   type="text"
                   placeholder="e.g. Presidential Summit officially opens in Jakarta"
@@ -182,6 +178,35 @@ export default function DashboardPage() {
                 The text above is fetched directly from the local json-server database (port 4000). Updating it modifies the local file database.
               </p>
             </div>
+
+            {/* Role-Based Custom Displays */}
+            {user?.role === "admin" && (
+              <div className="p-5 bg-teal-50 dark:bg-teal-950/20 border border-teal-100 dark:border-teal-900/50 rounded-2xl animate-fade-in">
+                <h4 className="text-xs font-bold text-teal-800 dark:text-teal-400 flex items-center gap-1.5">
+                  🛡️ Administrator Console
+                </h4>
+                <p className="text-[10px] text-slate-550 dark:text-zinc-400 mt-1 mb-3.5 leading-relaxed">
+                  You are logged in with full administrative privileges. You can configure core gateway parameters.
+                </p>
+                <Link
+                  href="/dashboard/admin-only"
+                  className="w-full h-8 inline-flex items-center justify-center rounded-lg bg-[#00828A] text-white text-[10px] font-bold hover:bg-[#006e75] transition-colors shadow-sm"
+                >
+                  Configure Gateways
+                </Link>
+              </div>
+            )}
+
+            {user?.role === "editor" && (
+              <div className="p-5 bg-slate-50 dark:bg-zinc-900/40 border border-slate-200/40 dark:border-neutral-800/60 rounded-2xl">
+                <h4 className="text-xs font-bold text-slate-600 dark:text-zinc-300 flex items-center gap-1.5">
+                  ✏️ Editor Workspace
+                </h4>
+                <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                  You are logged in as an Editor. You can write headlines, but the System Configuration console is hidden.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>
