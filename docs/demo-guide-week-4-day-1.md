@@ -119,6 +119,51 @@ Check the user's role inside components to conditionally toggle dashboard panels
 
 ---
 
+### Phase 3: Server-Side Security Gatekeeper (Next.js 16 `proxy.ts`)
+
+#### Step 11 (`// TODO PROXY AUTH 9`): Intercept Dashboard Routes & Read Session Cookie
+*File: `src/proxy.ts`*  
+Intercept dashboard paths matching `/dashboard/:path*` and retrieve the secure session cookie value:
+```typescript
+if (pathname.startsWith("/dashboard")) {
+  const sessionCookie = request.cookies.get("session")?.value;
+}
+```
+
+#### Step 12 (`// TODO PROXY AUTH 10`): Redirect Unauthenticated Occupants to Login
+*File: `src/proxy.ts`*  
+If the session cookie is missing, redirect the browser to the playroom sign-in view:
+```typescript
+if (!sessionCookie) {
+  const loginUrl = new URL("/login", request.url);
+  return NextResponse.redirect(loginUrl);
+}
+```
+
+#### Step 13 (`// TODO PROXY AUTH 11`): Parse Cookie Payload & Enforce Access Controls (RBAC)
+*File: `src/proxy.ts`*  
+Decode the user payload, redirect Sid (unapproved user role) to Sid's yard, and block toys (editor role) from Andy's secret chest:
+```typescript
+try {
+  const sessionData: SessionData = JSON.parse(sessionCookie);
+  const user = sessionData.user;
+
+  if (user.role !== "admin" && user.role !== "editor") {
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
+
+  if (pathname.startsWith("/dashboard/admin-only") && user.role !== "admin") {
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
+} catch (error) {
+  const loginRedirect = NextResponse.redirect(new URL("/login", request.url));
+  loginRedirect.cookies.delete("session");
+  return loginRedirect;
+}
+```
+
+---
+
 ## How to Test & Verify
 
 1. **Launch Dev Server**:
