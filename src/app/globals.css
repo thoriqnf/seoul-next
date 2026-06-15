@@ -24,15 +24,15 @@ body {
    ============================================================================ */
 
 @utility btn-toy-blue {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-indigo-650 border-b-4 border-indigo-800 rounded-2xl cursor-pointer shadow-md hover:bg-indigo-600 hover:border-indigo-700 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-indigo-600 border-b-4 border-indigo-800 rounded-2xl cursor-pointer shadow-md hover:bg-indigo-500 hover:border-indigo-700 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
 }
 
 @utility btn-toy-yellow {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-amber-950 bg-amber-400 border-b-4 border-amber-600 rounded-2xl cursor-pointer shadow-md hover:bg-amber-350 hover:border-amber-500 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-amber-950 bg-amber-400 border-b-4 border-amber-600 rounded-2xl cursor-pointer shadow-md hover:bg-amber-300 hover:border-amber-500 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
 }
 
 @utility btn-toy-green {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-emerald-500 border-b-4 border-emerald-700 rounded-2xl cursor-pointer shadow-md hover:bg-emerald-450 hover:border-emerald-650 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-emerald-500 border-b-4 border-emerald-700 rounded-2xl cursor-pointer shadow-md hover:bg-emerald-400 hover:border-emerald-600 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
 }
 
 @utility btn-toy-white {
@@ -40,7 +40,7 @@ body {
 }
 
 @utility btn-toy-red {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-rose-500 border-b-4 border-rose-700 rounded-2xl cursor-pointer shadow-md hover:bg-rose-450 hover:border-rose-600 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-rose-500 border-b-4 border-rose-700 rounded-2xl cursor-pointer shadow-md hover:bg-rose-400 hover:border-rose-600 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
 }
 
 /* ============================================================================

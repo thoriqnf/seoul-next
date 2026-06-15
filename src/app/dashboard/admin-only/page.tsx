@@ -58,7 +58,7 @@ export default function AdminOnlyPage() {
               <h2 className="text-sm font-black text-indigo-950 font-toy uppercase tracking-wider">
                 Toy Inventory Registry
               </h2>
-              <ul className="space-y-3.5 text-xs text-slate-650 font-semibold">
+              <ul className="space-y-3.5 text-xs text-slate-600 font-semibold">
                 <li className="flex justify-between border-b-2 border-sky-50 pb-2.5">
                   <span className="font-bold">🤠 Woody</span>
                   <span className="text-amber-600 font-extrabold uppercase font-toy tracking-wider">Sheriff</span>
