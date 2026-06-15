@@ -4,6 +4,9 @@ import { SessionData } from "@/types";
 
 export async function GET() {
   try {
+    // ==========================================
+    // TODO PROXY AUTH 4: Retrieve, parse, and return the session cookie payload.
+    // ==========================================
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session");
 

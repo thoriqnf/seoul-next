@@ -11,7 +11,9 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export function Navigation() {
   const router = useRouter();
 
-  // Fetch the active user session in real-time
+  // ==========================================
+  // TODO PROXY AUTH 6: Fetch active session user details in real-time from '/api/auth/me' using useSWR
+  // ==========================================
   const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
@@ -20,7 +22,9 @@ export function Navigation() {
 
   const handleLogout = async () => {
     try {
-      // Clear HTTP-only session cookie via the auth proxy
+      // ==========================================
+      // TODO PROXY AUTH 7: Clear the HttpOnly session cookie by calling '/api/auth/logout' via Axios
+      // ==========================================
       await axios.post("/api/auth/logout");
 
       // Optimistically update SWR cache to log out the user instantly across components

@@ -5,7 +5,9 @@ export async function POST() {
   try {
     const cookieStore = await cookies();
     
-    // Clear the session cookie by setting its maxAge to 0 and path to "/"
+    // ==========================================
+    // TODO PROXY AUTH 3: Delete the `session` cookie by setting its maxAge to 0
+    // ==========================================
     cookieStore.set("session", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

@@ -20,7 +20,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Connect form submission to the local auth proxy
+      // ==========================================
+      // TODO PROXY AUTH 5: Connect form submission to local auth proxy /api/auth/login using Axios
+      // ==========================================
       const response = await axios.post("/api/auth/login", {
         username: username.trim(),
         password,

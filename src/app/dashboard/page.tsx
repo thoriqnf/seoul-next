@@ -13,7 +13,9 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function DashboardPage() {
   const router = useRouter();
   
-  // Use SWR to retrieve the user's authenticated session from HTTP-only cookie
+  // ==========================================
+  // TODO PROXY AUTH 8a: Get user session info using useSWR and implement RBAC logic in dashboard layout
+  // ==========================================
   const { data: user, error, isLoading } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
@@ -98,6 +100,9 @@ export default function DashboardPage() {
 
             {/* Role-Based Actions Panel (Right/40%) */}
             <div className="md:col-span-2 space-y-6 w-full">
+              {/* ==========================================
+                  TODO PROXY AUTH 8b: Render different cards based on the user's role (RBAC JSX)
+                  ========================================== */}
               {user?.role === "admin" && (
                 <div className="p-6 bg-indigo-50 border-2 border-indigo-200 border-b-4 border-b-indigo-300 rounded-3xl space-y-4 shadow-sm">
                   <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5 font-toy">

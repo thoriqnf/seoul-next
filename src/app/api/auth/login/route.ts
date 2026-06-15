@@ -13,7 +13,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Proxy the login request to DummyJSON
+    // ==========================================
+    // TODO PROXY AUTH 1: Forward (proxy) the login request to the external DummyJSON authentication service
+    // ==========================================
     const response = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -34,10 +36,9 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Map username to Toy Story roles for RBAC demo purposes:
-    // - emilys (admin) -> Andy (Owner)
-    // - michaelw (editor) -> Woody/Buzz (Toy)
-    // - others (user) -> Sid (Mutant)
+    // ==========================================
+    // TODO PROXY AUTH 2a: Map roles based on username
+    // ==========================================
     let role: "admin" | "editor" | "user" = "user";
     if (data.username === "emilys") {
       role = "admin";
@@ -60,7 +61,9 @@ export async function POST(request: Request) {
       token: data.accessToken,
     };
 
-    // Store session data securely in an HttpOnly cookie
+    // ==========================================
+    // TODO PROXY AUTH 2b: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // ==========================================
     const cookieStore = await cookies();
     cookieStore.set("session", JSON.stringify(sessionData), {
       httpOnly: true,
