@@ -12,13 +12,13 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ==========================================
-  // PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
+  // TODO PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
   // ==========================================
   if (pathname.startsWith("/dashboard")) {
     const sessionCookie = request.cookies.get("session")?.value;
 
     // ==========================================
-    // PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
+    // TODO PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
     // ==========================================
     if (!sessionCookie) {
       const loginUrl = new URL("/login", request.url);
@@ -31,7 +31,7 @@ export function proxy(request: NextRequest) {
       const user = sessionData.user;
 
       // ==========================================
-      // PROXY AUTH 11: Parse session data and enforce RBAC rules:
+      // TODO PROXY AUTH 11: Parse session data and enforce RBAC rules:
       //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
       //   - Block non-admin users (role !== admin) from dashboard/admin-only
       // ==========================================
