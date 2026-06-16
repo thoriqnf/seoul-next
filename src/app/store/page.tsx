@@ -48,6 +48,27 @@ export default function StorePage() {
   // ==========================================
   // const { dispatch: notifDispatch } = useNotif();
 
+  // 🚨 BOTTLENECK — WHY DO WE NEED STATE MANAGEMENT HERE?
+  // ─────────────────────────────────────────────────────────
+  // When the user clicks "+ Add" on a toy, TWO things must update
+  // at the SAME TIME, in components that are not parent/child:
+  //
+  //   🛒 Cart badge in <Navigation>  → itemCount must go up
+  //   🔔 Bell badge in <Navigation>  → unreadCount must go up
+  //
+  // <StorePage> and <Navigation> are SIBLINGS — they share no
+  // direct relationship. Without global state:
+  //
+  //   Option A: Lift state to layout.tsx → then pass down as props
+  //             to BOTH pages AND Navigation. Every new page repeats this.
+  //
+  //   Option B: Use a global event bus / custom events → complex, error-prone.
+  //
+  // WITH Context:
+  //   cartDispatch()  → CartContext updates → Navigation re-renders ✔
+  //   notifDispatch() → NotifContext updates → Navigation re-renders ✔
+  //   StorePage doesn’t need to know anything about Navigation. Zero coupling.
+  // ─────────────────────────────────────────────────────────
   const handleAddToCart = (toy: Toy) => {
     // ==========================================
     // TODO Context 22: Dispatch ADD_ITEM to the cart context

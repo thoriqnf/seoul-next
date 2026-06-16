@@ -16,6 +16,27 @@ interface CartItem extends Toy {
   quantity: number;
 }
 
+// 🚨 BOTTLENECK — WHY useReducer INSTEAD OF useState?
+// ─────────────────────────────────────────────────────────
+// The cart has 4 operations: add, remove, update quantity, clear.
+// You COULD try managing this with multiple useState calls:
+//
+//   const [items, setItems] = useState([]);
+//
+//   // Add: have to check if item exists, decide to append or update...
+//   // Remove: filter the array, return a new one...
+//   // Update: map over, find by id, spread new quantity...
+//   // Clear: setItems([])...
+//
+// Each operation is scattered logic in your component. Hard to read, easy to get wrong.
+// If two operations run at the same time, they can overwrite each other (stale closure bug).
+//
+// useReducer fixes this by:
+//   1. Centralising all mutations in ONE pure function (the reducer)
+//   2. Making state transitions explicit and predictable via action types
+//   3. Making it impossible to mutate state directly (must go through dispatch)
+// ─────────────────────────────────────────────────────────
+
 // ==========================================
 // TODO Context 14: Define CartAction discriminated union
 // List every possible way the cart state can change:

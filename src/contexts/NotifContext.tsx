@@ -11,6 +11,29 @@ interface Notification {
   read: boolean;
 }
 
+// 🚨 BOTTLENECK — WHY DO WE NEED A NOTIFICATION CONTEXT?
+// ─────────────────────────────────────────────────────────
+// The 🔔 bell badge lives in <Navigation>.
+// The action that CREATES a notification happens in <StorePage> (Add to Cart).
+// In the future it could also happen from <Dashboard>, <CheckoutPage>, etc.
+//
+// WITHOUT Context:
+//   <Navigation> would hold the notifications array in its own useState.
+//   Every page that wants to add a notification would need a callback prop:
+//   <StorePage onNotify={(msg) => ...} />
+//   <Dashboard onNotify={(msg) => ...} />
+//   → Every new page = new prop. This pattern breaks immediately at scale.
+//
+// WITH Context:
+//   Any component anywhere in the tree calls:
+//   const { dispatch } = useNotif();
+//   dispatch({ type: "ADD_NOTIF", payload: { ... } });
+//   The bell badge in Navigation updates instantly. No props at all.
+//
+// This is the definition of global state: one source of truth,
+// any component can read or write, zero prop drilling.
+// ─────────────────────────────────────────────────────────
+
 // ==========================================
 // TODO Context 2: Define NotifAction as a discriminated union
 // Three action types this time:

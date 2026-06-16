@@ -8,6 +8,23 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
+  // 🚨 BOTTLENECK — WHY DO WE NEED STATE MANAGEMENT HERE?
+  // ─────────────────────────────────────────────────────────
+  // CartDrawer renders inside <Navigation>.
+  // The toys the user added came from clicking buttons in <StorePage>.
+  // These two components have NO parent-child relationship.
+  //
+  // WITHOUT Context: <Navigation> would have to hold the entire
+  //   cart array in its own useState, then pass it down:
+  //   <CartDrawer items={items} onRemove={handleRemove} onUpdate={handleUpdate} />
+  //   AND <StorePage> would need a callback prop to add items UP to Navigation:
+  //   <StorePage onAddToCart={...} />
+  //   → Every page that renders a store would need this callback. Impossible to scale.
+  //
+  // WITH Context: CartDrawer just calls useCart() and gets everything —
+  //   items, dispatch, total, itemCount — with zero props needed.
+  // ─────────────────────────────────────────────────────────
+
   // ==========================================
   // TODO Context 24: Call useCart() to read items, total, itemCount, and dispatch
   // The drawer is a "subscriber" — it reads from context and re-renders on every change

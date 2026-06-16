@@ -40,11 +40,25 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-sky-50 text-sky-950 flex flex-col">
         {/*
+          🚨 BOTTLENECK — WHY DO THE PROVIDERS LIVE HERE?
+          ───────────────────────────────────────────────────
+          A Context Provider only shares state with components INSIDE it.
+          The Provider must wrap the "highest common ancestor" of every
+          component that needs to read from it.
+
+          In this app, both <Navigation> and <StorePage> need cart + notif state.
+          <Navigation> renders on every page. So the Provider must wrap
+          the entire app — which is exactly what root layout is for.
+
+          If we put <CartProvider> only inside /store/page.tsx:
+            → <Navigation> (outside /store) would see a different, empty cart.
+            → The badge would always show 0. The drawer would always be empty.
+
+          Root layout = global scope. Wrap here = every page gets access.
+          ───────────────────────────────────────────────────
+
           TODO Context 9:  Wrap with <NotifProvider>
           TODO Context 20: Wrap with <CartProvider>
-
-          The notification bell panel lives inside Navigation — no separate
-          ToastContainer needed. Just wrap children with both providers.
         */}
         <NotifProvider>
           <CartProvider>

@@ -32,6 +32,28 @@ export function Navigation() {
     shouldRetryOnError: false,
   });
 
+  // 🚨 BOTTLENECK — WHY DO WE NEED STATE MANAGEMENT HERE?
+  // ─────────────────────────────────────────────────────────
+  // Navigation needs to show TWO live counts:
+  //   🛒 Cart badge  → how many items are in the cart
+  //   🔔 Bell badge  → how many unread notifications exist
+  //
+  // WITHOUT Context, the only option is prop drilling:
+  //   Every page that renders <Navigation /> would have to:
+  //   1. Keep its own cart state in useState
+  //   2. Pass it down: <Navigation itemCount={n} unreadCount={m} />
+  //
+  // The real problem: when a user adds a toy on /store,
+  // how does the Navigation on /dashboard know to update?
+  // → It CAN'T. Components can't talk to each other sideways.
+  //   State would have to be lifted all the way up to layout.tsx
+  //   and then passed down to EVERY page as props. A maintenance nightmare.
+  //
+  // WITH Context:
+  //   Navigation just calls useCart() and useNotif() — one line each.
+  //   No props. No callbacks. Updates instantly on every page.
+  // ─────────────────────────────────────────────────────────
+
   // ==========================================
   // TODO Context 23: Call useCart() to read live itemCount
   // ==========================================
