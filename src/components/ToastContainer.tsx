@@ -28,7 +28,15 @@ const TOAST_ICONS: Record<string, string> = {
   info: "ℹ️",
 };
 
-function ToastItem({ id, message, type }: { id: string; message: string; type: "success" | "error" | "info" }) {
+function ToastItem({
+  id,
+  message,
+  type,
+}: {
+  id: string;
+  message: string;
+  type: "success" | "error" | "info";
+}) {
   const { dispatch } = useNotif();
 
   // ==========================================
@@ -36,22 +44,30 @@ function ToastItem({ id, message, type }: { id: string; message: string; type: "
   // The cleanup function (clearTimeout) runs if the toast is manually dismissed
   // before the timer fires — preventing a "dispatch on unmounted component" error
   // ==========================================
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch({ type: "DISMISS_NOTIF", payload: { id } });
-    }, 3000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     dispatch({ type: "DISMISS_NOTIF", payload: { id } });
+  //   }, 3000);
+  //   return () => clearTimeout(timer);
+  // }, [id, dispatch]);
 
-    return () => clearTimeout(timer);
+  // Placeholder so the component still renders without TODO 11 implemented
+  useEffect(() => {
+    // TODO Context 11: Implement auto-dismiss here
   }, [id, dispatch]);
 
   return (
     <div
-      className={`flex items-start gap-3 px-4 py-3 rounded-2xl border-2 border-b-4 shadow-sm text-xs font-semibold max-w-xs w-full animate-in slide-in-from-right-4 duration-300 ${TOAST_COLORS[type]}`}
+      className={`flex items-start gap-3 px-4 py-3 rounded-2xl border-2 border-b-4 shadow-sm text-xs font-semibold max-w-xs w-full ${TOAST_COLORS[type]}`}
     >
       <span className="text-sm shrink-0">{TOAST_ICONS[type]}</span>
       <p className="flex-1 leading-relaxed">{message}</p>
+      {/* ==========================================
+          TODO Context 10: Wire dismiss button
+          onClick → dispatch({ type: "DISMISS_NOTIF", payload: { id } })
+          ========================================== */}
       <button
-        onClick={() => dispatch({ type: "DISMISS_NOTIF", payload: { id } })}
+        onClick={() => console.log("TODO Context 10: dispatch DISMISS_NOTIF")}
         className="text-current opacity-50 hover:opacity-100 transition-opacity shrink-0 cursor-pointer"
         aria-label="Dismiss notification"
       >
@@ -63,7 +79,7 @@ function ToastItem({ id, message, type }: { id: string; message: string; type: "
 
 // ==========================================
 // TODO Context 10: ToastContainer reads notifications from useNotif()
-// It renders a fixed-position stack in the bottom-right corner
+// Render a fixed-position stack in the bottom-right corner
 // ==========================================
 export function ToastContainer() {
   const { notifications } = useNotif();
@@ -76,6 +92,7 @@ export function ToastContainer() {
       aria-live="polite"
       aria-label="Notifications"
     >
+      {/* TODO Context 10: Map over notifications and render a ToastItem for each */}
       {notifications.map((notif) => (
         <ToastItem
           key={notif.id}

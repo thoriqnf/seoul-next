@@ -1,63 +1,72 @@
 "use client";
 
 import { createContext, useContext, useReducer, ReactNode } from "react";
-import { Toy, CartItem } from "@/types";
+
+// CartItem and Toy types will be defined in TODO Context 12 & 13 (src/types/index.ts)
+// Local placeholder interfaces so this file compiles on the starter branch
+interface Toy {
+  id: number;
+  name: string;
+  price: number;
+  emoji: string;
+  description: string;
+}
+
+interface CartItem extends Toy {
+  quantity: number;
+}
 
 // ==========================================
 // TODO Context 14: Define CartAction discriminated union
-// List every possible way the cart state can change
+// List every possible way the cart state can change:
 // ADD_ITEM, REMOVE_ITEM, UPDATE_QUANTITY, CLEAR_CART
 // ==========================================
+// type CartAction =
+//   | { type: "ADD_ITEM"; payload: Toy }
+//   | { type: "REMOVE_ITEM"; payload: { id: number } }
+//   | { type: "UPDATE_QUANTITY"; payload: { id: number; quantity: number } }
+//   | { type: "CLEAR_CART" };
 type CartAction =
   | { type: "ADD_ITEM"; payload: Toy }
   | { type: "REMOVE_ITEM"; payload: { id: number } }
   | { type: "UPDATE_QUANTITY"; payload: { id: number; quantity: number } }
   | { type: "CLEAR_CART" };
 
-// ==========================================
-// TODO Context 15: Implement ADD_ITEM case in cartReducer
-// If the toy already exists in cart → increment its quantity
-// If it's new → append it as a CartItem with quantity: 1
-// This branching logic is the most important reducer pattern to understand
-// ==========================================
-// ==========================================
-// TODO Context 16: Implement REMOVE_ITEM case
-// Use .filter() to return a new array without the item — same pattern as DISMISS_NOTIF
-// ==========================================
-// ==========================================
-// TODO Context 17: Implement UPDATE_QUANTITY case
-// Use .map() to return a new array, spreading the matched item with the new quantity
-// { ...item, quantity: action.payload.quantity }
-// ==========================================
-// ==========================================
-// TODO Context 18: Implement CLEAR_CART case
-// The simplest reducer case — just return an empty array []
-// ==========================================
 function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
   switch (action.type) {
-    case "ADD_ITEM": {
-      const existing = state.find((item) => item.id === action.payload.id);
-      if (existing) {
-        // Item already in cart — bump the quantity
-        return state.map((item) =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      // New item — add with quantity 1
-      return [...state, { ...action.payload, quantity: 1 }];
-    }
+    // ==========================================
+    // TODO Context 15: Handle ADD_ITEM
+    // If item already in cart → bump quantity
+    // If new → append with quantity: 1
+    // Hint:
+    // const existing = state.find((item) => item.id === action.payload.id);
+    // if (existing) { return state.map((item) => item.id === ... ? { ...item, quantity: item.quantity + 1 } : item) }
+    // return [...state, { ...action.payload, quantity: 1 }];
+    // ==========================================
+    case "ADD_ITEM":
+      return state; // ← replace this line
+
+    // ==========================================
+    // TODO Context 16: Handle REMOVE_ITEM
+    // Hint: return state.filter((item) => item.id !== action.payload.id)
+    // ==========================================
     case "REMOVE_ITEM":
-      return state.filter((item) => item.id !== action.payload.id);
+      return state; // ← replace this line
+
+    // ==========================================
+    // TODO Context 17: Handle UPDATE_QUANTITY
+    // Hint: return state.map((item) => item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item)
+    // ==========================================
     case "UPDATE_QUANTITY":
-      return state.map((item) =>
-        item.id === action.payload.id
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      );
+      return state; // ← replace this line
+
+    // ==========================================
+    // TODO Context 18: Handle CLEAR_CART
+    // Hint: return []
+    // ==========================================
     case "CLEAR_CART":
-      return [];
+      return state; // ← replace this line
+
     default:
       return state;
   }
@@ -65,14 +74,13 @@ function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
 
 // ==========================================
 // TODO Context 19: Define CartContextValue, create CartContext,
-// implement CartProvider with useReducer, derive computed values,
+// implement CartProvider with useReducer + derived values (itemCount, total),
 // and export useCart() hook with null safety guard
 // Same 3-part pattern as NotifContext — context → provider → hook
 // ==========================================
 interface CartContextValue {
   items: CartItem[];
   dispatch: React.Dispatch<CartAction>;
-  // Derived values computed inside the Provider so every consumer gets them for free
   itemCount: number;
   total: number;
 }
@@ -82,12 +90,11 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, dispatch] = useReducer(cartReducer, []);
 
-  // Derive computed values from state — no need to store these separately
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  // TODO Context 19: Derive itemCount and total from items
+  // const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  // const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const itemCount = 0; // ← replace with real derived value
+  const total = 0; // ← replace with real derived value
 
   return (
     <CartContext.Provider value={{ items, dispatch, itemCount, total }}>

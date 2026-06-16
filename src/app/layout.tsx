@@ -49,20 +49,17 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-sky-50 text-sky-950 flex flex-col">
-        {/* ==========================================
-            TODO Context 8: Wrap children with NotifProvider
-            TODO Context 20: Wrap children with CartProvider
-            Order matters — CartProvider is inside NotifProvider
-            both providers are independent and can be in any order
-            ========================================== */}
+        {/*
+          TODO Context 8: Wrap children with <NotifProvider>
+          TODO Context 9: Add <ToastContainer /> inside NotifProvider
+          TODO Context 20: Add <CartProvider> alongside NotifProvider
+
+          Currently wired with stub Providers — app boots clean,
+          state management will become functional as TODOs are completed
+        */}
         <NotifProvider>
           <CartProvider>
             {children}
-            {/* ==========================================
-                TODO Context 9: Mount ToastContainer here
-                It lives inside NotifProvider so it can call useNotif()
-                It renders outside {children} so it overlays every page
-                ========================================== */}
             <ToastContainer />
           </CartProvider>
         </NotifProvider>

@@ -84,7 +84,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                   {/* ==========================================
                       TODO Context 25: Wire quantity controls
-                      − button → dispatch UPDATE_QUANTITY (quantity - 1, minimum 1)
+                      − button → dispatch UPDATE_QUANTITY (quantity - 1, min 1)
                       + button → dispatch UPDATE_QUANTITY (quantity + 1)
                       ✕ button → dispatch REMOVE_ITEM
                       ========================================== */}
@@ -92,13 +92,8 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <button
                       id={`decrease-qty-${item.id}`}
                       onClick={() =>
-                        dispatch({
-                          type: "UPDATE_QUANTITY",
-                          payload: {
-                            id: item.id,
-                            quantity: Math.max(1, item.quantity - 1),
-                          },
-                        })
+                        // TODO Context 25: dispatch UPDATE_QUANTITY with quantity - 1 (min 1)
+                        console.log("TODO Context 25: decrease qty", item.id)
                       }
                       className="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 text-xs font-black flex items-center justify-center hover:bg-sky-50 transition-colors cursor-pointer"
                       aria-label={`Decrease quantity of ${item.name}`}
@@ -111,10 +106,8 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <button
                       id={`increase-qty-${item.id}`}
                       onClick={() =>
-                        dispatch({
-                          type: "UPDATE_QUANTITY",
-                          payload: { id: item.id, quantity: item.quantity + 1 },
-                        })
+                        // TODO Context 25: dispatch UPDATE_QUANTITY with quantity + 1
+                        console.log("TODO Context 25: increase qty", item.id)
                       }
                       className="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 text-xs font-black flex items-center justify-center hover:bg-sky-50 transition-colors cursor-pointer"
                       aria-label={`Increase quantity of ${item.name}`}
@@ -131,10 +124,8 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <button
                       id={`remove-item-${item.id}`}
                       onClick={() =>
-                        dispatch({
-                          type: "REMOVE_ITEM",
-                          payload: { id: item.id },
-                        })
+                        // TODO Context 25: dispatch REMOVE_ITEM
+                        console.log("TODO Context 25: remove item", item.id)
                       }
                       className="text-[10px] text-rose-400 hover:text-rose-600 font-bold transition-colors cursor-pointer"
                       aria-label={`Remove ${item.name} from cart`}
@@ -159,6 +150,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="text-xs font-semibold text-slate-500">
                 Subtotal
               </span>
+              {/* TODO Context 26: Display computed total */}
               <span className="text-lg font-black text-indigo-950 font-toy">
                 ${total.toFixed(2)}
               </span>
@@ -178,7 +170,10 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
             <button
               id="clear-cart-btn"
-              onClick={() => dispatch({ type: "CLEAR_CART" })}
+              onClick={() =>
+                // TODO Context 26: dispatch CLEAR_CART
+                console.log("TODO Context 26: clear cart")
+              }
               className="w-full text-[10px] font-black text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
             >
               Clear cart

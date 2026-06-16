@@ -1,11 +1,51 @@
 import { create } from "zustand";
-import { Toy, CartItem } from "@/types";
+
+// Toy and CartItem will be defined in TODO Context 12 & 13
+// Local placeholder interfaces so this file compiles on the starter branch
+interface Toy {
+  id: number;
+  name: string;
+  price: number;
+  emoji: string;
+  description: string;
+}
+
+interface CartItem extends Toy {
+  quantity: number;
+}
 
 // ==========================================
 // TODO Context 27: Define the Zustand store state interface
 // In Zustand, state + actions live together in ONE flat object
 // No separate action types, no discriminated unions — just plain functions
 // ==========================================
+// interface CartStore {
+//   items: CartItem[];
+//   itemCount: number;
+//   total: number;
+//   addItem: (toy: Toy) => void;
+//   removeItem: (id: number) => void;
+//   updateQuantity: (id: number, quantity: number) => void;
+//   clearCart: () => void;
+// }
+
+// ==========================================
+// TODO Context 28: Implement the Zustand create() call
+// set() replaces useReducer + switch — just call set() with the new state
+// No action types, no switch cases, no dispatch — just plain function calls
+// Compare this to cartReducer in CartContext.tsx — same logic, far less boilerplate
+// ==========================================
+// export const useCartStore = create<CartStore>((set, get) => ({
+//   items: [],
+//   itemCount: 0,
+//   total: 0,
+//   addItem: (toy) => { ... },
+//   removeItem: (id) => { ... },
+//   updateQuantity: (id, quantity) => { ... },
+//   clearCart: () => set({ items: [], itemCount: 0, total: 0 }),
+// }));
+
+// Placeholder export so any import of useCartStore doesn't break the build
 interface CartStore {
   items: CartItem[];
   itemCount: number;
@@ -16,60 +56,12 @@ interface CartStore {
   clearCart: () => void;
 }
 
-// ==========================================
-// TODO Context 28: Implement the Zustand create() call
-// set() replaces useReducer + switch — just call set() with the new state
-// No action types, no switch cases, no dispatch — just plain function calls
-// Compare this to the cartReducer in CartContext.tsx — same logic, far less boilerplate
-// ==========================================
-export const useCartStore = create<CartStore>((set, get) => ({
+export const useCartStore = create<CartStore>(() => ({
   items: [],
   itemCount: 0,
   total: 0,
-
-  addItem: (toy: Toy) => {
-    const existing = get().items.find((item) => item.id === toy.id);
-    const updatedItems = existing
-      ? get().items.map((item) =>
-          item.id === toy.id ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      : [...get().items, { ...toy, quantity: 1 }];
-
-    set({
-      items: updatedItems,
-      itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-      total: updatedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      ),
-    });
-  },
-
-  removeItem: (id: number) => {
-    const updatedItems = get().items.filter((item) => item.id !== id);
-    set({
-      items: updatedItems,
-      itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-      total: updatedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      ),
-    });
-  },
-
-  updateQuantity: (id: number, quantity: number) => {
-    const updatedItems = get().items.map((item) =>
-      item.id === id ? { ...item, quantity } : item
-    );
-    set({
-      items: updatedItems,
-      itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-      total: updatedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      ),
-    });
-  },
-
-  clearCart: () => set({ items: [], itemCount: 0, total: 0 }),
+  addItem: () => console.log("TODO Context 28: implement addItem"),
+  removeItem: () => console.log("TODO Context 28: implement removeItem"),
+  updateQuantity: () => console.log("TODO Context 28: implement updateQuantity"),
+  clearCart: () => console.log("TODO Context 28: implement clearCart"),
 }));

@@ -5,16 +5,26 @@ import useSWR from "swr";
 import axios from "axios";
 import { Navigation } from "@/components/Navigation";
 import { CartDrawer } from "@/components/CartDrawer";
-import { Toy } from "@/types";
 
 // ==========================================
-// TODO Context 21: Fetch toys from json-server using useSWR
-// json-server must be running: bun run api (or npm run api)
-// Endpoint: http://localhost:4000/toys
-// Re-using SWR from Week 3 — data fetching and state management are separate concerns
+// TODO Context 21: Import the Toy type after defining it in src/types/index.ts
 // ==========================================
-import { useCart } from "@/contexts/CartContext";
-import { useNotif } from "@/contexts/NotifContext";
+// import { Toy } from "@/types";
+
+// ==========================================
+// TODO Context 22: Import useCart and useNotif to dispatch actions
+// ==========================================
+// import { useCart } from "@/contexts/CartContext";
+// import { useNotif } from "@/contexts/NotifContext";
+
+// Local Toy placeholder — replace with import after TODO Context 12 is done
+interface Toy {
+  id: number;
+  name: string;
+  price: number;
+  emoji: string;
+  description: string;
+}
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -22,7 +32,9 @@ export default function StorePage() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   // ==========================================
-  // TODO Context 21: Call useSWR to fetch the toys list
+  // TODO Context 21: Call useSWR to fetch toys from json-server
+  // Endpoint: http://localhost:4000/toys
+  // Make sure json-server is running: bun run api
   // ==========================================
   const {
     data: toys,
@@ -31,43 +43,40 @@ export default function StorePage() {
   } = useSWR<Toy[]>("http://localhost:4000/toys", fetcher);
 
   // ==========================================
-  // TODO Context 22: Call useCart() to get dispatch
-  // Then dispatch ADD_ITEM when "Add to Cart" is clicked
+  // TODO Context 22: Call useCart() to get the cart dispatch function
   // ==========================================
-  const { dispatch: cartDispatch } = useCart();
+  // const { dispatch: cartDispatch } = useCart();
 
   // ==========================================
-  // TODO Context 22: Call useNotif() to get the notification dispatch
-  // Fire a success toast when the user adds a toy to cart
-  // This is the payoff moment — Demo 1 and Demo 2 connect together here
+  // TODO Context 22: Call useNotif() to get the notif dispatch function
   // ==========================================
-  const { dispatch: notifDispatch } = useNotif();
+  // const { dispatch: notifDispatch } = useNotif();
 
   const handleAddToCart = (toy: Toy) => {
     // ==========================================
     // TODO Context 22: Dispatch ADD_ITEM to the cart context
+    // cartDispatch({ type: "ADD_ITEM", payload: toy });
     // ==========================================
-    cartDispatch({ type: "ADD_ITEM", payload: toy });
 
     // ==========================================
-    // TODO Context 22: Also fire a success toast via NotifContext
-    // One click → two context dispatches: cart + notification
+    // TODO Context 22: Fire a success toast via NotifContext
+    // notifDispatch({
+    //   type: "ADD_NOTIF",
+    //   payload: {
+    //     id: `notif-${toy.id}-${Date.now()}`,
+    //     message: `${toy.emoji} ${toy.name} added to cart!`,
+    //     type: "success",
+    //   },
+    // });
     // ==========================================
-    notifDispatch({
-      type: "ADD_NOTIF",
-      payload: {
-        id: `notif-${toy.id}-${Date.now()}`,
-        message: `${toy.emoji} ${toy.name} added to cart!`,
-        type: "success",
-      },
-    });
 
     // ==========================================
     // TODO Context 29 (Zustand bonus): To swap to Zustand, comment out the
     // cartDispatch line above and replace with:
     // addItem(toy);  ← from useCartStore()
-    // Zero JSX changes needed — the UI doesn't care which state manager powers it
     // ==========================================
+
+    console.log("TODO Context 22: Add to cart →", toy.name);
   };
 
   return (

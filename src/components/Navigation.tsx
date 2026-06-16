@@ -32,7 +32,8 @@ export function Navigation({ onCartOpen }: NavigationProps) {
   // The nav has no idea about the store page — yet it sees the live count
   // This is the "wow moment" of global state
   // ==========================================
-  const { itemCount } = useCart();
+  // const { itemCount } = useCart();
+  const { itemCount } = useCart(); // ← This will show 0 until TODO Context 19 derives it correctly
 
   const isLoggedIn = !!user;
 
@@ -83,7 +84,7 @@ export function Navigation({ onCartOpen }: NavigationProps) {
         <div className="flex items-center gap-3">
           {/* ==========================================
               TODO Context 23: Render cart icon with live item count badge
-              itemCount comes from useCart() — updates in real time when items are added
+              itemCount comes from useCart() — badge shows when itemCount > 0
               ========================================== */}
           {onCartOpen && (
             <button
@@ -95,6 +96,7 @@ export function Navigation({ onCartOpen }: NavigationProps) {
               <span className="text-base">🛒</span>
               {/* ==========================================
                   TODO Context 23: Show badge only when itemCount > 0
+                  Hint: {itemCount > 0 && ( <span ...>{itemCount}</span> )}
                   ========================================== */}
               {itemCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center font-toy leading-none">
