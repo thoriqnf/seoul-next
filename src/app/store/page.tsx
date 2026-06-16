@@ -51,8 +51,10 @@ export default function StorePage() {
         id: `notif-${toy.id}-${Date.now()}`,
         message: `${toy.emoji} ${toy.name} added to cart!`,
         type: "success",
+        read: false,
       },
     });
+
 
     // ==========================================
     // TODO Context 29 (Zustand bonus): To swap to Zustand, comment out the

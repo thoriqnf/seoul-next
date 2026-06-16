@@ -6,48 +6,51 @@ import { useRouter } from "next/navigation";
 import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { AuthUser } from "@/types";
-
-// ==========================================
-// TODO Context 23: Import useCart to read the live cart item count
-// ==========================================
 import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 
+// ==========================================
+// TODO Context 10: Import useNotif to read the live notification state
+// ==========================================
+import { useNotif } from "@/contexts/NotifContext";
+
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
+const NOTIF_ICONS: Record<string, string> = {
+  success: "✅",
+  error: "❌",
+  info: "ℹ️",
+};
 
 export function Navigation() {
   const router = useRouter();
 
-  // Cart drawer is managed globally inside Navigation
-  // so the cart icon appears on every page without any prop passing
+  // Local UI state for open/close panels — not global, lives only in Navigation
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-  // ==========================================
-  // TODO PROXY AUTH 6: Fetch active session user details in real-time from '/api/auth/me' using useSWR
-  // ==========================================
   const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
 
   // ==========================================
-  // TODO Context 23: Call useCart() to read itemCount
-  // The nav has no idea about the store page — yet it sees the live count
-  // This is the "wow moment" of global state
+  // TODO Context 23: Call useCart() to read live itemCount
   // ==========================================
   const { itemCount } = useCart();
+
+  // ==========================================
+  // TODO Context 10: Call useNotif() to read notifications, unreadCount, and dispatch
+  // unreadCount drives the bell badge — any page that dispatches ADD_NOTIF
+  // will instantly update this badge without any prop passing
+  // ==========================================
+  const { notifications, unreadCount, dispatch: notifDispatch } = useNotif();
 
   const isLoggedIn = !!user;
 
   const handleLogout = async () => {
     try {
-      // ==========================================
-      // TODO PROXY AUTH 7: Clear the HttpOnly session cookie by calling '/api/auth/logout' via Axios
-      // ==========================================
       await axios.post("/api/auth/logout");
-
-      // Optimistically update SWR cache to log out the user instantly across components
       await mutate("/api/auth/me", null, false);
-
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -64,7 +67,7 @@ export function Navigation() {
           {/* toyStory Brand Logo */}
           <Link
             href="/"
-            className="flex flex-col shrink-0 hover:opacity-90 active:scale-98 transition-all"
+            className="flex flex-col shrink-0 hover:opacity-90 transition-all"
           >
             <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase leading-none font-toy">
               Andy&apos;s Playroom Registry
@@ -85,23 +88,118 @@ export function Navigation() {
             </Link>
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Right action icons */}
+          <div className="flex items-center gap-2">
+
             {/* ==========================================
-                TODO Context 23: Cart icon with live item count badge
-                itemCount comes from useCart() — updates in real time when items are added
-                The cart is available on EVERY page because it lives inside Navigation
+                TODO Context 10: Notification bell icon with unread badge
+                unreadCount comes from useNotif() — updates instantly when
+                any page dispatches ADD_NOTIF, with zero prop drilling
                 ========================================== */}
+            <div className="relative">
+              <button
+                id="notif-bell-btn"
+                onClick={() => {
+                  setIsNotifOpen((prev) => !prev);
+                  setIsCartOpen(false);
+                }}
+                className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-slate-600 hover:bg-sky-100 hover:text-indigo-600 transition-all cursor-pointer"
+                aria-label={`Notifications, ${unreadCount} unread`}
+              >
+                <span className="text-base">🔔</span>
+                {/* Badge — only visible when there are unread notifications */}
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center font-toy leading-none">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* ==========================================
+                  TODO Context 11: Notification panel dropdown
+                  Reads notifications array from useNotif()
+                  Shows all notifications with dismiss + mark-all-read controls
+                  ========================================== */}
+              {isNotifOpen && (
+                <div
+                  className="absolute top-full right-0 mt-2 w-72 bg-white border-2 border-sky-100 rounded-2xl shadow-lg z-50 overflow-hidden"
+                  aria-label="Notification panel"
+                >
+                  {/* Panel header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-sky-100">
+                    <span className="text-xs font-black text-indigo-950 font-toy">
+                      Notifications
+                    </span>
+                    {unreadCount > 0 && (
+                      <button
+                        id="mark-all-read-btn"
+                        onClick={() =>
+                          notifDispatch({ type: "MARK_ALL_READ" })
+                        }
+                        className="text-[10px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors cursor-pointer"
+                      >
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Notification list */}
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-6 text-center">
+                      <span className="text-2xl block mb-1">🔔</span>
+                      <p className="text-[11px] font-semibold text-slate-400">
+                        No notifications yet
+                      </p>
+                      <p className="text-[10px] text-slate-300 mt-0.5">
+                        Add a toy to the cart to see one!
+                      </p>
+                    </div>
+                  ) : (
+                    <ul className="max-h-64 overflow-y-auto divide-y divide-sky-50">
+                      {notifications.map((notif) => (
+                        <li
+                          key={notif.id}
+                          className={`flex items-start gap-2.5 px-4 py-3 transition-colors ${
+                            notif.read ? "opacity-50" : "bg-sky-50/50"
+                          }`}
+                        >
+                          <span className="text-xs shrink-0 mt-0.5">
+                            {NOTIF_ICONS[notif.type]}
+                          </span>
+                          <p className="flex-1 text-[11px] font-medium text-slate-700 leading-snug">
+                            {notif.message}
+                          </p>
+                          <button
+                            onClick={() =>
+                              notifDispatch({
+                                type: "DISMISS_NOTIF",
+                                payload: { id: notif.id },
+                              })
+                            }
+                            className="text-slate-300 hover:text-slate-500 transition-colors shrink-0 cursor-pointer text-xs"
+                            aria-label="Dismiss notification"
+                          >
+                            ✕
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Cart icon with badge */}
             <button
               id="cart-icon-btn"
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                setIsCartOpen(true);
+                setIsNotifOpen(false);
+              }}
               className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-slate-600 hover:bg-sky-100 hover:text-indigo-600 transition-all cursor-pointer"
               aria-label={`Open cart, ${itemCount} items`}
             >
               <span className="text-base">🛒</span>
-              {/* ==========================================
-                  TODO Context 23: Show badge only when itemCount > 0
-                  ========================================== */}
               {itemCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center font-toy leading-none">
                   {itemCount > 9 ? "9+" : itemCount}
@@ -109,11 +207,12 @@ export function Navigation() {
               )}
             </button>
 
+            {/* Auth links */}
             {isLoggedIn ? (
-              <div className="flex items-center gap-4 text-xs font-extrabold font-toy">
+              <div className="flex items-center gap-3 text-xs font-extrabold font-toy ml-1">
                 <Link
                   href="/dashboard"
-                  className="text-slate-600 hover:text-indigo-600 transition-colors"
+                  className="text-slate-600 hover:text-indigo-600 transition-colors hidden sm:block"
                 >
                   Room Console
                 </Link>
@@ -127,7 +226,7 @@ export function Navigation() {
             ) : (
               <Link
                 href="/login"
-                className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy"
+                className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy ml-1"
               >
                 Sign In
               </Link>

@@ -5,20 +5,27 @@ import { Notification } from "@/types";
 
 // ==========================================
 // TODO Context 2: Define NotifAction as a discriminated union
-// Every action type that can change notification state must be listed here
+// Three action types:
+// ADD_NOTIF    → add a new notification (unread by default)
+// DISMISS_NOTIF → remove a notification by id
+// MARK_ALL_READ → mark every notification as read (badge count → 0)
 // ==========================================
 type NotifAction =
   | { type: "ADD_NOTIF"; payload: Notification }
-  | { type: "DISMISS_NOTIF"; payload: { id: string } };
+  | { type: "DISMISS_NOTIF"; payload: { id: string } }
+  | { type: "MARK_ALL_READ" };
 
 // ==========================================
 // TODO Context 3: Implement the ADD_NOTIF case in notifReducer
-// Reducers are pure functions: (currentState, action) => newState
-// Never mutate the state directly — always return a NEW array
+// Prepend the new notification so the newest appears at the top
 // ==========================================
 // ==========================================
-// TODO Context 4: Implement the DISMISS_NOTIF case in notifReducer
-// Use .filter() to return a new array without the dismissed notification
+// TODO Context 4: Implement the DISMISS_NOTIF case
+// Use .filter() to return a new array without the removed notification
+// ==========================================
+// ==========================================
+// TODO Context 5: Implement the MARK_ALL_READ case
+// Use .map() to return a new array where every notification has read: true
 // ==========================================
 function notifReducer(
   state: Notification[],
@@ -26,44 +33,48 @@ function notifReducer(
 ): Notification[] {
   switch (action.type) {
     case "ADD_NOTIF":
-      // Prepend new notification so newest appears at top
       return [action.payload, ...state];
     case "DISMISS_NOTIF":
       return state.filter((notif) => notif.id !== action.payload.id);
+    case "MARK_ALL_READ":
+      return state.map((notif) => ({ ...notif, read: true }));
     default:
       return state;
   }
 }
 
 // ==========================================
-// TODO Context 5: Define NotifContextValue and create the NotifContext
-// createContext creates the "pipe" — no data yet, the Provider fills it
+// TODO Context 6: Define NotifContextValue and create NotifContext
+// The context exposes: notifications array, derived unreadCount, and dispatch
+// unreadCount is derived here so every consumer gets it for free
 // ==========================================
 interface NotifContextValue {
   notifications: Notification[];
+  unreadCount: number;
   dispatch: React.Dispatch<NotifAction>;
 }
 
 const NotifContext = createContext<NotifContextValue | null>(null);
 
 // ==========================================
-// TODO Context 6: Implement NotifProvider
-// The Provider is the "water source" — it wraps children and injects state into the pipe
+// TODO Context 7: Implement NotifProvider
+// Use useReducer to manage state, derive unreadCount from the notifications array
 // ==========================================
 export function NotifProvider({ children }: { children: ReactNode }) {
   const [notifications, dispatch] = useReducer(notifReducer, []);
 
+  // Derived value — count how many notifications have not been read yet
+  const unreadCount = notifications.filter((notif) => !notif.read).length;
+
   return (
-    <NotifContext.Provider value={{ notifications, dispatch }}>
+    <NotifContext.Provider value={{ notifications, unreadCount, dispatch }}>
       {children}
     </NotifContext.Provider>
   );
 }
 
 // ==========================================
-// TODO Context 7: Export useNotif() custom hook
-// The hook is the "tap" — consumers call useNotif() and get state + dispatch
-// The null check catches the mistake of calling useNotif() outside a NotifProvider
+// TODO Context 8: Export useNotif() custom hook with null safety guard
 // ==========================================
 export function useNotif() {
   const context = useContext(NotifContext);
