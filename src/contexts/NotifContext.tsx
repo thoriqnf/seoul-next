@@ -1,15 +1,7 @@
 "use client";
 
 import { createContext, useContext, useReducer, ReactNode } from "react";
-
-// Notification type will be defined in TODO Context 1 (src/types/index.ts)
-// Local placeholder so this file compiles on the starter branch
-interface Notification {
-  id: string;
-  message: string;
-  type: "success" | "error" | "info";
-  read: boolean;
-}
+import { Notification } from "@/types";
 
 // 🚨 BOTTLENECK — WHY DO WE NEED A NOTIFICATION CONTEXT?
 // ─────────────────────────────────────────────────────────
@@ -60,21 +52,21 @@ function notifReducer(
     // Hint: return [action.payload, ...state]  ← prepend so newest is on top
     // ==========================================
     case "ADD_NOTIF":
-      return state; // ← replace this line
+      return [action.payload, ...state];
 
     // ==========================================
     // TODO Context 4: Handle DISMISS_NOTIF
     // Hint: return state.filter((notif) => notif.id !== action.payload.id)
     // ==========================================
     case "DISMISS_NOTIF":
-      return state; // ← replace this line
+      return state.filter((notif) => notif.id !== action.payload.id);
 
     // ==========================================
     // TODO Context 5: Handle MARK_ALL_READ
     // Hint: return state.map((notif) => ({ ...notif, read: true }))
     // ==========================================
     case "MARK_ALL_READ":
-      return state; // ← replace this line
+      return state.map((notif) => ({ ...notif, read: true }));
 
     default:
       return state;
@@ -106,9 +98,7 @@ const NotifContext = createContext<NotifContextValue | null>(null);
 export function NotifProvider({ children }: { children: ReactNode }) {
   const [notifications, dispatch] = useReducer(notifReducer, []);
 
-  // TODO Context 7: Replace 0 with real derived unreadCount
-  // const unreadCount = notifications.filter((notif) => !notif.read).length;
-  const unreadCount = 0; // ← replace this line
+  const unreadCount = notifications.filter((notif) => !notif.read).length;
 
   return (
     <NotifContext.Provider value={{ notifications, unreadCount, dispatch }}>

@@ -13,7 +13,7 @@ import { Navigation } from "@/components/Navigation";
 // TODO Context 22: Import useCart and useNotif to dispatch actions
 // ==========================================
 // import { useCart } from "@/contexts/CartContext";
-// import { useNotif } from "@/contexts/NotifContext";
+import { useNotif } from "@/contexts/NotifContext";
 
 // Local Toy placeholder — replace with import after TODO Context 12 is done
 interface Toy {
@@ -46,7 +46,7 @@ export default function StorePage() {
   // ==========================================
   // TODO Context 22: Call useNotif() to get the notif dispatch function
   // ==========================================
-  // const { dispatch: notifDispatch } = useNotif();
+  const { dispatch: notifDispatch } = useNotif();
 
   // 🚨 BOTTLENECK — WHY DO WE NEED STATE MANAGEMENT HERE?
   // ─────────────────────────────────────────────────────────
@@ -77,15 +77,15 @@ export default function StorePage() {
 
     // ==========================================
     // TODO Context 22: Fire a notification via NotifContext
-    // notifDispatch({
-    //   type: "ADD_NOTIF",
-    //   payload: {
-    //     id: `notif-${toy.id}-${Date.now()}`,
-    //     message: `${toy.emoji} ${toy.name} added to cart!`,
-    //     type: "success",
-    //     read: false,
-    //   },
-    // });
+    notifDispatch({
+      type: "ADD_NOTIF",
+      payload: {
+        id: `notif-${toy.id}-${Date.now()}`,
+        message: `${toy.emoji} ${toy.name} added to cart!`,
+        type: "success",
+        read: false,
+      },
+    });
     // ==========================================
 
     // ==========================================

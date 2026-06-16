@@ -151,8 +151,7 @@ export function Navigation() {
                       <button
                         id="mark-all-read-btn"
                         onClick={() =>
-                          // TODO Context 11: dispatch MARK_ALL_READ
-                          console.log("TODO Context 11: dispatch MARK_ALL_READ")
+                          notifDispatch({ type: "MARK_ALL_READ" })
                         }
                         className="text-[10px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors cursor-pointer"
                       >
@@ -190,8 +189,10 @@ export function Navigation() {
                           </p>
                           <button
                             onClick={() =>
-                              // TODO Context 11: dispatch DISMISS_NOTIF
-                              console.log("TODO Context 11: dismiss", notif.id)
+                              notifDispatch({
+                                type: "DISMISS_NOTIF",
+                                payload: { id: notif.id },
+                              })
                             }
                             className="text-slate-300 hover:text-slate-500 transition-colors shrink-0 cursor-pointer text-xs"
                             aria-label="Dismiss notification"
