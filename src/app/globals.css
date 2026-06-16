@@ -2,8 +2,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0f9ff; /* Solid Sky-50 light sky-blue background */
-  --foreground: #0c4a6e; /* Sky-950/indigo dark foreground */
+  --background: #f0f9ff;
+  /* Solid Sky-50 light sky-blue background */
+  --foreground: #0c4a6e;
+  /* Sky-950/indigo dark foreground */
 }
 
 @theme {
@@ -84,7 +86,7 @@ body {
 }
 
 @utility btn-secondary {
-  @apply px-4 py-2.5 rounded-xl font-bold text-sm text-slate-750 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100;
+  @apply px-4 py-2.5 rounded-xl font-bold text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100;
 }
 
 @utility btn-danger {

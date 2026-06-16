@@ -14,7 +14,7 @@ export function proxy(request: NextRequest) {
   // ==========================================
   // TODO PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
   // ==========================================
-  /* UNCOMMENT FOR FINISHED IMPLEMENTATION
+  /* UNCOMMENT FOR FINISHED IMPLEMENTATION */
   if (pathname.startsWith("/dashboard")) {
     const sessionCookie = request.cookies.get("session")?.value;
 
@@ -51,7 +51,9 @@ export function proxy(request: NextRequest) {
       return loginRedirect;
     }
   }
-  */
+
+  if (pathname.startsWith("/about")) { }
+
 
   // STARTER FALLBACK: Allow all requests to proceed to the destination route by default
   return NextResponse.next();
@@ -59,5 +61,5 @@ export function proxy(request: NextRequest) {
 
 // Config object defining the matched routes that trigger this proxy guard
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", '/about/:path*'],
 };

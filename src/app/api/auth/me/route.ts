@@ -11,7 +11,7 @@ export async function GET() {
     // TODO PROXY AUTH 4: Retrieve, parse, and return the session cookie payload.
     // Return the AuthUser object if authenticated, otherwise return 401.
     // ==========================================
-    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION */
     if (!sessionCookie || !sessionCookie.value) {
       return NextResponse.json(
         { error: "Not authenticated" },
@@ -21,20 +21,20 @@ export async function GET() {
 
     const sessionData: SessionData = JSON.parse(sessionCookie.value);
     return NextResponse.json(sessionData.user);
-    */
+
 
     // STARTER FALLBACK: Read cookie directly if it exists, otherwise return a 401
-    if (sessionCookie && sessionCookie.value) {
-      try {
-        const sessionData: SessionData = JSON.parse(sessionCookie.value);
-        return NextResponse.json(sessionData.user);
-      } catch (e) {}
-    }
+    // if (sessionCookie && sessionCookie.value) {
+    //   try {
+    //     const sessionData: SessionData = JSON.parse(sessionCookie.value);
+    //     return NextResponse.json(sessionData.user);
+    //   } catch (e) {}
+    // }
 
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+    // return NextResponse.json(
+    //   { error: "Not authenticated" },
+    //   { status: 401 }
+    // );
   } catch (error) {
     console.error("Fetch Session Error:", error);
     return NextResponse.json(

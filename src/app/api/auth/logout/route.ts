@@ -6,7 +6,7 @@ export async function POST() {
     // ==========================================
     // TODO PROXY AUTH 3: Delete the `session` cookie by setting its maxAge to 0
     // ==========================================
-    /* UNCOMMENT FOR FINISHED IMPLEMENTATION
+    /* UNCOMMENT FOR FINISHED IMPLEMENTATION*/
     const cookieStore = await cookies();
     cookieStore.set("session", "", {
       httpOnly: true,
@@ -15,7 +15,7 @@ export async function POST() {
       path: "/",
       maxAge: 0,
     });
-    */
+
 
     return NextResponse.json({ success: true, message: "Logged out successfully" });
   } catch (error) {
