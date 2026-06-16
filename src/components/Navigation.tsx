@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR, { mutate } from "swr";
@@ -10,15 +11,16 @@ import { AuthUser } from "@/types";
 // TODO Context 23: Import useCart to read the live cart item count
 // ==========================================
 import { useCart } from "@/contexts/CartContext";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-interface NavigationProps {
-  onCartOpen?: () => void;
-}
-
-export function Navigation({ onCartOpen }: NavigationProps) {
+export function Navigation() {
   const router = useRouter();
+
+  // Cart drawer is managed globally inside Navigation
+  // so the cart icon appears on every page without any prop passing
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // ==========================================
   // TODO PROXY AUTH 6: Fetch active session user details in real-time from '/api/auth/me' using useSWR
@@ -53,42 +55,46 @@ export function Navigation({ onCartOpen }: NavigationProps) {
   };
 
   return (
-    <header className="w-full border-b-4 border-sky-200 bg-white sticky top-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.03)] font-sans">
-      <div className="mx-auto max-w-4xl px-6 md:px-8 h-16 flex items-center justify-between gap-4">
-        {/* toyStory Brand Logo */}
-        <Link
-          href="/"
-          className="flex flex-col shrink-0 hover:opacity-90 active:scale-98 transition-all"
-        >
-          <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase leading-none font-toy">
-            Andy&apos;s Playroom Registry
-          </span>
-          <span className="text-xl font-black text-indigo-950 tracking-tight leading-tight flex items-center mt-1 font-toy">
-            toy<span className="text-amber-500">Story</span>
-            <span className="text-amber-400 ml-0.5">⭐</span>
-          </span>
-        </Link>
+    <>
+      {/* CartDrawer lives inside Navigation so it's available on every page */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-        {/* Center nav links */}
-        <nav className="hidden md:flex items-center gap-5 text-[11px] font-extrabold font-toy">
+      <header className="w-full border-b-4 border-sky-200 bg-white sticky top-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.03)] font-sans">
+        <div className="mx-auto max-w-4xl px-6 md:px-8 h-16 flex items-center justify-between gap-4">
+          {/* toyStory Brand Logo */}
           <Link
-            href="/store"
-            className="text-slate-600 hover:text-indigo-600 transition-colors"
+            href="/"
+            className="flex flex-col shrink-0 hover:opacity-90 active:scale-98 transition-all"
           >
-            🧸 Toy Store
+            <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase leading-none font-toy">
+              Andy&apos;s Playroom Registry
+            </span>
+            <span className="text-xl font-black text-indigo-950 tracking-tight leading-tight flex items-center mt-1 font-toy">
+              toy<span className="text-amber-500">Story</span>
+              <span className="text-amber-400 ml-0.5">⭐</span>
+            </span>
           </Link>
-        </nav>
 
-        {/* Right Action Buttons */}
-        <div className="flex items-center gap-3">
-          {/* ==========================================
-              TODO Context 23: Render cart icon with live item count badge
-              itemCount comes from useCart() — updates in real time when items are added
-              ========================================== */}
-          {onCartOpen && (
+          {/* Center nav links */}
+          <nav className="hidden md:flex items-center gap-5 text-[11px] font-extrabold font-toy">
+            <Link
+              href="/store"
+              className="text-slate-600 hover:text-indigo-600 transition-colors"
+            >
+              🧸 Toy Store
+            </Link>
+          </nav>
+
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-3">
+            {/* ==========================================
+                TODO Context 23: Cart icon with live item count badge
+                itemCount comes from useCart() — updates in real time when items are added
+                The cart is available on EVERY page because it lives inside Navigation
+                ========================================== */}
             <button
               id="cart-icon-btn"
-              onClick={onCartOpen}
+              onClick={() => setIsCartOpen(true)}
               className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-slate-600 hover:bg-sky-100 hover:text-indigo-600 transition-all cursor-pointer"
               aria-label={`Open cart, ${itemCount} items`}
             >
@@ -102,42 +108,42 @@ export function Navigation({ onCartOpen }: NavigationProps) {
                 </span>
               )}
             </button>
-          )}
 
-          {isLoggedIn ? (
-            <div className="flex items-center gap-4 text-xs font-extrabold font-toy">
+            {isLoggedIn ? (
+              <div className="flex items-center gap-4 text-xs font-extrabold font-toy">
+                <Link
+                  href="/dashboard"
+                  className="text-slate-600 hover:text-indigo-600 transition-colors"
+                >
+                  Room Console
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-rose-500 hover:text-rose-600 hover:underline cursor-pointer bg-transparent border-none p-0 font-extrabold"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy"
+              >
+                Sign In
+              </Link>
+            )}
+
+            {isLoggedIn && (
               <Link
                 href="/dashboard"
-                className="text-slate-600 hover:text-indigo-600 transition-colors"
+                className="inline-flex items-center justify-center h-8 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 border-b-2 border-indigo-800 text-white text-[10px] font-black tracking-wide font-toy transition-all shadow-sm active:translate-y-[2px] active:border-b-0"
               >
-                Room Console
+                Toy Console
               </Link>
-              <button
-                onClick={handleLogout}
-                className="text-rose-500 hover:text-rose-600 hover:underline cursor-pointer bg-transparent border-none p-0 font-extrabold"
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <Link
-              href="/login"
-              className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy"
-            >
-              Sign In
-            </Link>
-          )}
-
-          {isLoggedIn && (
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center justify-center h-8 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 border-b-2 border-indigo-800 text-white text-[10px] font-black tracking-wide font-toy transition-all shadow-sm active:translate-y-[2px] active:border-b-0"
-            >
-              Toy Console
-            </Link>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

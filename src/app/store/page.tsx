@@ -1,17 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import { Navigation } from "@/components/Navigation";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Toy } from "@/types";
 
 // ==========================================
-// TODO Context 21: Fetch toys from json-server using useSWR
-// json-server must be running: bun run api (or npm run api)
-// Endpoint: http://localhost:4000/toys
-// Re-using SWR from Week 3 — data fetching and state management are separate concerns
+// TODO Context 22: Import useCart and useNotif to dispatch actions
 // ==========================================
 import { useCart } from "@/contexts/CartContext";
 import { useNotif } from "@/contexts/NotifContext";
@@ -19,10 +14,10 @@ import { useNotif } from "@/contexts/NotifContext";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export default function StorePage() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   // ==========================================
-  // TODO Context 21: Call useSWR to fetch the toys list
+  // TODO Context 21: Call useSWR to fetch toys from json-server
+  // Endpoint: http://localhost:4000/toys
+  // Make sure json-server is running: bun run api
   // ==========================================
   const {
     data: toys,
@@ -31,15 +26,12 @@ export default function StorePage() {
   } = useSWR<Toy[]>("http://localhost:4000/toys", fetcher);
 
   // ==========================================
-  // TODO Context 22: Call useCart() to get dispatch
-  // Then dispatch ADD_ITEM when "Add to Cart" is clicked
+  // TODO Context 22: Call useCart() to get the cart dispatch function
   // ==========================================
   const { dispatch: cartDispatch } = useCart();
 
   // ==========================================
-  // TODO Context 22: Call useNotif() to get the notification dispatch
-  // Fire a success toast when the user adds a toy to cart
-  // This is the payoff moment — Demo 1 and Demo 2 connect together here
+  // TODO Context 22: Call useNotif() to get the notif dispatch function
   // ==========================================
   const { dispatch: notifDispatch } = useNotif();
 
@@ -72,9 +64,8 @@ export default function StorePage() {
 
   return (
     <>
-      <Navigation onCartOpen={() => setIsCartOpen(true)} />
-
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* Navigation now owns the CartDrawer — cart icon shows on every page */}
+      <Navigation />
 
       <main className="min-h-screen bg-sky-50 pb-20 font-sans">
         <div className="mx-auto max-w-4xl px-6 md:px-8 py-12">
