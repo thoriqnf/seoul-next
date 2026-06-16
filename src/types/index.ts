@@ -15,12 +15,14 @@ export interface SessionData {
 
 // ==========================================
 // TODO Context 1: Define the Notification interface
-// A notification needs an id (to dismiss it), a message, and a type (for color coding)
+// A notification needs an id (to dismiss it), a message, a type, and a read flag
+// 'read' lets us derive the unread badge count without extra state
 // ==========================================
 // export interface Notification {
 //   id: string;
 //   message: string;
 //   type: "success" | "error" | "info";
+//   read: boolean;
 // }
 
 // ==========================================

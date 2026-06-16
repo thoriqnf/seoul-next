@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import { Navigation } from "@/components/Navigation";
-import { CartDrawer } from "@/components/CartDrawer";
 
 // ==========================================
 // TODO Context 21: Import the Toy type after defining it in src/types/index.ts
@@ -29,8 +27,6 @@ interface Toy {
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export default function StorePage() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   // ==========================================
   // TODO Context 21: Call useSWR to fetch toys from json-server
   // Endpoint: http://localhost:4000/toys
@@ -59,13 +55,14 @@ export default function StorePage() {
     // ==========================================
 
     // ==========================================
-    // TODO Context 22: Fire a success toast via NotifContext
+    // TODO Context 22: Fire a notification via NotifContext
     // notifDispatch({
     //   type: "ADD_NOTIF",
     //   payload: {
     //     id: `notif-${toy.id}-${Date.now()}`,
     //     message: `${toy.emoji} ${toy.name} added to cart!`,
     //     type: "success",
+    //     read: false,
     //   },
     // });
     // ==========================================
@@ -81,9 +78,8 @@ export default function StorePage() {
 
   return (
     <>
-      <Navigation onCartOpen={() => setIsCartOpen(true)} />
-
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* Navigation owns CartDrawer — cart icon available on every page */}
+      <Navigation />
 
       <main className="min-h-screen bg-sky-50 pb-20 font-sans">
         <div className="mx-auto max-w-4xl px-6 md:px-8 py-12">
@@ -140,12 +136,9 @@ export default function StorePage() {
                   key={toy.id}
                   className="bg-white border-2 border-sky-200 border-b-4 border-b-sky-300 rounded-3xl p-5 flex flex-col gap-3 hover:border-indigo-300 hover:scale-[1.02] transition-all group shadow-sm"
                 >
-                  {/* Toy emoji icon */}
                   <div className="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
                     {toy.emoji}
                   </div>
-
-                  {/* Toy info */}
                   <div className="flex-1">
                     <h2 className="text-sm font-black text-indigo-950 font-toy leading-tight">
                       {toy.name}
@@ -154,8 +147,6 @@ export default function StorePage() {
                       {toy.description}
                     </p>
                   </div>
-
-                  {/* Price + Add to Cart */}
                   <div className="flex items-center justify-between gap-2 mt-1">
                     <span className="text-sm font-black text-indigo-700 font-toy">
                       ${toy.price.toFixed(2)}

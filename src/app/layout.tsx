@@ -3,22 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 // ==========================================
-// TODO Context 8: Import NotifProvider and mount it in the root layout
-// The Provider must sit above every component that needs to read from it
-// Root layout = global scope → every page gets access to notification state
+// TODO Context 9: Import NotifProvider and mount it in the root layout
 // ==========================================
 import { NotifProvider } from "@/contexts/NotifContext";
 
 // ==========================================
-// TODO Context 9: Import ToastContainer and render it inside NotifProvider
-// ToastContainer also uses useNotif(), so it must live inside the Provider
-// Placing it in layout means it is always visible on every page
-// ==========================================
-import { ToastContainer } from "@/components/ToastContainer";
-
-// ==========================================
 // TODO Context 20: Import CartProvider and wrap alongside NotifProvider
-// Two independent global states — they nest without interfering with each other
 // ==========================================
 import { CartProvider } from "@/contexts/CartContext";
 
@@ -50,17 +40,15 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-sky-50 text-sky-950 flex flex-col">
         {/*
-          TODO Context 8: Wrap children with <NotifProvider>
-          TODO Context 9: Add <ToastContainer /> inside NotifProvider
-          TODO Context 20: Add <CartProvider> alongside NotifProvider
+          TODO Context 9:  Wrap with <NotifProvider>
+          TODO Context 20: Wrap with <CartProvider>
 
-          Currently wired with stub Providers — app boots clean,
-          state management will become functional as TODOs are completed
+          The notification bell panel lives inside Navigation — no separate
+          ToastContainer needed. Just wrap children with both providers.
         */}
         <NotifProvider>
           <CartProvider>
             {children}
-            <ToastContainer />
           </CartProvider>
         </NotifProvider>
       </body>
