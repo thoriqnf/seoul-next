@@ -2,7 +2,7 @@
 
 This guide walks through building **global state management** in Andy's Playroom using two approaches:
 
-- **Demo 1 (Guided):** A **Notification / Toast system** powered by React Context + `useReducer`. All solution code is provided — uncomment each block and follow along.
+- **Demo 1 (Guided):** A **Notification Bell** in the nav powered by React Context + `useReducer`. All solution code is provided — uncomment each block and follow along.
 - **Demo 2 (Hands-on):** A **Global Shopping Cart** for the Toy Store. Apply the same pattern from Demo 1 yourself.
 - **Bonus:** Rebuild the cart as a **Zustand store** and compare the two approaches side-by-side.
 
@@ -22,11 +22,78 @@ bun run api
 
 ---
 
+## The Problem First — Why Do We Even Need This?
+
+> 💡 Before writing any code, open the starter branch and read the `🚨 BOTTLENECK` comments scattered across the files below. They explain exactly which real problem each piece of state management is solving.
+
+This app has a specific shape that breaks ordinary `useState` + prop passing:
+
+```
+layout.tsx
+└── Navigation           ← shows 🔔 unread count + 🛒 item count
+    └── CartDrawer       ← shows every item in the cart
+└── StorePage            ← the only place where items are ADDED
+```
+
+`StorePage` and `Navigation` are **siblings**. They have no parent-child relationship. Yet when the user clicks **"+ Add"** on a toy card, three things need to update instantly:
+
+| What updates | Where it lives |
+|---|---|
+| 🛒 Cart badge count | `Navigation` |
+| 🔔 Bell badge count | `Navigation` |
+| 🛒 Cart drawer items | `CartDrawer` (inside `Navigation`) |
+
+Without global state, here is what you'd have to do to make this work:
+
+```
+layout.tsx  ← must own ALL state: cartItems[], notifications[]
+│           ← must pass everything down as props
+├── Navigation
+│   ├── itemCount={cartItems.length}        ← prop from layout
+│   ├── unreadCount={notifications.length}  ← prop from layout
+│   └── CartDrawer
+│       ├── items={cartItems}               ← prop from layout (via Navigation)
+│       └── onRemove={(id) => setCartItems(…)} ← callback UP through Nav → layout
+└── StorePage
+    └── onAddToCart={(toy) => setCartItems(…)} ← callback from layout
+        onNotify={(msg) => setNotifications(…)} ← another callback from layout
+```
+
+Every new page = more callbacks and props to wire. Every new feature = update in 5+ files.
+
+**With Context, none of that exists.** Each component just calls a hook:
+
+```tsx
+// In StorePage — writes to both contexts
+const { dispatch: cartDispatch } = useCart();
+const { dispatch: notifDispatch } = useNotif();
+
+// In Navigation — reads from both contexts
+const { itemCount } = useCart();
+const { unreadCount } = useNotif();
+
+// In CartDrawer — reads from CartContext
+const { items, total, dispatch } = useCart();
+```
+
+No props. No callbacks. Zero coupling between components.
+
+### The Five Bottleneck Files
+
+Each file in the starter has a `🚨 BOTTLENECK` comment that explains its specific pain point:
+
+| File | The Problem Without State Management |
+|---|---|
+| `src/contexts/NotifContext.tsx` | Bell badge lives in Nav; the ADD action lives in StorePage. They're siblings — you'd need a callback prop on every page. |
+| `src/contexts/CartContext.tsx` | 4 cart operations as raw `useState` logic = scattered mutations, stale closure bugs, no single source of truth. |
+| `src/app/layout.tsx` | Providers MUST wrap the highest common ancestor. Wrap too low → each page gets its own isolated, empty cart. |
+| `src/app/store/page.tsx` | One "Add to Cart" click must update TWO sibling components simultaneously — impossible without a shared store. |
+| `src/components/CartDrawer.tsx` | Drawer renders inside Nav but shows data written by StorePage — zero parent-child link between them. |
+| `src/components/Navigation.tsx` | Nav needs live counts from two separate contexts, both written by a different page it has never met. |
+
+---
+
 ## Core Concepts
-
-### What is State Management?
-
-As apps grow, components need to **share state** without passing props through many layers (called "prop drilling"). Global state management solves this.
 
 ### React Context — The Pipe Metaphor
 
@@ -44,26 +111,31 @@ Instead of multiple `useState` calls, `useReducer` manages complex state through
 dispatch(action) → reducer(currentState, action) → newState → re-render
 ```
 
+The key rule: **a reducer never mutates state — it always returns a new value.** This is what lets React know something changed.
+
 ---
 
-## Demo 1: Notification System (TODOs 1–11)
+## Demo 1: Notification Bell (TODOs 1–11)
+
+We build a `🔔` bell icon in the navigation with an unread badge and a dropdown panel. Any component anywhere can fire a notification — the bell updates instantly.
 
 ### Phase 1A — Types
 
 #### Step 1 (`// TODO Context 1`)
 **File:** `src/types/index.ts`
 
-Define the `Notification` interface. Uncomment the block:
+Define the `Notification` interface:
 
 ```typescript
 export interface Notification {
   id: string;
   message: string;
   type: "success" | "error" | "info";
+  read: boolean;
 }
 ```
 
-> **Why `id`?** We need to identify each notification individually to dismiss it. Using `Date.now().toString()` or a short UUID works great.
+> **Why `read: boolean`?** We need to know which notifications the user hasn't seen yet so we can compute `unreadCount` — the number on the bell badge. When the user clicks "Mark all read", we flip every `read` to `true` and the badge goes to 0.
 
 ---
 
@@ -72,15 +144,16 @@ export interface Notification {
 #### Step 2 (`// TODO Context 2`)
 **File:** `src/contexts/NotifContext.tsx`
 
-Define the `NotifAction` discriminated union — the "menu" of everything that can change notification state:
+Define the `NotifAction` discriminated union. Three action types this time:
 
 ```typescript
 type NotifAction =
   | { type: "ADD_NOTIF"; payload: Notification }
-  | { type: "DISMISS_NOTIF"; payload: { id: string } };
+  | { type: "DISMISS_NOTIF"; payload: { id: string } }
+  | { type: "MARK_ALL_READ" };
 ```
 
-> **What is a discriminated union?** TypeScript uses the `type` field to narrow exactly which `payload` shape is valid for each action. This prevents passing the wrong data.
+> **What is a discriminated union?** TypeScript uses the `type` field to narrow exactly which `payload` shape is valid for each action. Notice `MARK_ALL_READ` has no `payload` at all — no data needed, just the intent.
 
 ---
 
@@ -94,7 +167,7 @@ case "ADD_NOTIF":
   return [action.payload, ...state];
 ```
 
-> **Why prepend?** `[action.payload, ...state]` puts the newest notification at the top of the stack. Never use `state.push()` — that mutates the array in place, breaking React's change detection.
+> **Why prepend?** `[action.payload, ...state]` puts the newest notification at the top of the list. Never use `state.push()` — that mutates the array in place, breaking React's change detection.
 
 ---
 
@@ -108,13 +181,27 @@ case "DISMISS_NOTIF":
   return state.filter((notif) => notif.id !== action.payload.id);
 ```
 
-> **Why `.filter()`?** It returns a brand-new array without the dismissed item. React sees a new reference and knows to re-render.
+> **Why `.filter()`?** It returns a brand-new array without the dismissed item. React sees a new reference → re-render.
+
+---
+
+#### Step 5 (`// TODO Context 5`)
+**File:** `src/contexts/NotifContext.tsx`
+
+Implement the `MARK_ALL_READ` case:
+
+```typescript
+case "MARK_ALL_READ":
+  return state.map((notif) => ({ ...notif, read: true }));
+```
+
+> **Why `.map()` + spread?** Same immutability rule — we can't mutate existing objects. Spread `...notif` copies all fields, then override `read: true` for each one. The bell badge drops to 0 because `unreadCount` is derived from `read` flags.
 
 ---
 
 ### Phase 1C — Context + Provider
 
-#### Step 5 (`// TODO Context 5`)
+#### Step 6 (`// TODO Context 6`)
 **File:** `src/contexts/NotifContext.tsx`
 
 Define the context shape and create the context:
@@ -122,38 +209,41 @@ Define the context shape and create the context:
 ```typescript
 interface NotifContextValue {
   notifications: Notification[];
+  unreadCount: number;
   dispatch: React.Dispatch<NotifAction>;
 }
 
 const NotifContext = createContext<NotifContextValue | null>(null);
 ```
 
-> **Why `| null`?** The context starts as `null` — there's no data yet. The Provider fills it. The `null` initial value also lets us detect if someone calls `useNotif()` outside a Provider.
+> **Why expose `unreadCount` here?** It's a derived value — computed from `notifications` once, inside the Provider. Every consumer (`Navigation`, etc.) gets it for free without doing their own math.
 
 ---
 
-#### Step 6 (`// TODO Context 6`)
+#### Step 7 (`// TODO Context 7`)
 **File:** `src/contexts/NotifContext.tsx`
 
-Implement `NotifProvider`:
+Implement `NotifProvider` with derived `unreadCount`:
 
 ```typescript
 export function NotifProvider({ children }: { children: ReactNode }) {
   const [notifications, dispatch] = useReducer(notifReducer, []);
 
+  const unreadCount = notifications.filter((notif) => !notif.read).length;
+
   return (
-    <NotifContext.Provider value={{ notifications, dispatch }}>
+    <NotifContext.Provider value={{ notifications, unreadCount, dispatch }}>
       {children}
     </NotifContext.Provider>
   );
 }
 ```
 
-> **The magic:** Any component inside `<NotifProvider>` can now call `useContext(NotifContext)` and get `notifications` + `dispatch`.
+> **The magic:** `unreadCount` recalculates every time `notifications` changes — no extra state, no `useEffect`. Just a derived value.
 
 ---
 
-#### Step 7 (`// TODO Context 7`)
+#### Step 8 (`// TODO Context 8`)
 **File:** `src/contexts/NotifContext.tsx`
 
 Export the `useNotif()` custom hook:
@@ -168,84 +258,81 @@ export function useNotif() {
 }
 ```
 
-> **Why a custom hook?** It hides the `useContext` call. Consumers just write `useNotif()` instead of `useContext(NotifContext)`. The null check gives a clear error message if the Provider is missing.
+> **Why a custom hook?** It hides the `useContext` boilerplate. The null check gives a clear error message if the Provider is missing instead of a cryptic `Cannot read properties of null`.
 
 ---
 
-### Phase 1D — Wire to App
+### Phase 1D — Mount Provider at Root
 
-#### Step 8 (`// TODO Context 8`)
+#### Step 9 (`// TODO Context 9`)
 **File:** `src/app/layout.tsx`
 
 Wrap `{children}` with `<NotifProvider>`:
 
 ```tsx
 <NotifProvider>
-  {children}
+  <CartProvider>
+    {children}
+  </CartProvider>
 </NotifProvider>
 ```
 
-> **Why root layout?** The Provider must sit above every component that uses `useNotif()`. Root layout = every page in the app.
+> **Why root layout?** Read the `🚨 BOTTLENECK` comment in `layout.tsx`. The Provider only shares state with components **inside** it. Root layout = every page in the app. Wrap too low (e.g. inside `/store/page.tsx`) and Navigation — which is outside — sees a different, isolated, empty state.
 
 ---
 
-#### Step 9 (`// TODO Context 9`)
-**File:** `src/app/layout.tsx`
-
-Mount `<ToastContainer />` inside the Provider:
-
-```tsx
-<NotifProvider>
-  {children}
-  <ToastContainer />
-</NotifProvider>
-```
-
-> **Why inside NotifProvider?** `ToastContainer` calls `useNotif()` — it must live inside the Provider tree.
-
----
-
-### Phase 1E — Build the Toast UI
+### Phase 1E — Bell Icon + Panel in Navigation
 
 #### Step 10 (`// TODO Context 10`)
-**File:** `src/components/ToastContainer.tsx`
+**File:** `src/components/Navigation.tsx`
 
-Call `useNotif()` and render the toast stack. Map over `notifications`:
+Call `useNotif()` and wire the bell icon:
 
-```tsx
-export function ToastContainer() {
-  const { notifications } = useNotif();
+```typescript
+const { notifications, unreadCount, dispatch: notifDispatch } = useNotif();
 
-  return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 items-end">
-      {notifications.map((notif) => (
-        <ToastItem key={notif.id} {...notif} />
-      ))}
-    </div>
-  );
-}
+// In JSX — the bell button:
+<button onClick={() => setIsNotifOpen((prev) => !prev)}>
+  🔔
+  {unreadCount > 0 && (
+    <span className="absolute ...">
+      {unreadCount > 9 ? "9+" : unreadCount}
+    </span>
+  )}
+</button>
 ```
 
-> **Key insight:** `ToastContainer` is a pure subscriber — it reads state and renders. It never owns the state itself.
+> **The wow moment:** Navigate to `/dashboard`, add a toy on `/store`, come back — the bell badge is already updated. Navigation never received a prop from StorePage. This is global state in action.
 
 ---
 
 #### Step 11 (`// TODO Context 11`)
-**File:** `src/components/ToastContainer.tsx`
+**File:** `src/components/Navigation.tsx`
 
-Add auto-dismiss inside `ToastItem` using `useEffect`:
+Wire the notification panel dropdown — map over `notifications`, add "Mark all read" and individual dismiss:
 
-```typescript
-useEffect(() => {
-  const timer = setTimeout(() => {
-    dispatch({ type: "DISMISS_NOTIF", payload: { id } });
-  }, 3000);
+```tsx
+{/* "Mark all read" button */}
+<button onClick={() => notifDispatch({ type: "MARK_ALL_READ" })}>
+  Mark all read
+</button>
 
-  return () => clearTimeout(timer);
-}, [id, dispatch]);
+{/* Each notification row */}
+{notifications.map((notif) => (
+  <div key={notif.id} className={notif.read ? "opacity-50" : ""}>
+    <p>{notif.message}</p>
+    <button
+      onClick={() =>
+        notifDispatch({ type: "DISMISS_NOTIF", payload: { id: notif.id } })
+      }
+    >
+      ✕
+    </button>
+  </div>
+))}
 ```
 
-> **Why the cleanup function?** If the user manually dismisses a toast before 3 seconds, the `ToastItem` unmounts. Without `clearTimeout`, the timer fires anyway and tries to dispatch on a dead component — causing a memory leak or stale-closure error.
+> **Key insight:** Navigation is a pure **subscriber and dispatcher** — it reads `notifications` from context and dispatches actions back into context. It doesn't own the state. The Provider owns it.
 
 ---
 
@@ -277,7 +364,7 @@ export interface Toy {
 #### Step 13 (`// TODO Context 13`)
 **File:** `src/types/index.ts`
 
-Add `CartItem` — it extends `Toy` so you don't repeat yourself:
+Add `CartItem` — extends `Toy` so you don't repeat fields:
 
 ```typescript
 export interface CartItem extends Toy {
@@ -285,14 +372,14 @@ export interface CartItem extends Toy {
 }
 ```
 
-> **Hint:** `extends` means CartItem automatically has all Toy fields + the new `quantity` field.
-
 ---
 
 ### Phase 2B — Actions & Reducer
 
 #### Step 14 (`// TODO Context 14`)
 **File:** `src/contexts/CartContext.tsx`
+
+> **Read the `🚨 BOTTLENECK` comment first.** It explains why `useReducer` is the right tool here instead of 4 separate `useState` calls. The short version: scattered `setItems` logic is hard to maintain and vulnerable to stale closure bugs. A reducer centralises all mutations.
 
 Define `CartAction` — same pattern as `NotifAction`. Four action types:
 - `ADD_ITEM` with `payload: Toy`
@@ -305,7 +392,7 @@ Define `CartAction` — same pattern as `NotifAction`. Four action types:
 #### Step 15 (`// TODO Context 15`)
 **File:** `src/contexts/CartContext.tsx`
 
-Implement `ADD_ITEM` in `cartReducer`. This is the trickiest case:
+Implement `ADD_ITEM` — the trickiest case because it has two branches:
 
 ```typescript
 case "ADD_ITEM": {
@@ -321,14 +408,19 @@ case "ADD_ITEM": {
 }
 ```
 
-> **Hint:** Two branches — item already in cart? Bump quantity. New item? Append with `quantity: 1`.
+> Item already in cart → bump quantity. New item → append with `quantity: 1`.
 
 ---
 
 #### Step 16 (`// TODO Context 16`)
 **File:** `src/contexts/CartContext.tsx`
 
-Implement `REMOVE_ITEM`. Hint: same `.filter()` pattern as `DISMISS_NOTIF`.
+Implement `REMOVE_ITEM`. Same `.filter()` pattern as `DISMISS_NOTIF`:
+
+```typescript
+case "REMOVE_ITEM":
+  return state.filter((item) => item.id !== action.payload.id);
+```
 
 ---
 
@@ -336,12 +428,14 @@ Implement `REMOVE_ITEM`. Hint: same `.filter()` pattern as `DISMISS_NOTIF`.
 **File:** `src/contexts/CartContext.tsx`
 
 Implement `UPDATE_QUANTITY` using `.map()` + spread:
+
 ```typescript
-return state.map((item) =>
-  item.id === action.payload.id
-    ? { ...item, quantity: action.payload.quantity }
-    : item
-);
+case "UPDATE_QUANTITY":
+  return state.map((item) =>
+    item.id === action.payload.id
+      ? { ...item, quantity: action.payload.quantity }
+      : item
+  );
 ```
 
 ---
@@ -358,14 +452,14 @@ Implement `CLEAR_CART` — the simplest case. Just return `[]`.
 #### Step 19 (`// TODO Context 19`)
 **File:** `src/contexts/CartContext.tsx`
 
-Three-part pattern — same as NotifContext. Also derive `itemCount` and `total` inside the Provider:
+Same three-part pattern. Also derive `itemCount` and `total` inside the Provider:
 
 ```typescript
 const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 ```
 
-> **Why derive in the Provider?** Computed values only need to live in one place. Every consumer gets them for free from `useCart()`.
+> **Why derive here?** Computed values live in one place. Every consumer — CartDrawer, Navigation — gets them for free from `useCart()`. No math scattered across components.
 
 ---
 
@@ -392,12 +486,12 @@ const { data: toys, error, isLoading } = useSWR<Toy[]>(
 );
 ```
 
-> **Reminder:** json-server must be running (`bun run api`) for this to work.
-
 ---
 
 #### Step 22 (`// TODO Context 22`)
 **File:** `src/app/store/page.tsx`
+
+> **Read the `🚨 BOTTLENECK` comment first.** This is exactly where the cross-component update problem lives — one click, two sibling components must update simultaneously.
 
 Call `useCart()` and `useNotif()`, then dispatch on "Add to Cart":
 
@@ -413,34 +507,26 @@ const handleAddToCart = (toy: Toy) => {
       id: `notif-${toy.id}-${Date.now()}`,
       message: `${toy.emoji} ${toy.name} added to cart!`,
       type: "success",
+      read: false,
     },
   });
 };
 ```
 
-> **Payoff moment:** One click → two context dispatches. Demo 1 and Demo 2 connect here.
+> **Payoff moment:** One click → two context dispatches. `StorePage` doesn't know Navigation exists. Navigation doesn't know StorePage exists. They just both subscribe to the same contexts.
 
 ---
 
-### Phase 2F — Navigation Cart Badge
+### Phase 2F — Navigation Badges
 
 #### Step 23 (`// TODO Context 23`)
 **File:** `src/components/Navigation.tsx`
 
-Read `itemCount` from `useCart()` and render the badge:
+Read `itemCount` from `useCart()` and render the cart badge. The bell badge from TODO 10 and cart badge from TODO 23 now both live in Navigation — both powered by global state, zero props.
 
 ```typescript
 const { itemCount } = useCart();
-
-// In JSX:
-{itemCount > 0 && (
-  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center">
-    {itemCount > 9 ? "9+" : itemCount}
-  </span>
-)}
 ```
-
-> **Wow moment:** Navigation has no idea the Toy Store exists — yet it sees the live count the moment a toy is added.
 
 ---
 
@@ -449,7 +535,9 @@ const { itemCount } = useCart();
 #### Step 24 (`// TODO Context 24`)
 **File:** `src/components/CartDrawer.tsx`
 
-Call `useCart()` and map over items to render each cart row:
+> **Read the `🚨 BOTTLENECK` comment first.** CartDrawer lives inside Navigation but reads data written by StorePage. Without Context this connection is impossible without a chain of callbacks.
+
+Call `useCart()` and map over items:
 
 ```typescript
 const { items, total, dispatch } = useCart();
@@ -487,18 +575,18 @@ Display `total` and wire the Clear Cart button:
 </button>
 ```
 
-> **Note:** `total` was already computed in `CartProvider` — you just read it here. No math needed.
+> `total` was already computed in `CartProvider` — you just read it here. No math needed.
 
 ---
 
 ## Bonus: Zustand Comparison (TODOs 27–29)
 
-Now let's rebuild the same cart with Zustand and compare.
+Now let's rebuild the same cart with Zustand and compare boilerplate.
 
 ### Step 27 (`// TODO Context 27`)
 **File:** `src/store/cartStore.ts`
 
-Define the Zustand store state interface — state + actions in one flat object:
+Define the Zustand store interface — state + actions in one flat object (no separate action type union):
 
 ```typescript
 interface CartStore {
@@ -554,7 +642,7 @@ const { addItem } = useCartStore();
 addItem(toy);
 ```
 
-> **Punchline:** The UI doesn't care which state manager powers it. If the hook API matches, it's a clean swap.
+> **Punchline:** The UI doesn't care which state manager powers it. If the hook API matches, it's a drop-in swap.
 
 ---
 
@@ -562,21 +650,24 @@ addItem(toy);
 
 | | React Context + useReducer | Zustand |
 |---|---|---|
-| **Best for** | Small/medium apps, learning fundamentals | Medium/large apps, complex state |
-| **Boilerplate** | More (createContext, Provider, reducer) | Minimal (just `create()`) |
+| **Best for** | Learning fundamentals, small–medium apps | Medium–large apps, complex state |
+| **Boilerplate** | More (`createContext`, Provider, reducer, action types) | Minimal — just `create()` |
 | **Provider needed?** | ✅ Yes — must wrap the tree | ❌ No — global by default |
 | **DevTools** | React DevTools | Zustand DevTools (Redux extension) |
-| **Re-render** | All context consumers re-render | Only subscribed slices re-render |
+| **Re-render scope** | All context consumers re-render | Only subscribed slices re-render |
+| **Prop drilling** | Still needs Provider placement | Zero — import the hook anywhere |
 
 ---
 
 ## How to Test & Verify
 
-1. **Add toys** — click "+ Add" on any toy → nav badge increments + toast appears
-2. **Toast auto-dismiss** — wait 3 seconds → toast fades away
-3. **Toast manual dismiss** — click ✕ on a toast → dismisses immediately
-4. **Open cart drawer** — click 🛒 in nav → drawer slides in with correct items
-5. **Quantity controls** — click +/− → subtotal updates in real time
-6. **Remove item** — click Remove → item disappears, subtotal recalculates
-7. **Clear cart** — click "Clear cart" → badge resets to 0
-8. **Zustand bonus** — swap the hook, verify identical behavior
+1. **Add toys** — click "+ Add" on any toy → 🛒 cart badge increments + 🔔 bell badge increments
+2. **Bell panel** — click 🔔 → dropdown shows the notification list
+3. **Mark all read** — click "Mark all read" → bell badge drops to 0, items dim
+4. **Dismiss notification** — click ✕ on a notification row → it disappears from the panel
+5. **Cross-page bell** — add a toy on `/store`, navigate to `/` or `/dashboard` → bell still shows the unread count
+6. **Open cart drawer** — click 🛒 in nav → drawer slides in with correct items and subtotal
+7. **Quantity controls** — click +/− → subtotal updates in real time
+8. **Remove item** — click Remove → item disappears, subtotal recalculates
+9. **Clear cart** — click "Clear cart" → cart badge resets to 0
+10. **Zustand bonus** — swap the hook, verify identical behaviour with less code
