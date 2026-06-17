@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 
-interface UseFetchResult<T> {
-  data: T | null;
+interface UseFetchResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
   loading: boolean;
   error: string | null;
 }
@@ -20,9 +21,9 @@ interface UseFetchResult<T> {
  *
  * @param url - The URL to fetch from
  */
-export function useFetch<T>(url: string): UseFetchResult<T> {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+export function useFetch(url: string): UseFetchResult {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // ==========================================
@@ -41,7 +42,7 @@ export function useFetch<T>(url: string): UseFetchResult<T> {
   //       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
   //       return res.json();
   //     })
-  //     .then((json: T) => {
+  //     .then((json) => {
   //       setData(json);
   //     })
   //     .catch((err: Error) => {

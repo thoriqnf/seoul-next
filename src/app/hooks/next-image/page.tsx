@@ -15,19 +15,15 @@ interface DummyProduct {
   thumbnail: string;
 }
 
-interface DummyProductsResponse {
-  products: DummyProduct[];
-}
-
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const API_URL =
   "https://dummyjson.com/products?limit=6&select=id,title,price,thumbnail";
 
 export default function NextImagePage() {
-  const { data, isLoading } = useSWR<DummyProductsResponse>(API_URL, fetcher);
+  const { data, isLoading } = useSWR(API_URL, fetcher);
 
-  const products = data?.products ?? [];
+  const products: DummyProduct[] = data?.products ?? [];
 
   return (
     <>
@@ -61,25 +57,19 @@ export default function NextImagePage() {
 
           {isLoading && (
             <div className="grid grid-cols-2 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-52 bg-slate-100 animate-pulse rounded-2xl"
-                />
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-52 bg-slate-100 animate-pulse rounded-2xl" />
               ))}
             </div>
           )}
 
-          {/* Side-by-side comparison grid */}
           {products.length > 0 && (
             <div className="space-y-8">
               {/* Section A: fixed width/height */}
               <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest font-toy">
-                    TODO Hook 13 — Fixed width & height
-                  </span>
-                </div>
+                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest font-toy mb-4">
+                  TODO Hook 13 — Fixed width & height
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Left: plain img */}
                   <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
@@ -104,7 +94,7 @@ export default function NextImagePage() {
                       ))}
                     </div>
                     <p className="text-[9px] text-slate-400 mt-3">
-                      Format: JPEG/PNG (browser default) · No size optimization
+                      Format: JPEG/PNG · No size optimization
                     </p>
                   </div>
 
@@ -151,11 +141,9 @@ export default function NextImagePage() {
 
               {/* Section B: fill mode + priority */}
               <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest font-toy">
-                    TODO Hook 14 — fill mode & priority
-                  </span>
-                </div>
+                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest font-toy mb-4">
+                  TODO Hook 14 — fill mode & priority
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Left: plain img stretch */}
                   <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl">
@@ -164,10 +152,7 @@ export default function NextImagePage() {
                     </p>
                     <div className="grid grid-cols-3 gap-2">
                       {products.slice(3, 6).map((product) => (
-                        <div
-                          key={product.id}
-                          className="relative w-full h-24"
-                        >
+                        <div key={product.id} className="relative w-full h-24">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={product.thumbnail}
@@ -178,7 +163,7 @@ export default function NextImagePage() {
                       ))}
                     </div>
                     <p className="text-[9px] text-slate-400 mt-3">
-                      Needs manual CSS positioning — no intrinsic size hints
+                      Manual CSS — no intrinsic size hints
                     </p>
                   </div>
 
@@ -189,10 +174,7 @@ export default function NextImagePage() {
                     </p>
                     <div className="grid grid-cols-3 gap-2">
                       {products.slice(3, 6).map((product, i) => (
-                        <div
-                          key={product.id}
-                          className="relative w-full h-24"
-                        >
+                        <div key={product.id} className="relative w-full h-24">
                           {/* ==========================================
                               TODO Hook 14: Use fill mode + priority for above-the-fold images
                               - fill: stretches to fill the relative-positioned parent
@@ -227,51 +209,6 @@ export default function NextImagePage() {
               </div>
             </div>
           )}
-
-          {/* Comparison table */}
-          <div className="mt-8 bg-white border-2 border-sky-100 rounded-2xl overflow-hidden">
-            <div className="px-5 py-3 border-b border-sky-50 bg-sky-50">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                &lt;img&gt; vs &lt;Image&gt; — Feature Comparison
-              </p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-sky-50">
-                    <th className="text-left px-5 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest w-[35%]">
-                      Feature
-                    </th>
-                    <th className="text-left px-4 py-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                      🖼 &lt;img&gt;
-                    </th>
-                    <th className="text-left px-4 py-3 text-[10px] font-black text-indigo-500 uppercase tracking-widest">
-                      ✅ &lt;Image&gt;
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-sky-50">
-                  {[
-                    ["Format", "JPEG/PNG (browser default)", "Auto WebP / AVIF"],
-                    ["Lazy loading", "Manual loading='lazy'", "✅ Automatic by default"],
-                    ["Size optimization", "❌ None", "✅ Resized to viewport"],
-                    ["Layout shift (CLS)", "Common — no reserved space", "✅ Prevented via width/height"],
-                    ["Priority loading", "Manual", "✅ priority prop"],
-                    ["Fill mode", "Manual CSS positioning", "✅ fill prop + parent relative"],
-                    ["Remote domains", "Any src works", "⚠️ Must allowlist in next.config"],
-                  ].map(([feature, img, nextImg]) => (
-                    <tr key={feature}>
-                      <td className="px-5 py-3 font-semibold text-slate-600">
-                        {feature}
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">{img}</td>
-                      <td className="px-4 py-3 text-slate-700">{nextImg}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </main>
     </>
