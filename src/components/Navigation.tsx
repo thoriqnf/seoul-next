@@ -86,6 +86,12 @@ export function Navigation() {
             >
               🧸 Toy Store
             </Link>
+            <Link
+              href="/hooks"
+              className="text-slate-600 hover:text-indigo-600 transition-colors"
+            >
+              🪝 Hooks Lab
+            </Link>
           </nav>
 
           {/* Right action icons */}
