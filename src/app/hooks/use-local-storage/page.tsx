@@ -19,7 +19,7 @@ export default function UseLocalStoragePage() {
   // The value persists across browser refreshes — try picking a character,
   // then hard-refreshing (Cmd+Shift+R). Your choice will still be selected!
   // ==========================================
-  const [favCharacter, setFavCharacter] = useLocalStorage<string>(
+  const [favCharacter, setFavCharacter] = useLocalStorage(
     "rex-fav-character",
     "Rex"
   );
@@ -113,20 +113,6 @@ export default function UseLocalStoragePage() {
             </div>
           </div>
 
-          {/* Concept callout */}
-          <div className="mt-5 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed">
-            <p className="font-black mb-1">💡 Key Concept</p>
-            <p>
-              A <strong>custom hook</strong> is just a function whose name starts
-              with <code className="bg-emerald-100 px-1 rounded">use</code> and
-              that can call other React hooks inside it.{" "}
-              <code className="bg-emerald-100 px-1 rounded">useLocalStorage</code>{" "}
-              wraps <code className="bg-emerald-100 px-1 rounded">useState</code>{" "}
-              with a lazy initializer that reads from localStorage on mount,
-              keeping the API identical to plain{" "}
-              <code className="bg-emerald-100 px-1 rounded">useState</code>.
-            </p>
-          </div>
         </div>
       </main>
     </>

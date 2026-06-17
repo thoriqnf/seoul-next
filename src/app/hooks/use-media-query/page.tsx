@@ -159,18 +159,6 @@ export default function UseMediaQueryPage() {
               </p>
             )}
           </div>
-
-          {/* Concept callout */}
-          <div className="p-4 bg-violet-50 border border-violet-200 rounded-xl text-xs text-violet-900 leading-relaxed">
-            <p className="font-black mb-1">💡 Key Concept</p>
-            <p>
-              <code className="bg-violet-100 px-1 rounded">window.matchMedia(query).addEventListener(&apos;change&apos;, fn)</code>{" "}
-              fires whenever the query result flips. The{" "}
-              <strong>cleanup function</strong> in <code className="bg-violet-100 px-1 rounded">useEffect</code>{" "}
-              calls <code className="bg-violet-100 px-1 rounded">removeEventListener</code> to
-              prevent a memory leak when the component unmounts.
-            </p>
-          </div>
         </div>
       </main>
     </>

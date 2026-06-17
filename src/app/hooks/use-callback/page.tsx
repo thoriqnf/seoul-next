@@ -172,19 +172,6 @@ export default function UseCallbackPage() {
               </div>
             </div>
           </div>
-
-          {/* Concept callout */}
-          <div className="p-4 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 leading-relaxed">
-            <p className="font-black mb-1">💡 Key Concept</p>
-            <p>
-              <code className="bg-sky-100 px-1 rounded">useCallback(fn, [deps])</code>{" "}
-              returns the <strong>same function instance</strong> between renders while
-              deps are stable. Combine with{" "}
-              <code className="bg-sky-100 px-1 rounded">React.memo</code> on the child
-              — it does a shallow prop comparison, so a stable function reference
-              means the child skips the render entirely.
-            </p>
-          </div>
         </div>
       </main>
     </>

@@ -155,18 +155,6 @@ export default function UseMemoPage() {
               )}
             </ul>
           </div>
-
-          {/* Concept callout */}
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 leading-relaxed">
-            <p className="font-black mb-1">💡 Key Concept</p>
-            <p>
-              <code className="bg-amber-100 px-1 rounded">useMemo(() =&gt; fn(), [deps])</code>{" "}
-              caches the result. React only re-runs the function when one of the
-              listed dependencies changes. Clicking the Unrelated Counter button
-              triggers a re-render but the filter count stays flat — because
-              <code className="bg-amber-100 px-1 rounded ml-1">searchQuery</code> did not change.
-            </p>
-          </div>
         </div>
       </main>
     </>
