@@ -41,19 +41,31 @@ export default function UseMemoPage() {
   // ==========================================
   // TODO Hook 1: Track how many times the filter computation runs
   // useRef does NOT trigger a re-render — perfect for internal counters
+  // ------------------------------------------
+  // const filterRunCount = useRef(0);
   // ==========================================
+  // Starter fallback
   const filterRunCount = useRef(0);
 
   // ==========================================
   // TODO Hook 2: Wrap the filter in useMemo
   // The computation runs only when `searchQuery` changes — not when `counter` changes
+  // ------------------------------------------
+  // const filteredToys = useMemo(() => {
+  //   filterRunCount.current += 1;
+  //   return TOY_NAMES.filter((toy) =>
+  //     toy.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+  // }, [searchQuery]);
   // ==========================================
-  const filteredToys = useMemo(() => {
-    filterRunCount.current += 1;
-    return TOY_NAMES.filter((toy) =>
-      toy.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
+  // Starter fallback — re-runs on every render (no memoization yet)
+  filterRunCount.current += 1;
+  const filteredToys = TOY_NAMES.filter((toy) =>
+    toy.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Keep useMemo imported to avoid lint errors when students uncomment
+  void useMemo;
 
   return (
     <>

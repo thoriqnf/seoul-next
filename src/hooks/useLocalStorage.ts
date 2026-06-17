@@ -17,30 +17,38 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
   // TODO Hook 5: Initialize state from localStorage
   // Use a lazy initializer so the read only happens once (not every render).
   // Guard against SSR with typeof window check.
+  // ------------------------------------------
+  // const [storedValue, setStoredValue] = useState<T>(() => {
+  //   if (typeof window === "undefined") return initialValue;
+  //   try {
+  //     const item = window.localStorage.getItem(key);
+  //     return item ? (JSON.parse(item) as T) : initialValue;
+  //   } catch {
+  //     return initialValue;
+  //   }
+  // });
   // ==========================================
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") return initialValue;
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
+  // Starter fallback — keeps the hook runnable before implementing TODO Hook 5
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
 
   // ==========================================
   // TODO Hook 6: Create a setter that updates both React state and localStorage
   // Write to localStorage synchronously inside the setter so both stay in sync.
+  // ------------------------------------------
+  // const setValue = (value: T) => {
+  //   try {
+  //     setStoredValue(value);
+  //     if (typeof window !== "undefined") {
+  //       window.localStorage.setItem(key, JSON.stringify(value));
+  //     }
+  //   } catch (error) {
+  //     console.error("useLocalStorage write error:", error);
+  //   }
+  // };
   // ==========================================
+  // Starter fallback — keeps the hook runnable before implementing TODO Hook 6
   const setValue = (value: T) => {
-    try {
-      setStoredValue(value);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(value));
-      }
-    } catch (error) {
-      console.error("useLocalStorage write error:", error);
-    }
+    setStoredValue(value);
   };
 
   return [storedValue, setValue];

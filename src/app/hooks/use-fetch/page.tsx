@@ -62,7 +62,10 @@ function UseFetchColumn() {
   // TODO Hook 11: Consume the custom useFetch hook
   // Notice: every time you navigate away and come back, this re-fetches
   // (shows a loading state). No caching — fresh request every mount.
+  // ------------------------------------------
+  // const { data, loading, error } = useFetch<DummyProductsResponse>(API_URL);
   // ==========================================
+  // Starter fallback — useFetch is called but returns error until TODO Hook 10 is done
   const { data, loading, error } = useFetch<DummyProductsResponse>(API_URL);
 
   return (
@@ -88,7 +91,7 @@ function UseFetchColumn() {
 
       {error && (
         <p className="text-xs text-rose-600 p-3 bg-rose-50 rounded-xl border border-rose-200">
-          ❌ Error: {error}
+          ❌ {error}
         </p>
       )}
 
@@ -115,7 +118,13 @@ function UseSWRColumn() {
   // TODO Hook 12: Consume useSWR for the same URL
   // Navigate away and come back — data renders instantly from cache.
   // useSWR revalidates in the background but shows stale data immediately.
+  // ------------------------------------------
+  // const { data, isLoading, error } = useSWR<DummyProductsResponse>(
+  //   API_URL,
+  //   swrFetcher
+  // );
   // ==========================================
+  // Starter fallback — useSWR already works, uncomment above to use it cleanly
   const { data, isLoading, error } = useSWR<DummyProductsResponse>(
     API_URL,
     swrFetcher

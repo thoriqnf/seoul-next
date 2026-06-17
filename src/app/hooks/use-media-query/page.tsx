@@ -8,7 +8,12 @@ export default function UseMediaQueryPage() {
   // ==========================================
   // TODO Hook 9: Consume useMediaQuery for three breakpoints
   // Drag the browser window to see the active breakpoint change in real time
+  // ------------------------------------------
+  // const isMobile = useMediaQuery("(max-width: 767px)");
+  // const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  // const isDesktop = useMediaQuery("(min-width: 1024px)");
   // ==========================================
+  // Starter fallback — hook is called but returns false until TODO Hook 8 is done
   const isMobile = useMediaQuery("(max-width: 767px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -19,7 +24,7 @@ export default function UseMediaQueryPage() {
     ? { label: "Tablet", emoji: "📟", color: "text-violet-600", bg: "bg-violet-50 border-violet-200" }
     : isDesktop
     ? { label: "Desktop", emoji: "🖥️", color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200" }
-    : { label: "Unknown", emoji: "❓", color: "text-slate-600", bg: "bg-slate-50 border-slate-200" };
+    : { label: "Unknown (implement TODO Hook 8)", emoji: "❓", color: "text-slate-600", bg: "bg-slate-50 border-slate-200" };
 
   const breakpoints = [
     {
@@ -156,6 +161,11 @@ export default function UseMediaQueryPage() {
             {isDesktop && (
               <p className="text-sm text-slate-700">
                 🖥️ <strong>Desktop:</strong> Slinky Dog extends to a 3-column grid — Andy&apos;s full inventory!
+              </p>
+            )}
+            {!isMobile && !isTablet && !isDesktop && (
+              <p className="text-sm text-slate-400">
+                ❓ Implement TODO Hook 8 in <code className="bg-slate-100 px-1 rounded">src/hooks/useMediaQuery.ts</code>
               </p>
             )}
           </div>

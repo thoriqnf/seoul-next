@@ -29,35 +29,42 @@ export function useFetch<T>(url: string): UseFetchResult<T> {
   // TODO Hook 10: Implement fetch with useEffect + AbortController
   // Create the controller before fetching, abort it in the cleanup function.
   // Update data/error/loading based on the response outcome.
+  // ------------------------------------------
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //
+  //   setLoading(true);
+  //   setError(null);
+  //
+  //   fetch(url, { signal: controller.signal })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+  //       return res.json();
+  //     })
+  //     .then((json: T) => {
+  //       setData(json);
+  //     })
+  //     .catch((err: Error) => {
+  //       // AbortError is expected when we navigate away — not a real error
+  //       if (err.name !== "AbortError") {
+  //         setError(err.message);
+  //       }
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  //
+  //   // Cleanup: abort the fetch if the component unmounts or url changes
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // }, [url]);
   // ==========================================
+  // Starter fallback — keeps the hook runnable before implementing TODO Hook 10
   useEffect(() => {
-    const controller = new AbortController();
-
-    setLoading(true);
-    setError(null);
-
-    fetch(url, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-        return res.json();
-      })
-      .then((json: T) => {
-        setData(json);
-      })
-      .catch((err: Error) => {
-        // AbortError is expected when we navigate away — not a real error
-        if (err.name !== "AbortError") {
-          setError(err.message);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    // Cleanup: abort the fetch if the component unmounts or url changes
-    return () => {
-      controller.abort();
-    };
+    setLoading(false);
+    setData(null);
+    setError("TODO Hook 10: Implement the fetch logic above.");
   }, [url]);
 
   return { data, loading, error };

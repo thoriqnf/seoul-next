@@ -19,26 +19,32 @@ export function useMediaQuery(query: string): boolean {
   // TODO Hook 8: Subscribe to the media query using window.matchMedia
   // Set initial value on mount, then listen for changes.
   // Clean up the listener on unmount to prevent memory leaks.
+  // ------------------------------------------
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+  //
+  //   const mediaQueryList = window.matchMedia(query);
+  //
+  //   const handleChange = (event: MediaQueryListEvent) => {
+  //     setMatches(event.matches);
+  //   };
+  //
+  //   // Set the initial value
+  //   setMatches(mediaQueryList.matches);
+  //
+  //   // Subscribe to future changes
+  //   mediaQueryList.addEventListener("change", handleChange);
+  //
+  //   // Cleanup: remove listener when component unmounts or query changes
+  //   return () => {
+  //     mediaQueryList.removeEventListener("change", handleChange);
+  //   };
+  // }, [query]);
   // ==========================================
+  // Starter fallback — always returns false before implementing TODO Hook 8
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQueryList = window.matchMedia(query);
-
-    const handleChange = (event: MediaQueryListEvent) => {
-      setMatches(event.matches);
-    };
-
-    // Set the initial value
-    setMatches(mediaQueryList.matches);
-
-    // Subscribe to future changes
-    mediaQueryList.addEventListener("change", handleChange);
-
-    // Cleanup: remove listener when component unmounts or query changes
-    return () => {
-      mediaQueryList.removeEventListener("change", handleChange);
-    };
+    // placeholder — implement TODO Hook 8 above
+    setMatches(false);
   }, [query]);
 
   return matches;

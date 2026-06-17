@@ -10,8 +10,32 @@ import Link from "next/link";
 // TODO Hook 4: Wrap this component in React.memo so it bails out of re-rendering
 // when its props haven't changed. Without memo, it re-renders every time the
 // parent re-renders regardless of whether onLaunch changed.
+// ------------------------------------------
+// const MissionButton = React.memo(function MissionButton({
+//   onLaunch,
+//   renderCount,
+// }: {
+//   onLaunch: () => void;
+//   renderCount: React.MutableRefObject<number>;
+// }) {
+//   renderCount.current += 1;
+//
+//   return (
+//     <button
+//       id="mission-launch-btn"
+//       onClick={onLaunch}
+//       className="w-full px-4 py-3 rounded-xl border-2 border-b-4 border-sky-300 border-b-sky-500 bg-sky-50 text-sky-900 text-sm font-black font-toy hover:bg-sky-100 active:translate-y-[2px] active:border-b-2 transition-all"
+//     >
+//       🚀 Launch Mission
+//       <span className="block text-[10px] font-bold text-sky-400 mt-0.5 font-sans">
+//         This button rendered {renderCount.current}×
+//       </span>
+//     </button>
+//   );
+// });
 // ---------------------------------------------------------------------------
-const MissionButton = React.memo(function MissionButton({
+// Starter fallback — plain function component (no memo, will always re-render)
+function MissionButton({
   onLaunch,
   renderCount,
 }: {
@@ -32,7 +56,7 @@ const MissionButton = React.memo(function MissionButton({
       </span>
     </button>
   );
-});
+}
 
 export default function UseCallbackPage() {
   const [counter, setCounter] = useState(0);
@@ -47,13 +71,24 @@ export default function UseCallbackPage() {
   // Without useCallback, a new function is created every render → MissionButton
   // re-renders even when only `counter` changed (unrelated to `missionName`).
   // With useCallback, the function is stable while `missionName` stays the same.
+  // ------------------------------------------
+  // const handleLaunchMission = useCallback(() => {
+  //   setMissionLog((prev) => [
+  //     `🚀 Mission by ${missionName} — ${new Date().toLocaleTimeString()}`,
+  //     ...prev,
+  //   ]);
+  // }, [missionName]);
   // ==========================================
-  const handleLaunchMission = useCallback(() => {
+  // Starter fallback — new function every render (no memoization yet)
+  const handleLaunchMission = () => {
     setMissionLog((prev) => [
       `🚀 Mission by ${missionName} — ${new Date().toLocaleTimeString()}`,
       ...prev,
     ]);
-  }, [missionName]);
+  };
+
+  // Keep useCallback imported to avoid lint errors when students uncomment
+  void useCallback;
 
   return (
     <>

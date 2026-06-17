@@ -6,34 +6,47 @@
 // Each font call generates a unique CSS class and optional CSS variable.
 // The font file is downloaded at BUILD TIME and self-hosted — no runtime
 // request to Google's servers.
+// ------------------------------------------
+// import { Bangers, Pacifico, Inter } from "next/font/google";
+//
+// const bangersFont = Bangers({
+//   subsets: ["latin"],
+//   weight: "400",
+//   variable: "--font-bangers",
+// });
+//
+// const pacificoFont = Pacifico({
+//   subsets: ["latin"],
+//   weight: "400",
+//   variable: "--font-pacifico",
+// });
 // ==========================================
-import { Bangers, Pacifico, Inter } from "next/font/google";
+// Starter fallback — fonts will be undefined until TODO Hook 15 is done
+// We declare stub objects so the JSX below compiles cleanly
+import { Inter } from "next/font/google";
 
-import { Navigation } from "@/components/Navigation";
-import Link from "next/link";
-
-const bangersFont = Bangers({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-bangers",
-});
-
-const pacificoFont = Pacifico({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-pacifico",
-});
+const bangersFont = { className: "", variable: "" };
+const pacificoFont = { className: "", variable: "" };
 
 // ==========================================
 // TODO Hook 16: Use the CSS variable approach
 // Attach the variable to a wrapper element, then reference it via style prop
 // or a Tailwind fontFamily extension in tailwind.config.
 // The variable approach is preferred for Tailwind integration.
+// ------------------------------------------
+// const interFont = Inter({
+//   subsets: ["latin"],
+//   variable: "--font-inter",
+// });
 // ==========================================
+// Starter fallback — Inter is instantiated so the variable approach is visible
 const interFont = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
+
+import { Navigation } from "@/components/Navigation";
+import Link from "next/link";
 
 const FONT_SAMPLES = [
   {
@@ -49,7 +62,7 @@ const FONT_SAMPLES = [
     fontClass: bangersFont.className,
     fontStyle: {},
     label: "Bangers",
-    desc: "next/font/google · className approach",
+    desc: "next/font/google · className approach (implement TODO Hook 15)",
     badge: "next/font className",
     badgeColor: "bg-amber-50 text-amber-700",
     quote: "To infinity and beyond!",
@@ -58,7 +71,7 @@ const FONT_SAMPLES = [
     fontClass: pacificoFont.className,
     fontStyle: {},
     label: "Pacifico",
-    desc: "next/font/google · className approach",
+    desc: "next/font/google · className approach (implement TODO Hook 15)",
     badge: "next/font className",
     badgeColor: "bg-rose-50 text-rose-700",
     quote: "Reach for the sky!",
@@ -67,7 +80,7 @@ const FONT_SAMPLES = [
     fontClass: `${interFont.variable}`,
     fontStyle: { fontFamily: "var(--font-inter)" },
     label: "Inter (CSS variable)",
-    desc: "next/font/google · variable approach",
+    desc: "next/font/google · variable approach (implement TODO Hook 16)",
     badge: "next/font variable",
     badgeColor: "bg-indigo-50 text-indigo-700",
     quote: "You've got a friend in me.",

@@ -18,7 +18,14 @@ export default function UseLocalStoragePage() {
   // TODO Hook 7: Use the custom useLocalStorage hook
   // The value persists across browser refreshes — try picking a character,
   // then hard-refreshing (Cmd+Shift+R). Your choice will still be selected!
+  // ------------------------------------------
+  // const [favCharacter, setFavCharacter] = useLocalStorage<string>(
+  //   "rex-fav-character",
+  //   "Rex"
+  // );
   // ==========================================
+  // Starter fallback — useLocalStorage is called but TODO Hook 5+6 aren't done yet,
+  // so it behaves like plain useState (no persistence). That's fine for now!
   const [favCharacter, setFavCharacter] = useLocalStorage<string>(
     "rex-fav-character",
     "Rex"

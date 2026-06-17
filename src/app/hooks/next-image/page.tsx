@@ -120,12 +120,20 @@ export default function NextImagePage() {
                               TODO Hook 13: Replace <img> with <Image> from next/image
                               Add width, height, and alt — Next.js uses these to
                               pre-reserve space (prevents layout shift) and serve WebP.
+                              ------------------------------------------
+                              <Image
+                                src={product.thumbnail}
+                                alt={product.title}
+                                width={100}
+                                height={100}
+                                className="w-full rounded-lg object-cover aspect-square"
+                              />
                               ========================================== */}
-                          <Image
+                          {/* Starter fallback — plain img until TODO Hook 13 is done */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={product.thumbnail}
                             alt={product.title}
-                            width={100}
-                            height={100}
                             className="w-full rounded-lg object-cover aspect-square"
                           />
                           <p className="text-[9px] text-slate-500 leading-tight truncate">
@@ -135,7 +143,7 @@ export default function NextImagePage() {
                       ))}
                     </div>
                     <p className="text-[9px] text-indigo-400 mt-3">
-                      Format: WebP auto · Lazy load · CLS prevented
+                      Implement TODO Hook 13 to swap to &lt;Image&gt;
                     </p>
                   </div>
                 </div>
@@ -190,19 +198,29 @@ export default function NextImagePage() {
                               - fill: stretches to fill the relative-positioned parent
                               - priority: skips lazy load → improves LCP score
                               - Parent MUST have position:relative + defined height
+                              ------------------------------------------
+                              <Image
+                                src={product.thumbnail}
+                                alt={product.title}
+                                fill
+                                priority={i === 0}
+                                className="object-cover rounded-lg"
+                              />
                               ========================================== */}
-                          <Image
+                          {/* Starter fallback — plain img until TODO Hook 14 is done */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={product.thumbnail}
                             alt={product.title}
-                            fill
-                            priority={i === 0}
-                            className="object-cover rounded-lg"
+                            className="absolute inset-0 w-full h-full object-cover rounded-lg"
                           />
+                          {/* Keep Image imported — students will use it in TODO Hook 13+14 */}
+                          {i < 0 && <Image src={product.thumbnail} alt="" width={1} height={1} />}
                         </div>
                       ))}
                     </div>
                     <p className="text-[9px] text-indigo-400 mt-3">
-                      fill + priority → zero CLS · first image skips lazy load (LCP)
+                      Implement TODO Hook 14 to use fill + priority
                     </p>
                   </div>
                 </div>
