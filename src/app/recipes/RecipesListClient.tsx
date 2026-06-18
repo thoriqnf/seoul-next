@@ -64,7 +64,7 @@ const FilterBar = function FilterBar({
       </div>
 
       <div className="text-right text-xs text-ramen-muted">
-        <p>FilterBar Renders: <span className="text-ramen-gold font-bold">{renderCount.current}</span></p>
+        <p>FilterBar Renders: <span className="text-ramen-gold font-bold" suppressHydrationWarning>{renderCount.current}</span></p>
       </div>
     </div>
   );
@@ -111,7 +111,7 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
           <p className="text-sm text-ramen-muted">Browse authentic recipes curated globally</p>
         </div>
         <div className="bg-ramen-subtle px-4 py-2 rounded-xl text-xs text-ramen-muted border border-ramen-border">
-          Filter recalculations: <span className="text-ramen-gold font-bold">{filterRunCount.current}</span>
+          Filter recalculations: <span className="text-ramen-gold font-bold" suppressHydrationWarning>{filterRunCount.current}</span>
         </div>
       </div>
 
