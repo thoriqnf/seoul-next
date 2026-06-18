@@ -31,13 +31,35 @@ interface RecipeDetailPageProps {
 export default async function RecipeDetailPage({ params }: RecipeDetailPageProps) {
   const { id } = await params;
 
-  // Fetch recipe detail
-  const response = await fetch(`https://dummyjson.com/recipes/${id}`);
-  if (!response.ok) {
-    notFound();
+  let recipe: Recipe | null = null;
+
+  // 1. Try local JSON server
+  try {
+    const response = await fetch(`http://localhost:4000/recipes/${id}`, {
+      cache: "no-store",
+    });
+    if (response.ok) {
+      recipe = await response.json();
+    }
+  } catch (error) {
+    console.warn(`Local fetch failed for recipe ID ${id}:`, error);
   }
 
-  const recipe: Recipe = await response.json();
+  // 2. Try DummyJSON if not found locally
+  if (!recipe) {
+    try {
+      const response = await fetch(`https://dummyjson.com/recipes/${id}`);
+      if (response.ok) {
+        recipe = await response.json();
+      }
+    } catch (error) {
+      console.error(`DummyJSON fetch failed for recipe ID ${id}:`, error);
+    }
+  }
+
+  if (!recipe) {
+    notFound();
+  }
 
   return (
     <>
