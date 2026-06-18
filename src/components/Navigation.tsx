@@ -6,13 +6,9 @@ import { useRouter } from "next/navigation";
 import useSWR, { mutate } from "swr";
 import axios from "axios";
 import { AuthUser } from "@/types";
-import { useCart } from "@/contexts/CartContext";
-import { CartDrawer } from "@/components/CartDrawer";
-
-// ==========================================
-// TODO Context 10: Import useNotif to read the live notification state
-// ==========================================
+import { useSaved } from "@/contexts/SavedContext";
 import { useNotif } from "@/contexts/NotifContext";
+import { SavedDrawer } from "@/components/SavedDrawer";
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -25,25 +21,17 @@ const NOTIF_ICONS: Record<string, string> = {
 export function Navigation() {
   const router = useRouter();
 
-  // Local UI state for open/close panels — not global, lives only in Navigation
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
+  // TODO Recap Final 5: Subscribe to the active session using SWR
   const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
   });
 
-  // ==========================================
-  // TODO Context 23: Call useCart() to read live itemCount
-  // ==========================================
-  const { itemCount } = useCart();
-
-  // ==========================================
-  // TODO Context 10: Call useNotif() to read notifications, unreadCount, and dispatch
-  // unreadCount drives the bell badge — any page that dispatches ADD_NOTIF
-  // will instantly update this badge without any prop passing
-  // ==========================================
-  const { notifications, unreadCount, dispatch: notifDispatch } = useNotif();
+  // TODO Recap Final 20: badge counts using useSaved()
+  const { savedCount } = useSaved();
+  const { notifications, dispatch: notifDispatch } = useNotif();
 
   const isLoggedIn = !!user;
 
@@ -59,133 +47,111 @@ export function Navigation() {
 
   return (
     <>
-      {/* CartDrawer lives inside Navigation so it's available on every page */}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <SavedDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
 
-      <header className="w-full border-b-4 border-sky-200 bg-white sticky top-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.03)] font-sans">
-        <div className="mx-auto max-w-4xl px-6 md:px-8 h-16 flex items-center justify-between gap-4">
-          {/* toyStory Brand Logo */}
+      <header className="w-full border-b border-ramen-border bg-ramen-surface sticky top-0 z-40 shadow-[0_4px_12px_rgba(0,0,0,0.5)] font-sans">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          {/* Ramen Discovery Logo */}
           <Link
             href="/"
-            className="flex flex-col shrink-0 hover:opacity-90 transition-all"
+            className="flex items-center gap-2 hover:opacity-90 transition-all shrink-0"
           >
-            <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase leading-none font-toy">
-              Andy&apos;s Playroom Registry
-            </span>
-            <span className="text-xl font-black text-indigo-950 tracking-tight leading-tight flex items-center mt-1 font-toy">
-              toy<span className="text-amber-500">Story</span>
-              <span className="text-amber-400 ml-0.5">⭐</span>
+            <span className="text-xl">🍜</span>
+            <span className="text-lg font-black font-serif text-ramen-text tracking-wider">
+              Ramen <span className="text-ramen-crimson">Discovery</span>
             </span>
           </Link>
 
-          {/* Center nav links */}
-          <nav className="hidden md:flex items-center gap-5 text-[11px] font-extrabold font-toy">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6 text-sm font-bold">
             <Link
-              href="/store"
-              className="text-slate-600 hover:text-indigo-600 transition-colors"
+              href="/recipes"
+              className="text-ramen-muted hover:text-ramen-gold transition-colors"
             >
-              🧸 Toy Store
+              Menu
             </Link>
             <Link
-              href="/hooks"
-              className="text-slate-600 hover:text-indigo-600 transition-colors"
+              href="/saved"
+              className="text-ramen-muted hover:text-ramen-gold transition-colors"
             >
-              🪝 Hooks Lab
+              Saved Board
             </Link>
           </nav>
 
-          {/* Right action icons */}
-          <div className="flex items-center gap-2">
-
-            {/* ==========================================
-                TODO Context 10: Notification bell icon with unread badge
-                unreadCount comes from useNotif() — updates instantly when
-                any page dispatches ADD_NOTIF, with zero prop drilling
-                ========================================== */}
+          {/* User actions */}
+          <div className="flex items-center gap-3">
+            {/* Notification bell icon with unread badge */}
             <div className="relative">
               <button
                 id="notif-bell-btn"
                 onClick={() => {
                   setIsNotifOpen((prev) => !prev);
-                  setIsCartOpen(false);
+                  setIsDrawerOpen(false);
                 }}
-                className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-slate-600 hover:bg-sky-100 hover:text-indigo-600 transition-all cursor-pointer"
-                aria-label={`Notifications, ${unreadCount} unread`}
+                className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-ramen-card border border-ramen-border text-ramen-text hover:border-ramen-gold hover:text-ramen-gold transition-all cursor-pointer"
+                aria-label={`Notifications, ${notifications.length} notifications`}
               >
                 <span className="text-base">🔔</span>
-                {/* Badge — only visible when there are unread notifications */}
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center font-toy leading-none">
-                    {unreadCount > 9 ? "9+" : unreadCount}
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ramen-crimson text-white text-[9px] font-black flex items-center justify-center leading-none">
+                    {notifications.length > 9 ? "9+" : notifications.length}
                   </span>
                 )}
               </button>
 
-              {/* ==========================================
-                  TODO Context 11: Notification panel dropdown
-                  Reads notifications array from useNotif()
-                  Shows all notifications with dismiss + mark-all-read controls
-                  ========================================== */}
+              {/* Notification panel dropdown */}
               {isNotifOpen && (
                 <div
-                  className="absolute top-full right-0 mt-2 w-72 bg-white border-2 border-sky-100 rounded-2xl shadow-lg z-50 overflow-hidden"
+                  className="absolute top-full right-0 mt-2 w-72 bg-ramen-surface border border-ramen-border rounded-2xl shadow-2xl z-50 overflow-hidden"
                   aria-label="Notification panel"
                 >
-                  {/* Panel header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-sky-100">
-                    <span className="text-xs font-black text-indigo-950 font-toy">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-ramen-border bg-ramen-card">
+                    <span className="text-xs font-black text-ramen-text font-serif">
                       Notifications
                     </span>
-                    {unreadCount > 0 && (
+                    {notifications.length > 0 && (
                       <button
-                        id="mark-all-read-btn"
                         onClick={() =>
-                          // TODO Context 11: dispatch MARK_ALL_READ
-                          notifDispatch({ type: "MARK_ALL_READ" })
+                          notifDispatch({
+                            type: "DISMISS_NOTIF",
+                            payload: { id: notifications[0]?.id },
+                          })
                         }
-                        className="text-[10px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors cursor-pointer"
+                        className="text-[10px] font-bold text-ramen-gold hover:underline cursor-pointer"
                       >
-                        Mark all read
+                        Dismiss last
                       </button>
                     )}
                   </div>
 
-                  {/* Notification list */}
                   {notifications.length === 0 ? (
                     <div className="px-4 py-6 text-center">
                       <span className="text-2xl block mb-1">🔔</span>
-                      <p className="text-[11px] font-semibold text-slate-400">
+                      <p className="text-[11px] font-semibold text-ramen-muted">
                         No notifications yet
-                      </p>
-                      <p className="text-[10px] text-slate-300 mt-0.5">
-                        Add a toy to the cart to see one!
                       </p>
                     </div>
                   ) : (
-                    <ul className="max-h-64 overflow-y-auto divide-y divide-sky-50">
-                      {/* TODO Context 11: Map over notifications and render each item */}
+                    <ul className="max-h-64 overflow-y-auto divide-y divide-ramen-border">
                       {notifications.map((notif) => (
                         <li
                           key={notif.id}
-                          className={`flex items-start gap-2.5 px-4 py-3 transition-colors ${
-                            notif.read ? "opacity-50" : "bg-sky-50/50"
-                          }`}
+                          className="flex items-start gap-2.5 px-4 py-3 hover:bg-ramen-card/50 transition-colors"
                         >
                           <span className="text-xs shrink-0 mt-0.5">
-                            {NOTIF_ICONS[notif.type]}
+                            {NOTIF_ICONS[notif.type] || "ℹ️"}
                           </span>
-                          <p className="flex-1 text-[11px] font-medium text-slate-700 leading-snug">
+                          <p className="flex-1 text-[11px] font-medium text-ramen-text leading-snug">
                             {notif.message}
                           </p>
                           <button
                             onClick={() =>
-                              // TODO Context 11: dispatch DISMISS_NOTIF
                               notifDispatch({
                                 type: "DISMISS_NOTIF",
                                 payload: { id: notif.id },
                               })
                             }
-                            className="text-slate-300 hover:text-slate-500 transition-colors shrink-0 cursor-pointer text-xs"
+                            className="text-ramen-muted hover:text-ramen-text transition-colors shrink-0 cursor-pointer text-xs"
                             aria-label="Dismiss notification"
                           >
                             ✕
@@ -198,36 +164,32 @@ export function Navigation() {
               )}
             </div>
 
-            {/* Cart icon with badge */}
+            {/* Saved Drawer button */}
             <button
-              id="cart-icon-btn"
               onClick={() => {
-                setIsCartOpen(true);
+                setIsDrawerOpen(true);
                 setIsNotifOpen(false);
               }}
-              className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-slate-600 hover:bg-sky-100 hover:text-indigo-600 transition-all cursor-pointer"
-              aria-label={`Open cart, ${itemCount} items`}
+              className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl bg-ramen-card border border-ramen-border text-ramen-text hover:border-ramen-gold hover:text-ramen-gold transition-all cursor-pointer"
+              aria-label={`Open bookmarks, ${savedCount} items`}
             >
-              <span className="text-base">🛒</span>
-              {itemCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center font-toy leading-none">
-                  {itemCount > 9 ? "9+" : itemCount}
+              <span className="text-base">❤️</span>
+              {savedCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ramen-crimson text-white text-[9px] font-black flex items-center justify-center leading-none">
+                  {savedCount > 9 ? "9+" : savedCount}
                 </span>
               )}
             </button>
 
-            {/* Auth links */}
+            {/* Authentication UI */}
             {isLoggedIn ? (
-              <div className="flex items-center gap-3 text-xs font-extrabold font-toy ml-1">
-                <Link
-                  href="/dashboard"
-                  className="text-slate-600 hover:text-indigo-600 transition-colors hidden sm:block"
-                >
-                  Room Console
-                </Link>
+              <div className="flex items-center gap-3 text-xs font-bold ml-1">
+                <span className="text-ramen-muted hidden sm:inline">
+                  Irashaimase, <strong className="text-ramen-text">{user.firstName}</strong> ({user.role})
+                </span>
                 <button
                   onClick={handleLogout}
-                  className="text-rose-500 hover:text-rose-600 hover:underline cursor-pointer bg-transparent border-none p-0 font-extrabold"
+                  className="text-ramen-crimson hover:text-ramen-crimson-hover hover:underline cursor-pointer bg-transparent border-none p-0 font-bold"
                 >
                   Logout
                 </button>
@@ -235,18 +197,9 @@ export function Navigation() {
             ) : (
               <Link
                 href="/login"
-                className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors font-toy ml-1"
+                className="text-xs font-bold text-ramen-gold hover:text-ramen-gold-light transition-colors ml-1"
               >
                 Sign In
-              </Link>
-            )}
-
-            {isLoggedIn && (
-              <Link
-                href="/dashboard"
-                className="inline-flex items-center justify-center h-8 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 border-b-2 border-indigo-800 text-white text-[10px] font-black tracking-wide font-toy transition-all shadow-sm active:translate-y-[2px] active:border-b-0"
-              >
-                Toy Console
               </Link>
             )}
           </div>

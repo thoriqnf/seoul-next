@@ -1,31 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Serif_JP, DM_Sans } from "next/font/google";
 import "./globals.css";
-
-// ==========================================
-// TODO Context 9: Import NotifProvider and mount it in the root layout
-// ==========================================
 import { NotifProvider } from "@/contexts/NotifContext";
+import { SavedProvider } from "@/contexts/SavedContext";
+import { ToastContainer } from "@/components/ToastContainer";
 
-// ==========================================
-// TODO Context 20: Import CartProvider and wrap alongside NotifProvider
-// ==========================================
-import { CartProvider } from "@/contexts/CartContext";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const notoSerifJP = Noto_Serif_JP({
   subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  variable: "--font-noto-serif-jp",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
   subsets: ["latin"],
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
-  title: "Andy's Playroom Registry - State Management",
-  description:
-    "Next.js State Management demo with React Context, useReducer, and Zustand in Andy's Playroom",
+  title: "Ramen Discovery - Taste and Share Authentic Recipes",
+  description: "Explore the culinary art of premium ramen recipes. Curated globally, loved locally.",
 };
 
 export default function RootLayout({
@@ -36,20 +29,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${notoSerifJP.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-sky-50 text-sky-950 flex flex-col">
-        {/*
-          TODO Context 9:  Wrap with <NotifProvider>
-          TODO Context 20: Wrap with <CartProvider>
-
-          The notification bell panel lives inside Navigation (which reads useNotif).
-          No separate ToastContainer needed — the panel is in the nav header.
-        */}
+      <body className="min-h-full bg-ramen-bg text-ramen-text flex flex-col font-sans">
         <NotifProvider>
-          <CartProvider>
+          <SavedProvider>
             {children}
-          </CartProvider>
+            <ToastContainer />
+          </SavedProvider>
         </NotifProvider>
       </body>
     </html>

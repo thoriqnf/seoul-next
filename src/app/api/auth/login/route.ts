@@ -14,16 +14,12 @@ export async function POST(request: Request) {
     }
 
     // ==========================================
-    // TODO PROXY AUTH 1: Forward (proxy) the login request to the external DummyJSON authentication service
+    // TODO Recap Final 7: Forward credentials to dummyjson and map role
     // ==========================================
     const response = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username,
-        password,
-        expiresInMins: 30,
-      }),
+      body: JSON.stringify({ username, password, expiresInMins: 30 }),
     });
 
     if (!response.ok) {
@@ -36,15 +32,9 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // ==========================================
-    // TODO PROXY AUTH 2a: Map roles based on username
-    // ==========================================
-    let role: "admin" | "editor" | "user" = "user";
-    if (data.username === "emilys") {
-      role = "admin";
-    } else if (data.username === "michaelw") {
-      role = "editor";
-    }
+    let role: "master-curator" | "recipe-editor" | "explorer" = "explorer";
+    if (data.username === "emilys") role = "master-curator";
+    else if (data.username === "michaelw") role = "recipe-editor";
 
     const authUser: AuthUser = {
       id: data.id,
@@ -56,13 +46,10 @@ export async function POST(request: Request) {
       role,
     };
 
-    const sessionData: SessionData = {
-      user: authUser,
-      token: data.accessToken,
-    };
+    const sessionData: SessionData = { user: authUser, token: data.accessToken };
 
     // ==========================================
-    // TODO PROXY AUTH 2b: Map roles based on username, create a secure HttpOnly session cookie, and return user profile
+    // TODO Recap Final 8: Set HttpOnly session cookie with sessionData payload
     // ==========================================
     const cookieStore = await cookies();
     cookieStore.set("session", JSON.stringify(sessionData), {
@@ -70,11 +57,11 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 30, // 30 minutes
+      maxAge: 60 * 30,
     });
 
     return NextResponse.json(authUser);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Login Proxy Error:", error);
     return NextResponse.json(
       { error: "An unexpected authentication error occurred" },

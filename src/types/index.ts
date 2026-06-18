@@ -1,3 +1,31 @@
+// ==========================================
+// Pre-written scaffolding — Ramen Discovery types
+// ==========================================
+
+export interface Recipe {
+  id: number;
+  name: string;
+  image: string;
+  cuisine: string;
+  rating: number;
+  caloriesPerServing: number;
+  tags: string[];
+  difficulty: "Easy" | "Medium" | "Hard";
+  ingredients?: string[];
+  instructions?: string[];
+  prepTimeMinutes?: number;
+  cookTimeMinutes?: number;
+  servings?: number;
+}
+
+export interface SavedRecipe {
+  id: number;
+  name: string;
+  image: string;
+  cuisine: string;
+  savedAt: string;
+}
+
 export interface AuthUser {
   id: number;
   username: string;
@@ -5,7 +33,7 @@ export interface AuthUser {
   firstName: string;
   lastName: string;
   image: string;
-  role: "admin" | "editor" | "user";
+  role: "master-curator" | "recipe-editor" | "explorer";
 }
 
 export interface SessionData {
@@ -13,34 +41,8 @@ export interface SessionData {
   token: string;
 }
 
-// ==========================================
-// TODO Context 1: Define the Notification interface
-// A notification needs an id (to dismiss it), a message, a type, and a read flag
-// 'read' lets us derive the unread badge count without extra state
-// ==========================================
 export interface Notification {
   id: string;
   message: string;
   type: "success" | "error" | "info";
-  read: boolean;
-}
-
-// ==========================================
-// TODO Context 12: Define the Toy interface
-// This matches the shape of data returned by json-server from db.json
-// ==========================================
-export interface Toy {
-  id: number;
-  name: string;
-  price: number;
-  emoji: string;
-  description: string;
-}
-
-// ==========================================
-// TODO Context 13: Define CartItem — extends Toy and adds a quantity field
-// Using 'extends' means CartItem inherits all Toy fields automatically
-// ==========================================
-export interface CartItem extends Toy {
-  quantity: number;
 }

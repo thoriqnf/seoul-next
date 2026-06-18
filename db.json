@@ -1,10 +1,26 @@
 {
-  "toys": [
-    { "id": 1, "name": "Woody", "price": 24.99, "emoji": "🤠", "description": "Pull-string cowboy sheriff" },
-    { "id": 2, "name": "Buzz Lightyear", "price": 29.99, "emoji": "🚀", "description": "Space ranger with pop-out wings" },
-    { "id": 3, "name": "Rex", "price": 14.99, "emoji": "🦕", "description": "Friendly anxious T-Rex" },
-    { "id": 4, "name": "Jessie", "price": 22.99, "emoji": "🎀", "description": "Yodeling cowgirl" },
-    { "id": 5, "name": "Hamm", "price": 9.99, "emoji": "🐷", "description": "Evil Dr. Pork Chop (piggy bank)" },
-    { "id": 6, "name": "Slinky Dog", "price": 17.99, "emoji": "🐕", "description": "Spring-body best pal" }
+  "recipes": [
+    {
+      "id": 991,
+      "name": "Curator's Special Tokyo Miso Ramen",
+      "cuisine": "Japanese",
+      "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800",
+      "rating": 4.9,
+      "caloriesPerServing": 650,
+      "tags": ["Miso", "Rich", "Egg"],
+      "difficulty": "Medium",
+      "featured": true
+    },
+    {
+      "id": 992,
+      "name": "Curator's Special Kyushuu Tonkotsu Ramen",
+      "cuisine": "Japanese",
+      "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800",
+      "rating": 5.0,
+      "caloriesPerServing": 720,
+      "tags": ["Tonkotsu", "Creamy", "Chashu"],
+      "difficulty": "Hard",
+      "featured": true
+    }
   ]
 }

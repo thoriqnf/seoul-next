@@ -1,132 +1,132 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Outfit:wght@300..900&display=swap');
 @import "tailwindcss";
 
+/* ============================================================================
+   Ramen Discovery — Dark Izakaya Theme
+   ============================================================================ */
+
 :root {
-  --background: #f0f9ff; /* Solid Sky-50 light sky-blue background */
-  --foreground: #0c4a6e; /* Sky-950/indigo dark foreground */
+  --ramen-bg: #0a0a0a;
+  --ramen-surface: #141414;
+  --ramen-card: #1a1a1a;
+  --ramen-border: #2a2a2a;
+  --ramen-crimson: #c0392b;
+  --ramen-crimson-hover: #e74c3c;
+  --ramen-gold: #d4a017;
+  --ramen-gold-light: #f0c040;
+  --ramen-text: #f5f0e8;
+  --ramen-muted: #8a8070;
+  --ramen-subtle: #3a3028;
 }
 
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: 'Outfit', sans-serif;
-  --font-toy: 'Fredoka', sans-serif;
+  --color-ramen-bg: var(--ramen-bg);
+  --color-ramen-surface: var(--ramen-surface);
+  --color-ramen-card: var(--ramen-card);
+  --color-ramen-border: var(--ramen-border);
+  --color-ramen-crimson: var(--ramen-crimson);
+  --color-ramen-crimson-hover: var(--ramen-crimson-hover);
+  --color-ramen-gold: var(--ramen-gold);
+  --color-ramen-gold-light: var(--ramen-gold-light);
+  --color-ramen-text: var(--ramen-text);
+  --color-ramen-muted: var(--ramen-muted);
+  --color-ramen-subtle: var(--ramen-subtle);
+  --font-serif: var(--font-noto-serif-jp), "Georgia", serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--background) !important;
-  color: var(--foreground);
-  font-family: 'Outfit', sans-serif;
+  background-color: var(--ramen-bg);
+  color: var(--ramen-text);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================================
-   Toy Story Playroom Custom 3D Button Utilities
+   Ramen Button Utilities
    ============================================================================ */
 
-@utility btn-toy-blue {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-indigo-600 border-b-4 border-indigo-800 rounded-2xl cursor-pointer shadow-md hover:bg-indigo-500 hover:border-indigo-700 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+@utility btn-ramen-primary {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-ramen-crimson hover:bg-ramen-crimson-hover active:scale-95 transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
-@utility btn-toy-yellow {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-amber-950 bg-amber-400 border-b-4 border-amber-600 rounded-2xl cursor-pointer shadow-md hover:bg-amber-300 hover:border-amber-500 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+@utility btn-ramen-gold {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-ramen-bg bg-ramen-gold hover:bg-ramen-gold-light active:scale-95 transition-all duration-150 cursor-pointer;
 }
 
-@utility btn-toy-green {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-emerald-500 border-b-4 border-emerald-700 rounded-2xl cursor-pointer shadow-md hover:bg-emerald-400 hover:border-emerald-600 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
-}
-
-@utility btn-toy-white {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-indigo-950 bg-white border border-sky-100 border-b-4 border-b-sky-300 rounded-2xl cursor-pointer shadow-md hover:bg-sky-50 active:border-b active:translate-y-[3px] active:shadow-inner transition-all select-none;
-}
-
-@utility btn-toy-red {
-  @apply relative inline-flex items-center justify-center px-6 py-3 font-toy text-xs font-bold text-white bg-rose-500 border-b-4 border-rose-700 rounded-2xl cursor-pointer shadow-md hover:bg-rose-400 hover:border-rose-600 active:border-b-0 active:translate-y-[4px] active:shadow-inner transition-all select-none;
+@utility btn-ramen-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-ramen-text border border-ramen-border hover:border-ramen-gold hover:text-ramen-gold active:scale-95 transition-all duration-150 cursor-pointer;
 }
 
 /* ============================================================================
-   Flower Shop Extracted Utility Classes (Preserved for compatibility)
+   Ramen Card & Surface Utilities
    ============================================================================ */
 
-@utility shop-container {
-  @apply max-w-5xl mx-auto px-4 py-8 md:py-12;
+@utility ramen-card {
+  @apply bg-ramen-card border border-ramen-border rounded-2xl overflow-hidden hover:border-ramen-gold/40 transition-all duration-200;
 }
 
-@utility shop-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6;
+@utility ramen-surface {
+  @apply bg-ramen-surface border border-ramen-border rounded-2xl;
 }
 
-@utility shop-card {
-  @apply border border-slate-200 bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col h-full;
+/* ============================================================================
+   Ramen Input Utilities
+   ============================================================================ */
+
+@utility ramen-input {
+  @apply w-full px-4 py-2.5 text-sm rounded-xl border border-ramen-border bg-ramen-surface text-ramen-text placeholder-ramen-muted focus:outline-none focus:ring-2 focus:ring-ramen-gold/30 focus:border-ramen-gold transition-all;
 }
 
-@utility shop-badge {
-  @apply text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider inline-block;
+@utility ramen-label {
+  @apply block text-xs font-bold text-ramen-muted uppercase tracking-wider mb-1.5;
 }
 
-@utility badge-roses {
-  @apply bg-rose-50 text-rose-600;
+@utility ramen-error {
+  @apply text-ramen-crimson text-xs mt-1.5 flex items-center gap-1;
 }
 
-@utility badge-lilies {
-  @apply bg-purple-50 text-purple-600;
+/* ============================================================================
+   Ramen Badge Utilities
+   ============================================================================ */
+
+@utility ramen-badge {
+  @apply text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider;
 }
 
-@utility badge-tulips {
-  @apply bg-amber-50 text-amber-600;
+/* ============================================================================
+   Page Container
+   ============================================================================ */
+
+@utility ramen-container {
+  @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-@utility badge-sunflowers {
-  @apply bg-yellow-50 text-yellow-600;
+/* ============================================================================
+   Scrollbar Styling
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-@utility btn-primary {
-  @apply px-4 py-2.5 rounded-xl font-bold text-sm text-white bg-[#00828A] hover:bg-[#006e75] active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+::-webkit-scrollbar-track {
+  background: var(--ramen-bg);
 }
 
-@utility btn-secondary {
-  @apply px-4 py-2.5 rounded-xl font-bold text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100;
+::-webkit-scrollbar-thumb {
+  background: var(--ramen-subtle);
+  border-radius: 3px;
 }
 
-@utility btn-danger {
-  @apply px-3 py-1.5 rounded-lg font-bold text-xs text-white bg-red-600 hover:bg-red-500 active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-1 disabled:opacity-50 disabled:active:scale-100;
-}
-
-@utility btn-edit {
-  @apply px-3 py-1.5 rounded-lg font-bold text-xs text-[#00828A] border border-teal-200 hover:bg-teal-50 active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-1 disabled:opacity-50 disabled:active:scale-100;
-}
-
-@utility input-field {
-  @apply w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00828A]/20 focus:border-[#00828A] transition-all;
-}
-
-@utility textarea-field {
-  @apply w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00828A]/20 focus:border-[#00828A] transition-all min-h-[100px] resize-y;
-}
-
-@utility input-label {
-  @apply block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5;
-}
-
-@utility input-error {
-  @apply text-red-500 text-xs mt-1.5 flex items-center gap-1;
-}
-
-@utility admin-table-container {
-  @apply w-full overflow-x-auto border border-slate-200 rounded-2xl bg-white;
-}
-
-@utility admin-table {
-  @apply w-full border-collapse text-left text-sm text-slate-500;
-}
-
-@utility admin-thead {
-  @apply bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200;
-}
-
-@utility admin-th {
-  @apply px-6 py-4 font-bold;
-}
-
-@utility admin-td {
-  @apply px-6 py-4 border-b border-slate-100 text-slate-800 align-middle;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ramen-muted);
 }

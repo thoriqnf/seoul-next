@@ -20,22 +20,17 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // ==========================================
-      // TODO PROXY AUTH 5: Connect form submission to local auth proxy /api/auth/login using Axios
-      // ==========================================
       const response = await axios.post("/api/auth/login", {
         username: username.trim(),
         password,
       });
 
-      // Mutate the global SWR cache key to fetch fresh session details immediately
       await mutate("/api/auth/me", response.data, true);
-
-      router.push("/dashboard");
+      router.push("/saved"); // redirect to Saved board after auth
     } catch (err: any) {
       setError(
         err.response?.data?.error || 
-        "Authentication failed. Try emilys / emilyspass or michaelw / michaelwspass"
+        "Authentication failed. Try emilys / emilyspass or michaelw / michaelwpass"
       );
       setLoading(false);
     }
@@ -44,31 +39,28 @@ export default function LoginPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-sky-50 flex flex-col justify-center font-sans pb-24">
+      <main className="min-h-screen bg-ramen-bg flex flex-col justify-center font-sans pb-24">
         <div className="w-full max-w-md mx-auto px-6">
-          <div className="bg-white border-2 border-sky-200 border-b-4 border-b-sky-300 rounded-3xl p-8 shadow-sm">
+          <div className="bg-ramen-card border border-ramen-border rounded-2xl p-8 shadow-2xl">
             <header className="mb-6 text-center">
-              {/* Brand Logo */}
-              <span className="text-2xl font-black text-indigo-950 tracking-tighter block mb-2 font-toy select-none">
-                toy<span className="text-amber-500">Story</span><span className="text-amber-400 ml-0.5">⭐</span>
-              </span>
-              <h1 className="text-lg font-black text-indigo-950 font-toy uppercase tracking-wider">
-                Staff Sign In
+              <span className="text-2xl block mb-2">🍜</span>
+              <h1 className="text-lg font-black font-serif text-ramen-text uppercase tracking-wider">
+                Curator Sign In
               </h1>
-              <p className="text-xs text-slate-500 mt-1 font-medium">
-                Authenticate via proxy to access the Room Console.
+              <p className="text-xs text-ramen-muted mt-1 font-medium">
+                Authenticate via proxy to access your Saved Board and features.
               </p>
             </header>
 
             {error && (
-              <div className="mb-5 p-3.5 bg-rose-50 border-2 border-rose-200 text-xs font-semibold text-rose-600 rounded-2xl flex items-center gap-1.5 font-toy">
+              <div className="mb-5 p-3.5 bg-red-950/40 border border-ramen-crimson text-xs font-semibold text-ramen-crimson-hover rounded-xl flex items-center gap-1.5 font-serif">
                 <span>⚠️</span> {error}
               </div>
             )}
 
             <form onSubmit={handleLoginSubmit} className="flex flex-col gap-5">
               <div className="flex flex-col">
-                <label className="input-label text-indigo-950 font-toy text-xs font-black uppercase tracking-wider mb-2">
+                <label className="ramen-label">
                   Username
                 </label>
                 <input
@@ -77,12 +69,12 @@ export default function LoginPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="e.g. emilys"
                   required
-                  className="w-full px-4 py-3 text-xs font-semibold rounded-2xl border-2 border-sky-100 bg-sky-50/50 text-indigo-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-sans"
+                  className="ramen-input"
                 />
               </div>
 
               <div className="flex flex-col">
-                <label className="input-label text-indigo-950 font-toy text-xs font-black uppercase tracking-wider mb-2">
+                <label className="ramen-label">
                   Password
                 </label>
                 <input
@@ -91,28 +83,31 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full px-4 py-3 text-xs font-semibold rounded-2xl border-2 border-sky-100 bg-sky-50/50 text-indigo-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-sans"
+                  className="ramen-input"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-toy-blue w-full mt-2 h-11 text-center font-toy uppercase tracking-wider"
+                className="btn-ramen-primary w-full mt-2 h-11 text-center font-bold"
               >
-                {loading ? "Signing in..." : "Login to Console"}
+                {loading ? "Signing in..." : "Login to Board"}
               </button>
             </form>
 
-            <footer className="mt-8 border-t-2 border-sky-50 pt-5 text-center">
-              <div className="text-[10px] text-slate-400 leading-normal font-sans">
-                <p className="font-black mb-2 text-indigo-400 uppercase tracking-widest font-toy text-[9px]">Playroom Credentials</p>
-                <ul className="space-y-1.5 bg-sky-50 p-3 rounded-2xl border border-sky-100 font-semibold text-slate-600">
+            <footer className="mt-8 border-t border-ramen-border pt-5 text-center">
+              <div className="text-[10px] text-ramen-muted leading-normal font-sans">
+                <p className="font-black mb-2 text-ramen-gold uppercase tracking-widest font-serif text-[9px]">Curator Credentials</p>
+                <ul className="space-y-1.5 bg-ramen-surface p-3 rounded-xl border border-ramen-border font-semibold text-ramen-text/80">
                   <li>
-                    <span className="font-bold text-indigo-600">emilys</span> / <span className="font-bold text-indigo-600">emilyspass</span> (Andy - Owner)
+                    <span className="font-bold text-ramen-crimson-hover">emilys</span> / <span className="font-bold text-ramen-crimson-hover">emilyspass</span> (Master Curator)
                   </li>
                   <li>
-                    <span className="font-bold text-indigo-600">michaelw</span> / <span className="font-bold text-indigo-600">michaelwspass</span> (Woody/Buzz)
+                    <span className="font-bold text-ramen-crimson-hover">michaelw</span> / <span className="font-bold text-ramen-crimson-hover">michaelwpass</span> (Recipe Editor)
+                  </li>
+                  <li>
+                    <span className="font-bold text-ramen-crimson-hover">atuny0</span> / <span className="font-bold text-ramen-crimson-hover">9uQFF1Lh</span> (Food Explorer)
                   </li>
                 </ul>
               </div>

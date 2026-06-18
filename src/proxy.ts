@@ -3,62 +3,42 @@ import type { NextRequest } from "next/server";
 import { SessionData } from "@/types";
 
 /**
- * Next.js 16 Proxy boundary function.
- * This functions as the server-side gatekeeper/middleware for requested routes.
- * It intercepts incoming requests matching the matcher paths (specifically /dashboard routes)
- * and enforces Role-Based Access Control (RBAC) before layouts are rendered on the client.
+ * Next.js Middleware — Ramen Discovery gatekeeper.
+ * Protects /saved from unauthenticated users and food explorers.
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ==========================================
-  // TODO PROXY AUTH 9: Guard dashboard routes specifically, and extract the "session" cookie
+  // TODO Recap Final 11: Read session cookie on /saved; redirect to /login if missing
   // ==========================================
-  if (pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/saved")) {
     const sessionCookie = request.cookies.get("session")?.value;
 
-    // ==========================================
-    // TODO PROXY AUTH 10: If cookie is missing, redirect unauthenticated users to "/login"
-    // ==========================================
     if (!sessionCookie) {
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
+    // ==========================================
+    // TODO Recap Final 12: Parse role; redirect food explorers to /unauthorized
+    // ==========================================
     try {
-      // Decode and parse the session payload from the cookie
       const sessionData: SessionData = JSON.parse(sessionCookie);
       const user = sessionData.user;
 
-      // ==========================================
-      // TODO PROXY AUTH 11: Parse session data and enforce RBAC rules:
-      //   - Block non-admin/non-editor users (role !== admin/editor) from dashboard
-      //   - Block non-admin users (role !== admin) from dashboard/admin-only
-      // ==========================================
-      if (user.role !== "admin" && user.role !== "editor") {
-        const unauthorizedUrl = new URL("/unauthorized", request.url);
-        return NextResponse.redirect(unauthorizedUrl);
+      if (user.role === "explorer") {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
       }
-
-      if (pathname.startsWith("/dashboard/admin-only") && user.role !== "admin") {
-        const unauthorizedUrl = new URL("/unauthorized", request.url);
-        return NextResponse.redirect(unauthorizedUrl);
-      }
-    } catch (error) {
-      console.error("Proxy Auth Verification Error:", error);
-      // In case of cookie corruption or parsing issues, flush the bad cookie
-      // and redirect the user back to the sign-in screen to prevent loading loops.
-      const loginRedirect = NextResponse.redirect(new URL("/login", request.url));
-      loginRedirect.cookies.delete("session");
-      return loginRedirect;
+    } catch {
+      const redirect = NextResponse.redirect(new URL("/login", request.url));
+      redirect.cookies.delete("session");
+      return redirect;
     }
   }
 
-  // Allow the request to proceed to the destination route
   return NextResponse.next();
 }
 
-// Config object defining the matched routes that trigger this proxy guard
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/saved/:path*"],
 };
