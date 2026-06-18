@@ -6,12 +6,29 @@ import { Recipe } from "@/types";
 // ==========================================
 // TODO Recap Final 18: SavedAction union + savedReducer (SAVE / UNSAVE / CLEAR)
 // ==========================================
-type SavedAction = any; // Define action types
+/*
+type SavedAction =
+  | { type: "SAVE"; payload: Recipe }
+  | { type: "UNSAVE"; payload: { id: number } }
+  | { type: "CLEAR" };
 
-function savedReducer(state: Recipe[], action: any): Recipe[] {
-  // Implement reducer cases
-  return state;
+function savedReducer(state: Recipe[], action: SavedAction): Recipe[] {
+  switch (action.type) {
+    case "SAVE":
+      return state.find((r) => r.id === action.payload.id)
+        ? state
+        : [...state, action.payload];
+    case "UNSAVE":
+      return state.filter((r) => r.id !== action.payload.id);
+    case "CLEAR":
+      return [];
+    default:
+      return state;
+  }
 }
+*/
+type SavedAction = any;
+function savedReducer(state: Recipe[], action: any): Recipe[] { return state; }
 
 // ==========================================
 // TODO Recap Final 19: SavedProvider with derived savedCount
@@ -25,7 +42,10 @@ interface SavedContextValue {
 const SavedContext = createContext<SavedContextValue | null>(null);
 
 export function SavedProvider({ children }: { children: ReactNode }) {
-  // Initialize useReducer with savedReducer
+  /*
+  const [savedRecipes, dispatch] = useReducer(savedReducer, []);
+  const savedCount = savedRecipes.length;
+  */
   const savedRecipes: Recipe[] = [];
   const savedCount = 0;
   const dispatch = (action: any) => {};
@@ -41,6 +61,11 @@ export function SavedProvider({ children }: { children: ReactNode }) {
 // TODO Recap Final 20: useSaved() custom hook with null guard
 // ==========================================
 export function useSaved() {
-  // Implement custom hook with null check guard
+  /*
+  const context = useContext(SavedContext);
+  if (!context)
+    throw new Error("useSaved must be used inside a <SavedProvider>");
+  return context;
+  */
   return { savedRecipes: [] as Recipe[], savedCount: 0, dispatch: (action: any) => {} };
 }

@@ -6,13 +6,26 @@ import { Recipe } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
 // TODO Recap Final 4: Enable ISR — regenerate this static page every 60 seconds in the background
-// Set revalidate value here
+/*
+export const revalidate = 60;
+*/
 
 // TODO Recap Final 3: Define generateStaticParams to pre-render the first 10 recipe IDs at build time
+/*
 export async function generateStaticParams() {
-  // Return array of parameter objects for the first 10 recipes
-  return [];
+  try {
+    const response = await fetch("https://dummyjson.com/recipes?limit=10&select=id");
+    const { recipes } = await response.json();
+    return recipes.map((recipe: { id: number }) => ({
+      id: String(recipe.id),
+    }));
+  } catch (error) {
+    console.error("Failed to generate static params:", error);
+    return [];
+  }
 }
+*/
+export async function generateStaticParams() { return []; }
 
 interface RecipeDetailPageProps {
   params: Promise<{ id: string }>;

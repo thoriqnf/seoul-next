@@ -25,12 +25,21 @@ export function Navigation() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   // TODO Recap Final 5: Subscribe to the active session using SWR
-  const user: any = null; // Fetch session from /api/auth/me using SWR
+  /*
+  const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
+    shouldRetryOnError: false,
+  });
+  */
+  const user: any = null;
 
   // TODO Recap Final 20: badge counts using useSaved()
-  const savedCount = 0; // Retrieve savedCount from useSaved()
-  const notifications: any[] = []; // Retrieve notifications from useNotif()
-  const notifDispatch = (action: any) => {}; // Retrieve dispatch from useNotif()
+  /*
+  const { savedCount } = useSaved();
+  const { notifications, dispatch: notifDispatch } = useNotif();
+  */
+  const savedCount = 0;
+  const notifications: any[] = [];
+  const notifDispatch = (action: any) => {};
 
   const isLoggedIn = !!user;
 
