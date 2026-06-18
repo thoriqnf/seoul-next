@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { SessionData } from "@/types";
 
 // ==========================================
-// TODO Recap Final 9: Read cookie, parse, return user to client
+// TODO Recap Final 5: Read cookie, parse, return user to client
 // ==========================================
 export async function GET() {
   try {

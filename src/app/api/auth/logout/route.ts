@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 // ==========================================
-// TODO Recap Final 10: Clear session cookie with maxAge=0
+// TODO Recap Final 6: Clear session cookie with maxAge=0
 // ==========================================
 export async function POST() {
   const cookieStore = await cookies();

@@ -4,7 +4,7 @@ import { createContext, useContext, useReducer, ReactNode } from "react";
 import { Recipe } from "@/types";
 
 // ==========================================
-// TODO Recap Final 18: SavedAction union + savedReducer (SAVE / UNSAVE / CLEAR)
+// TODO Recap Final 10: Saved recipes Context setup (SavedAction, savedReducer, SavedProvider, and useSaved)
 // ==========================================
 type SavedAction =
   | { type: "SAVE"; payload: Recipe }
@@ -26,9 +26,6 @@ function savedReducer(state: Recipe[], action: SavedAction): Recipe[] {
   }
 }
 
-// ==========================================
-// TODO Recap Final 19: SavedProvider with derived savedCount
-// ==========================================
 interface SavedContextValue {
   savedRecipes: Recipe[];
   savedCount: number;
@@ -48,9 +45,6 @@ export function SavedProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ==========================================
-// TODO Recap Final 20: useSaved() custom hook with null guard
-// ==========================================
 export function useSaved() {
   const context = useContext(SavedContext);
   if (!context)

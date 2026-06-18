@@ -6,7 +6,7 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 // ==========================================
-// TODO Recap Final 22: FilterBar child component memoized with React.memo
+// TODO Recap Final 11: useCallback, useMemo, and React.memo list rendering optimizations
 // ==========================================
 interface FilterBarProps {
   cuisineFilter: string;
@@ -87,7 +87,6 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
     return Array.from(set).sort();
   }, [recipes]);
 
-  // TODO Recap Final 21: useMemo to memoize the filtered recipes list
   const filteredRecipes = useMemo(() => {
     filterRunCount.current += 1;
     return recipes.filter((recipe) => {
@@ -97,7 +96,6 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
     });
   }, [recipes, cuisineFilter, difficultyFilter]);
 
-  // TODO Recap Final 22: useCallback to stabilize filter state changes
   const handleCuisineChange = useCallback((value: string) => {
     setCuisineFilter(value);
   }, []);
@@ -106,7 +104,7 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
     setDifficultyFilter(value);
   }, []);
 
-  // TODO Recap Final 24: useMediaQuery to pick grid column count dynamically
+  // TODO Recap Final 12: useMediaQuery custom hook to pick grid column count dynamically
   const isMobile = useMediaQuery("(max-width: 767px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const gridColsClass = isMobile

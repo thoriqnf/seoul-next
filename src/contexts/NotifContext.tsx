@@ -10,7 +10,7 @@ import {
 import { Notification } from "@/types";
 
 // ==========================================
-// TODO Recap Final 13: NotifAction discriminated union + notifReducer
+// TODO Recap Final 8: React Context + useReducer (NotifAction, notifReducer, NotifProvider, and useNotif)
 // ==========================================
 type NotifAction =
   | { type: "ADD_NOTIF"; payload: Notification }
@@ -30,9 +30,6 @@ function notifReducer(
   }
 }
 
-// ==========================================
-// TODO Recap Final 14: createContext + NotifProvider
-// ==========================================
 interface NotifContextValue {
   notifications: Notification[];
   dispatch: React.Dispatch<NotifAction>;
@@ -49,9 +46,6 @@ export function NotifProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ==========================================
-// TODO Recap Final 15: useNotif() custom hook with null guard
-// ==========================================
 export function useNotif() {
   const context = useContext(NotifContext);
   if (!context)
@@ -60,7 +54,7 @@ export function useNotif() {
 }
 
 // ==========================================
-// TODO Recap Final 17: ToastItem — auto-dismiss via useEffect + clearTimeout cleanup
+// TODO Recap Final 9: Toast item display & auto-dismiss (useEffect + timer cleanup)
 // ==========================================
 export function ToastItem({ id, message, type }: Notification) {
   const { dispatch } = useNotif();

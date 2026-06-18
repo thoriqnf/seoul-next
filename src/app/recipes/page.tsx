@@ -7,7 +7,7 @@ import { RecipesListClient } from "./RecipesListClient";
 export const revalidate = 0;
 
 export default async function RecipesPage() {
-  // Fetch from DummyJSON
+  // TODO Recap Final 1: Fetch recipes server-side (from both DummyJSON and local json-server if available) and pass as props
   const dummyRes = await fetch(
     "https://dummyjson.com/recipes?limit=30&select=id,name,image,cuisine,rating,caloriesPerServing,tags,difficulty",
     { cache: "no-store" }

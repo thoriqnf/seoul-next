@@ -3,8 +3,7 @@
 import { useNotif, ToastItem } from "@/contexts/NotifContext";
 
 // ==========================================
-// TODO Recap Final 16 (wired here): ToastContainer mounted in layout.tsx
-// TODO Recap Final 17: Map notifications, auto-dismiss via useEffect timer (inside ToastItem)
+// TODO Recap Final 9: ToastContainer displays and maps list of notifications
 // ==========================================
 export function ToastContainer() {
   const { notifications } = useNotif();

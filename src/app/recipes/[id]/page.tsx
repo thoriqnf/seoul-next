@@ -5,10 +5,9 @@ import { notFound } from "next/navigation";
 import { Recipe } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
-// TODO Recap Final 4: Enable ISR — regenerate this static page every 60 seconds in the background
+// TODO Recap Final 2: SSG + ISR dynamic parameter pre-rendering and background regeneration
 export const revalidate = 60;
 
-// TODO Recap Final 3: Define generateStaticParams to pre-render the first 10 recipe IDs at build time
 export async function generateStaticParams() {
   try {
     const response = await fetch("https://dummyjson.com/recipes?limit=10&select=id");

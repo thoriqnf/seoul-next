@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     // ==========================================
-    // TODO Recap Final 7: Forward credentials to dummyjson and map role
+    // TODO Recap Final 4: Forward credentials to dummyjson, map role, and set secure cookie
     // ==========================================
     const response = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
@@ -48,9 +48,6 @@ export async function POST(request: Request) {
 
     const sessionData: SessionData = { user: authUser, token: data.accessToken };
 
-    // ==========================================
-    // TODO Recap Final 8: Set HttpOnly session cookie with sessionData payload
-    // ==========================================
     const cookieStore = await cookies();
     cookieStore.set("session", JSON.stringify(sessionData), {
       httpOnly: true,
