@@ -9,16 +9,34 @@ import { Navigation } from "@/components/Navigation";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
+  const params: { id: string }[] = [];
   try {
     const response = await fetch("https://dummyjson.com/recipes?limit=10&select=id");
-    const { recipes } = await response.json();
-    return recipes.map((recipe: { id: number }) => ({
-      id: String(recipe.id),
-    }));
+    if (response.ok) {
+      const { recipes } = await response.json();
+      recipes.forEach((recipe: { id: number }) => {
+        params.push({ id: String(recipe.id) });
+      });
+    }
   } catch (error) {
-    console.error("Failed to generate static params:", error);
-    return [];
+    console.error("Failed to generate static params from DummyJSON:", error);
   }
+
+  try {
+    const response = await fetch("http://localhost:4000/recipes");
+    if (response.ok) {
+      const recipes = await response.json();
+      if (Array.isArray(recipes)) {
+        recipes.forEach((recipe: { id: number }) => {
+          params.push({ id: String(recipe.id) });
+        });
+      }
+    }
+  } catch (error) {
+    console.warn("Failed to generate static params from local JSON server:", error);
+  }
+
+  return params;
 }
 
 interface RecipeDetailPageProps {
@@ -28,13 +46,35 @@ interface RecipeDetailPageProps {
 export default async function RecipeDetailPage({ params }: RecipeDetailPageProps) {
   const { id } = await params;
 
-  // Fetch recipe detail
-  const response = await fetch(`https://dummyjson.com/recipes/${id}`);
-  if (!response.ok) {
-    notFound();
+  let recipe: Recipe | null = null;
+
+  // 1. Try local JSON server
+  try {
+    const response = await fetch(`http://localhost:4000/recipes/${id}`, {
+      cache: "no-store",
+    });
+    if (response.ok) {
+      recipe = await response.json();
+    }
+  } catch (error) {
+    console.warn(`Local fetch failed for recipe ID ${id}:`, error);
   }
 
-  const recipe: Recipe = await response.json();
+  // 2. Try DummyJSON if not found locally
+  if (!recipe) {
+    try {
+      const response = await fetch(`https://dummyjson.com/recipes/${id}`);
+      if (response.ok) {
+        recipe = await response.json();
+      }
+    } catch (error) {
+      console.error(`DummyJSON fetch failed for recipe ID ${id}:`, error);
+    }
+  }
+
+  if (!recipe) {
+    notFound();
+  }
 
   return (
     <>

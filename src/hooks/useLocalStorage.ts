@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 /**
  * useLocalStorage — Custom Hook
@@ -34,7 +34,7 @@ export function useLocalStorage(key: string, initialValue: any): [any, (value: a
   // Write to localStorage synchronously inside the setter so both stay in sync.
   // ==========================================
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setValue = (value: any) => {
+  const setValue = useCallback((value: any) => {
     try {
       setStoredValue(value);
       if (typeof window !== "undefined") {
@@ -43,7 +43,7 @@ export function useLocalStorage(key: string, initialValue: any): [any, (value: a
     } catch (error) {
       console.error("useLocalStorage write error:", error);
     }
-  };
+  }, [key]);
 
   return [storedValue, setValue];
 }
