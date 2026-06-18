@@ -4,7 +4,7 @@ import { createContext, useContext, useReducer, ReactNode } from "react";
 import { Recipe } from "@/types";
 
 // ==========================================
-// TODO Recap Final 18: SavedAction union + savedReducer (SAVE / UNSAVE / CLEAR)
+// TODO Recap Final 10: Saved recipes Context setup (SavedAction, savedReducer, SavedProvider, and useSaved)
 // ==========================================
 /*
 type SavedAction =
@@ -26,29 +26,18 @@ function savedReducer(state: Recipe[], action: SavedAction): Recipe[] {
       return state;
   }
 }
-*/
-type SavedAction = any;
-function savedReducer(state: Recipe[], action: any): Recipe[] { return state; }
 
-// ==========================================
-// TODO Recap Final 19: SavedProvider with derived savedCount
-// ==========================================
 interface SavedContextValue {
   savedRecipes: Recipe[];
   savedCount: number;
-  dispatch: React.Dispatch<any>;
+  dispatch: React.Dispatch<SavedAction>;
 }
 
 const SavedContext = createContext<SavedContextValue | null>(null);
 
 export function SavedProvider({ children }: { children: ReactNode }) {
-  /*
   const [savedRecipes, dispatch] = useReducer(savedReducer, []);
   const savedCount = savedRecipes.length;
-  */
-  const savedRecipes: Recipe[] = [];
-  const savedCount = 0;
-  const dispatch = (action: any) => {};
 
   return (
     <SavedContext.Provider value={{ savedRecipes, savedCount, dispatch }}>
@@ -57,15 +46,22 @@ export function SavedProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ==========================================
-// TODO Recap Final 20: useSaved() custom hook with null guard
-// ==========================================
 export function useSaved() {
-  /*
   const context = useContext(SavedContext);
   if (!context)
     throw new Error("useSaved must be used inside a <SavedProvider>");
   return context;
-  */
-  return { savedRecipes: [] as Recipe[], savedCount: 0, dispatch: (action: any) => {} };
 }
+*/
+
+// For the compiler to not break when these are not defined yet, we'll export stub versions:
+export type SavedAction = any;
+export const SavedProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
+export function useSaved() {
+  return {
+    savedRecipes: [] as Recipe[],
+    savedCount: 0,
+    dispatch: (() => {}) as any,
+  };
+}
+

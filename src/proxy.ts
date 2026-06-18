@@ -10,21 +10,15 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ==========================================
-  // TODO Recap Final 11: Read session cookie on /saved; redirect to /login if missing
+  // TODO Recap Final 7: Route protection & RBAC (redirect unauthenticated to /login, explorer to /unauthorized)
   // ==========================================
   if (pathname.startsWith("/saved")) {
-    /*
     const sessionCookie = request.cookies.get("session")?.value;
 
     if (!sessionCookie) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
-    */
 
-    // ==========================================
-    // TODO Recap Final 12: Parse role; redirect food explorers to /unauthorized
-    // ==========================================
-    /*
     try {
       const sessionData: SessionData = JSON.parse(sessionCookie);
       const user = sessionData.user;
@@ -37,7 +31,6 @@ export function proxy(request: NextRequest) {
       redirect.cookies.delete("session");
       return redirect;
     }
-    */
   }
 
   return NextResponse.next();

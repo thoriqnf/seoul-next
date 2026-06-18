@@ -7,9 +7,8 @@ import { RecipesListClient } from "./RecipesListClient";
 export const revalidate = 0;
 
 export default async function RecipesPage() {
-  // TODO Recap Final 1: Fetch recipes server-side (from both DummyJSON and local json-server if available)
+  // TODO Recap Final 1: Fetch recipes server-side (from both DummyJSON and local json-server if available) and pass as props
   /*
-  // Fetch from DummyJSON
   const dummyRes = await fetch(
     "https://dummyjson.com/recipes?limit=30&select=id,name,image,cuisine,rating,caloriesPerServing,tags,difficulty",
     { cache: "no-store" }
@@ -47,7 +46,6 @@ export default async function RecipesPage() {
     <>
       <Navigation />
       <main className="min-h-screen bg-ramen-bg text-ramen-text">
-        {/* TODO Recap Final 2: Pass server-fetched data as props to RecipesListClient */}
         <RecipesListClient recipes={combinedRecipes} />
       </main>
     </>

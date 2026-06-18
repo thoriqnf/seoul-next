@@ -24,7 +24,7 @@ export function Navigation() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-  // TODO Recap Final 5: Subscribe to the active session using SWR
+  // TODO Recap Final 3: Subscribe to the active session using SWR
   /*
   const { data: user } = useSWR<AuthUser>("/api/auth/me", fetcher, {
     shouldRetryOnError: false,
@@ -32,7 +32,7 @@ export function Navigation() {
   */
   const user: any = null;
 
-  // TODO Recap Final 20: badge counts using useSaved()
+  // TODO Recap Final 10: badge counts using useSaved()
   /*
   const { savedCount } = useSaved();
   const { notifications, dispatch: notifDispatch } = useNotif();

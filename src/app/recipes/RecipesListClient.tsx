@@ -6,7 +6,7 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 // ==========================================
-// TODO Recap Final 22: FilterBar child component memoized with React.memo
+// TODO Recap Final 11: useCallback, useMemo, and React.memo list rendering optimizations
 // ==========================================
 interface FilterBarProps {
   cuisineFilter: string;
@@ -17,7 +17,60 @@ interface FilterBarProps {
   cuisines: string[];
 }
 
-const FilterBar = function FilterBar({
+/*
+const FilterBar = React.memo(function FilterBar({
+  cuisineFilter,
+  difficultyFilter,
+  onCuisineChange,
+  onDifficultyChange,
+  renderCount,
+  cuisines,
+}: FilterBarProps) {
+  renderCount.current += 1;
+
+  return (
+    <div className="p-5 bg-ramen-card border border-ramen-border rounded-2xl mb-8 flex flex-wrap gap-4 items-center justify-between">
+      <div className="flex flex-wrap gap-4 items-center">
+        <div>
+          <label className="ramen-label">Cuisine</label>
+          <select
+            value={cuisineFilter}
+            onChange={(e) => onCuisineChange(e.target.value)}
+            className="ramen-input min-w-[150px]"
+          >
+            <option value="">All Cuisines</option>
+            {cuisines.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="ramen-label">Difficulty</label>
+          <select
+            value={difficultyFilter}
+            onChange={(e) => onDifficultyChange(e.target.value)}
+            className="ramen-input min-w-[150px]"
+          >
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="text-right text-xs text-ramen-muted">
+        <p>FilterBar Renders: <span className="text-ramen-gold font-bold" suppressHydrationWarning>{renderCount.current}</span></p>
+      </div>
+    </div>
+  );
+});
+*/
+
+function FilterBar({
   cuisineFilter,
   difficultyFilter,
   onCuisineChange,
@@ -68,7 +121,7 @@ const FilterBar = function FilterBar({
       </div>
     </div>
   );
-}; // Make sure to wrap with React.memo for optimization!
+}
 
 interface RecipesListClientProps {
   recipes: Recipe[];
@@ -81,27 +134,56 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
   const filterRunCount = useRef(0);
   const filterBarRenderCount = useRef(0);
 
-  // Extract unique cuisines for selection
+  // Extract unique cuisines for selection (un-memoized helper for starter)
+  /*
   const cuisines = useMemo(() => {
     const set = new Set(recipes.map((r) => r.cuisine));
     return Array.from(set).sort();
   }, [recipes]);
+  */
+  const set = new Set(recipes.map((r) => r.cuisine));
+  const cuisines = Array.from(set).sort();
 
-  // TODO Recap Final 21: useMemo to memoize the filtered recipes list
-  // Wrap filter logic with useMemo and increment filterRunCount.current
-  const filteredRecipes = recipes;
+  /*
+  const filteredRecipes = useMemo(() => {
+    filterRunCount.current += 1;
+    return recipes.filter((recipe) => {
+      const matchesCuisine = !cuisineFilter || recipe.cuisine === cuisineFilter;
+      const matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
+      return matchesCuisine && matchesDifficulty;
+    });
+  }, [recipes, cuisineFilter, difficultyFilter]);
+  */
+  filterRunCount.current += 1;
+  const filteredRecipes = recipes.filter((recipe) => {
+    const matchesCuisine = !cuisineFilter || recipe.cuisine === cuisineFilter;
+    const matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
+    return matchesCuisine && matchesDifficulty;
+  });
 
-  // TODO Recap Final 22: useCallback to stabilize filter state changes
-  const handleCuisineChange = (value: string) => {
+  /*
+  const handleCuisineChange = useCallback((value: string) => {
     setCuisineFilter(value);
-  };
+  }, []);
 
-  const handleDifficultyChange = (value: string) => {
-    setDifficultyFilter(value);
-  };
+  const handleDifficultyChange = useCallback((value: string) => {
+    setCuisineFilter(value);
+  }, []);
+  */
+  const handleCuisineChange = (value: string) => setCuisineFilter(value);
+  const handleDifficultyChange = (value: string) => setDifficultyFilter(value);
 
-  // TODO Recap Final 24: useMediaQuery to pick grid column count dynamically
-  const gridColsClass = "grid-cols-3"; // Substitute with dynamic value from useMediaQuery hooks
+  // TODO Recap Final 12: useMediaQuery custom hook to pick grid column count dynamically
+  /*
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const gridColsClass = isMobile
+    ? "grid-cols-1"
+    : isTablet
+    ? "grid-cols-2"
+    : "grid-cols-3";
+  */
+  const gridColsClass = "grid-cols-3";
 
   return (
     <div className="ramen-container py-12">
@@ -139,3 +221,4 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
     </div>
   );
 }
+

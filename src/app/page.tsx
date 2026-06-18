@@ -9,11 +9,20 @@ export default function Home() {
       <main className="min-h-screen bg-ramen-bg flex flex-col items-center justify-start text-center relative overflow-hidden pb-24 font-sans">
         {/* Hero Image Section */}
         <div className="relative w-full h-[500px]">
-          {/* TODO Recap Final 25: next/image with fill and priority */}
+          {/* TODO Recap Final 13: next/image with fill and priority */}
+          {/*
+          <Image
+            src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=1600"
+            alt="Ramen Discovery Hero"
+            fill
+            priority
+            className="object-cover brightness-40"
+          />
+          */}
           <img
             src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=1600"
             alt="Ramen Discovery Hero"
-            className="object-cover w-full h-full brightness-40"
+            className="absolute inset-0 w-full h-full object-cover brightness-40"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ramen-bg via-transparent to-black/50" />
           

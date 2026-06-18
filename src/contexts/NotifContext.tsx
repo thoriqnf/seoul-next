@@ -10,7 +10,7 @@ import {
 import { Notification } from "@/types";
 
 // ==========================================
-// TODO Recap Final 13: NotifAction discriminated union + notifReducer
+// TODO Recap Final 8: React Context + useReducer (NotifAction, notifReducer, NotifProvider, and useNotif)
 // ==========================================
 /*
 type NotifAction =
@@ -30,27 +30,16 @@ function notifReducer(
       return state;
   }
 }
-*/
-type NotifAction = any;
-function notifReducer(state: Notification[], action: any): Notification[] { return state; }
 
-// ==========================================
-// TODO Recap Final 14: createContext + NotifProvider
-// ==========================================
 interface NotifContextValue {
   notifications: Notification[];
-  dispatch: React.Dispatch<any>;
+  dispatch: React.Dispatch<NotifAction>;
 }
 
 const NotifContext = createContext<NotifContextValue | null>(null);
 
 export function NotifProvider({ children }: { children: ReactNode }) {
-  /*
   const [notifications, dispatch] = useReducer(notifReducer, []);
-  */
-  const notifications: Notification[] = [];
-  const dispatch = (action: any) => {};
-
   return (
     <NotifContext.Provider value={{ notifications, dispatch }}>
       {children}
@@ -58,21 +47,25 @@ export function NotifProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ==========================================
-// TODO Recap Final 15: useNotif() custom hook with null guard
-// ==========================================
 export function useNotif() {
-  /*
   const context = useContext(NotifContext);
   if (!context)
     throw new Error("useNotif must be used inside a <NotifProvider>");
   return context;
-  */
-  return { notifications: [] as Notification[], dispatch: (action: any) => {} };
+}
+*/
+
+export type NotifAction = any;
+export const NotifProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
+export function useNotif() {
+  return {
+    notifications: [] as Notification[],
+    dispatch: (() => {}) as any,
+  };
 }
 
 // ==========================================
-// TODO Recap Final 17: ToastItem — auto-dismiss via useEffect + clearTimeout cleanup
+// TODO Recap Final 9: Toast item display & auto-dismiss (useEffect + timer cleanup)
 // ==========================================
 export function ToastItem({ id, message, type }: Notification) {
   /*
@@ -84,8 +77,6 @@ export function ToastItem({ id, message, type }: Notification) {
     }, 3000);
     return () => clearTimeout(timer);
   }, [id, dispatch]);
-  */
-  const dispatch = (action: any) => {};
 
   const colorMap = {
     success: "border-green-500 bg-green-950/60 text-green-300",
@@ -108,4 +99,11 @@ export function ToastItem({ id, message, type }: Notification) {
       </button>
     </div>
   );
+  */
+  return (
+    <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-ramen-gold bg-amber-950/60 text-amber-300 backdrop-blur-sm text-sm font-medium shadow-xl max-w-xs">
+      <span className="flex-1">{message} (Unimplemented ToastItem)</span>
+    </div>
+  );
 }
+

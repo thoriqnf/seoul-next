@@ -12,7 +12,7 @@ export default function SavedRecipesPage() {
   const { savedRecipes, dispatch } = useSaved();
   const { dispatch: notifDispatch } = useNotif();
 
-  // TODO Recap Final 23: useLocalStorage to persist saved recipe IDs across hard refresh
+  // TODO Recap Final 12: useLocalStorage to persist saved recipe IDs across hard refresh
   /*
   const [savedIds, setSavedIds] = useLocalStorage<number[]>("ramen-discovery-saved", []);
 
