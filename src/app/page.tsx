@@ -10,7 +10,7 @@ export default function Home() {
         {/* Hero Image Section */}
         <div className="relative w-full h-[500px]">
           {/* TODO Recap Final 13: next/image with fill and priority */}
-          {/*
+
           <Image
             src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=1600"
             alt="Ramen Discovery Hero"
@@ -18,14 +18,14 @@ export default function Home() {
             priority
             className="object-cover brightness-40"
           />
-          */}
-          <img
+
+          {/* <img
             src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=1600"
             alt="Ramen Discovery Hero"
             className="absolute inset-0 w-full h-full object-cover brightness-40"
-          />
+          /> */}
           <div className="absolute inset-0 bg-gradient-to-t from-ramen-bg via-transparent to-black/50" />
-          
+
           <div className="absolute inset-0 flex flex-col items-center justify-center max-w-4xl mx-auto px-6 z-10">
             {/* Gold Badge */}
             <span className="text-[10px] font-black tracking-widest text-ramen-bg bg-ramen-gold border border-ramen-gold-light px-5 py-2 rounded-full uppercase mb-6 shadow-lg select-none">

@@ -33,9 +33,24 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/login")) {
+    const sessionCookie = request.cookies.get("session")?.value;
+
+    if (sessionCookie) {
+      try {
+        JSON.parse(sessionCookie)
+        return NextResponse.redirect(new URL("/saved", request.url));
+      } catch {
+        const redirect = NextResponse.redirect(new URL("/login", request.url));
+        redirect.cookies.delete("session");
+        return redirect;
+      }
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/saved/:path*"],
+  matcher: ["/saved/:path*", "/login"],
 };

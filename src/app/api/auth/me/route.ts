@@ -7,7 +7,7 @@ import { SessionData } from "@/types";
 // ==========================================
 export async function GET() {
   try {
-    /*
+
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session");
 
@@ -17,8 +17,6 @@ export async function GET() {
 
     const sessionData: SessionData = JSON.parse(sessionCookie.value);
     return NextResponse.json(sessionData.user);
-    */
-    return NextResponse.json(null);
   } catch {
     return NextResponse.json(null, { status: 401 });
   }

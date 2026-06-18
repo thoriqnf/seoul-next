@@ -6,13 +6,14 @@ import { Recipe } from "@/types";
 import { Navigation } from "@/components/Navigation";
 
 // TODO Recap Final 2: SSG + ISR dynamic parameter pre-rendering and background regeneration
-/*
+
 export const revalidate = 60;
 
 export async function generateStaticParams() {
   try {
     const response = await fetch("https://dummyjson.com/recipes?limit=10&select=id");
     const { recipes } = await response.json();
+    console.log('response', response)
     return recipes.map((recipe: { id: number }) => ({
       id: String(recipe.id),
     }));
@@ -21,8 +22,6 @@ export async function generateStaticParams() {
     return [];
   }
 }
-*/
-export async function generateStaticParams() { return []; }
 
 interface RecipeDetailPageProps {
   params: Promise<{ id: string }>;
@@ -32,6 +31,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
   const { id } = await params;
 
   let recipe: Recipe | null = null;
+  console.log('detail id', params)
 
   // 1. Try local JSON server
   try {

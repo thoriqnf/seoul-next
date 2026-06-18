@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     // ==========================================
     // TODO Recap Final 4: Forward credentials to dummyjson, map role, and set secure cookie
     // ==========================================
-    /*
+
     const response = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,16 +57,16 @@ export async function POST(request: Request) {
       path: "/",
       maxAge: 60 * 30,
     });
-    */
-    const authUser: AuthUser = {
-      id: 1,
-      username: "mock",
-      email: "mock@domain.com",
-      firstName: "Mock",
-      lastName: "User",
-      image: "",
-      role: "explorer",
-    };
+
+    // const authUser: AuthUser = {
+    //   id: 1,
+    //   username: "mock",
+    //   email: "mock@domain.com",
+    //   firstName: "Mock",
+    //   lastName: "User",
+    //   image: "",
+    //   role: "explorer",
+    // };
 
     return NextResponse.json(authUser);
   } catch (error) {

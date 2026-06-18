@@ -17,7 +17,7 @@ interface FilterBarProps {
   cuisines: string[];
 }
 
-/*
+
 const FilterBar = React.memo(function FilterBar({
   cuisineFilter,
   difficultyFilter,
@@ -68,60 +68,59 @@ const FilterBar = React.memo(function FilterBar({
     </div>
   );
 });
-*/
 
-function FilterBar({
-  cuisineFilter,
-  difficultyFilter,
-  onCuisineChange,
-  onDifficultyChange,
-  renderCount,
-  cuisines,
-}: FilterBarProps) {
-  renderCount.current += 1;
+// function FilterBar({
+//   cuisineFilter,
+//   difficultyFilter,
+//   onCuisineChange,
+//   onDifficultyChange,
+//   renderCount,
+//   cuisines,
+// }: FilterBarProps) {
+//   renderCount.current += 1;
 
-  return (
-    <div className="p-5 bg-ramen-card border border-ramen-border rounded-2xl mb-8 flex flex-wrap gap-4 items-center justify-between">
-      <div className="flex flex-wrap gap-4 items-center">
-        {/* Cuisine Select */}
-        <div>
-          <label className="ramen-label">Cuisine</label>
-          <select
-            value={cuisineFilter}
-            onChange={(e) => onCuisineChange(e.target.value)}
-            className="ramen-input min-w-[150px]"
-          >
-            <option value="">All Cuisines</option>
-            {cuisines.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+//   return (
+//     <div className="p-5 bg-ramen-card border border-ramen-border rounded-2xl mb-8 flex flex-wrap gap-4 items-center justify-between">
+//       <div className="flex flex-wrap gap-4 items-center">
+//         {/* Cuisine Select */}
+//         <div>
+//           <label className="ramen-label">Cuisine</label>
+//           <select
+//             value={cuisineFilter}
+//             onChange={(e) => onCuisineChange(e.target.value)}
+//             className="ramen-input min-w-[150px]"
+//           >
+//             <option value="">All Cuisines</option>
+//             {cuisines.map((c) => (
+//               <option key={c} value={c}>
+//                 {c}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
 
-        {/* Difficulty Select */}
-        <div>
-          <label className="ramen-label">Difficulty</label>
-          <select
-            value={difficultyFilter}
-            onChange={(e) => onDifficultyChange(e.target.value)}
-            className="ramen-input min-w-[150px]"
-          >
-            <option value="">All Difficulties</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
-        </div>
-      </div>
+//         {/* Difficulty Select */}
+//         <div>
+//           <label className="ramen-label">Difficulty</label>
+//           <select
+//             value={difficultyFilter}
+//             onChange={(e) => onDifficultyChange(e.target.value)}
+//             className="ramen-input min-w-[150px]"
+//           >
+//             <option value="">All Difficulties</option>
+//             <option value="Easy">Easy</option>
+//             <option value="Medium">Medium</option>
+//             <option value="Hard">Hard</option>
+//           </select>
+//         </div>
+//       </div>
 
-      <div className="text-right text-xs text-ramen-muted">
-        <p>FilterBar Renders: <span className="text-ramen-gold font-bold" suppressHydrationWarning>{renderCount.current}</span></p>
-      </div>
-    </div>
-  );
-}
+//       <div className="text-right text-xs text-ramen-muted">
+//         <p>FilterBar Renders: <span className="text-ramen-gold font-bold" suppressHydrationWarning>{renderCount.current}</span></p>
+//       </div>
+//     </div>
+//   );
+// }
 
 interface RecipesListClientProps {
   recipes: Recipe[];
@@ -135,16 +134,16 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
   const filterBarRenderCount = useRef(0);
 
   // Extract unique cuisines for selection (un-memoized helper for starter)
-  /*
+
   const cuisines = useMemo(() => {
     const set = new Set(recipes.map((r) => r.cuisine));
     return Array.from(set).sort();
   }, [recipes]);
-  */
-  const set = new Set(recipes.map((r) => r.cuisine));
-  const cuisines = Array.from(set).sort();
 
-  /*
+  const set = new Set(recipes.map((r) => r.cuisine));
+  // const cuisines = Array.from(set).sort();
+
+
   const filteredRecipes = useMemo(() => {
     filterRunCount.current += 1;
     return recipes.filter((recipe) => {
@@ -153,15 +152,15 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
       return matchesCuisine && matchesDifficulty;
     });
   }, [recipes, cuisineFilter, difficultyFilter]);
-  */
-  filterRunCount.current += 1;
-  const filteredRecipes = recipes.filter((recipe) => {
-    const matchesCuisine = !cuisineFilter || recipe.cuisine === cuisineFilter;
-    const matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
-    return matchesCuisine && matchesDifficulty;
-  });
 
-  /*
+  filterRunCount.current += 1;
+  // const filteredRecipes = recipes.filter((recipe) => {
+  //   const matchesCuisine = !cuisineFilter || recipe.cuisine === cuisineFilter;
+  //   const matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
+  //   return matchesCuisine && matchesDifficulty;
+  // });
+
+
   const handleCuisineChange = useCallback((value: string) => {
     setCuisineFilter(value);
   }, []);
@@ -169,21 +168,21 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
   const handleDifficultyChange = useCallback((value: string) => {
     setCuisineFilter(value);
   }, []);
-  */
-  const handleCuisineChange = (value: string) => setCuisineFilter(value);
-  const handleDifficultyChange = (value: string) => setDifficultyFilter(value);
+
+  // const handleCuisineChange = (value: string) => setCuisineFilter(value);
+  // const handleDifficultyChange = (value: string) => setDifficultyFilter(value);
 
   // TODO Recap Final 12: useMediaQuery custom hook to pick grid column count dynamically
-  /*
+
   const isMobile = useMediaQuery("(max-width: 767px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const gridColsClass = isMobile
     ? "grid-cols-1"
     : isTablet
-    ? "grid-cols-2"
-    : "grid-cols-3";
-  */
-  const gridColsClass = "grid-cols-3";
+      ? "grid-cols-2"
+      : "grid-cols-3";
+
+  // const gridColsClass = "grid-cols-3";
 
   return (
     <div className="ramen-container py-12">

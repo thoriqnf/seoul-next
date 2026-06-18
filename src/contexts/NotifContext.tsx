@@ -12,10 +12,11 @@ import { Notification } from "@/types";
 // ==========================================
 // TODO Recap Final 8: React Context + useReducer (NotifAction, notifReducer, NotifProvider, and useNotif)
 // ==========================================
-/*
+
 type NotifAction =
   | { type: "ADD_NOTIF"; payload: Notification }
   | { type: "DISMISS_NOTIF"; payload: { id: string } };
+
 
 function notifReducer(
   state: Notification[],
@@ -31,10 +32,12 @@ function notifReducer(
   }
 }
 
+
 interface NotifContextValue {
   notifications: Notification[];
   dispatch: React.Dispatch<NotifAction>;
 }
+
 
 const NotifContext = createContext<NotifContextValue | null>(null);
 
@@ -53,22 +56,22 @@ export function useNotif() {
     throw new Error("useNotif must be used inside a <NotifProvider>");
   return context;
 }
-*/
 
-export type NotifAction = any;
-export const NotifProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
-export function useNotif() {
-  return {
-    notifications: [] as Notification[],
-    dispatch: (() => {}) as any,
-  };
-}
+
+// export type NotifAction = any;
+// export const NotifProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
+// export function useNotif() {
+//   return {
+//     notifications: [] as Notification[],
+//     dispatch: (() => {}) as any,
+//   };
+// }
 
 // ==========================================
 // TODO Recap Final 9: Toast item display & auto-dismiss (useEffect + timer cleanup)
 // ==========================================
 export function ToastItem({ id, message, type }: Notification) {
-  /*
+
   const { dispatch } = useNotif();
 
   useEffect(() => {
@@ -97,12 +100,6 @@ export function ToastItem({ id, message, type }: Notification) {
       >
         ✕
       </button>
-    </div>
-  );
-  */
-  return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-ramen-gold bg-amber-950/60 text-amber-300 backdrop-blur-sm text-sm font-medium shadow-xl max-w-xs">
-      <span className="flex-1">{message} (Unimplemented ToastItem)</span>
     </div>
   );
 }
