@@ -16,49 +16,24 @@ export async function POST(request: Request) {
     // ==========================================
     // TODO Recap Final 7: Forward credentials to dummyjson and map role
     // ==========================================
-    const response = await fetch("https://dummyjson.com/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, expiresInMins: 30 }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return NextResponse.json(
-        { error: errorData.message || "Invalid credentials" },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    let role: "master-curator" | "recipe-editor" | "explorer" = "explorer";
-    if (data.username === "emilys") role = "master-curator";
-    else if (data.username === "michaelw") role = "recipe-editor";
-
+    // 1. Fetch https://dummyjson.com/auth/login (POST)
+    // 2. Map role: emilys -> master-curator, michaelw -> recipe-editor, anyone else -> explorer
     const authUser: AuthUser = {
-      id: data.id,
-      username: data.username,
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      image: data.image,
-      role,
+      id: 1,
+      username: "mock",
+      email: "mock@domain.com",
+      firstName: "Mock",
+      lastName: "User",
+      image: "",
+      role: "explorer",
     };
 
-    const sessionData: SessionData = { user: authUser, token: data.accessToken };
+    const sessionData: SessionData = { user: authUser, token: "mock-token" };
 
     // ==========================================
     // TODO Recap Final 8: Set HttpOnly session cookie with sessionData payload
     // ==========================================
-    const cookieStore = await cookies();
-    cookieStore.set("session", JSON.stringify(sessionData), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 30,
-    });
+    // Set cookie "session" with JSON string of sessionData, httpOnly: true, sameSite: "lax", path: "/", maxAge: 1800
 
     return NextResponse.json(authUser);
   } catch (error) {

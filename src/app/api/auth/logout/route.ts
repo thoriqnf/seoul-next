@@ -5,13 +5,6 @@ import { cookies } from "next/headers";
 // TODO Recap Final 10: Clear session cookie with maxAge=0
 // ==========================================
 export async function POST() {
-  const cookieStore = await cookies();
-  cookieStore.set("session", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
+  // Clear the "session" cookie by setting its maxAge to 0.
   return NextResponse.json({ success: true });
 }

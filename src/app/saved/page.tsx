@@ -13,12 +13,14 @@ export default function SavedRecipesPage() {
   const { dispatch: notifDispatch } = useNotif();
 
   // TODO Recap Final 23: useLocalStorage to persist saved recipe IDs across hard refresh
-  const [savedIds, setSavedIds] = useLocalStorage<number[]>("ramen-discovery-saved", []);
+  // Setup useLocalStorage to store recipe IDs
+  const savedIds: number[] = [];
+  const setSavedIds = (val: number[]) => {};
 
-  // Sync Context saves to localStorage
+  // Sync Context saves to localStorage inside useEffect
   useEffect(() => {
-    setSavedIds(savedRecipes.map((r) => r.id));
-  }, [savedRecipes, setSavedIds]);
+    // Write synchronization logic here
+  }, [savedRecipes]);
 
   const handleUnsave = (id: number, name: string) => {
     dispatch({ type: "UNSAVE", payload: { id } });

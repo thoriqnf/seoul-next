@@ -6,24 +6,11 @@ import { Recipe } from "@/types";
 // ==========================================
 // TODO Recap Final 18: SavedAction union + savedReducer (SAVE / UNSAVE / CLEAR)
 // ==========================================
-type SavedAction =
-  | { type: "SAVE"; payload: Recipe }
-  | { type: "UNSAVE"; payload: { id: number } }
-  | { type: "CLEAR" };
+type SavedAction = any; // Define action types
 
-function savedReducer(state: Recipe[], action: SavedAction): Recipe[] {
-  switch (action.type) {
-    case "SAVE":
-      return state.find((r) => r.id === action.payload.id)
-        ? state
-        : [...state, action.payload];
-    case "UNSAVE":
-      return state.filter((r) => r.id !== action.payload.id);
-    case "CLEAR":
-      return [];
-    default:
-      return state;
-  }
+function savedReducer(state: Recipe[], action: any): Recipe[] {
+  // Implement reducer cases
+  return state;
 }
 
 // ==========================================
@@ -32,14 +19,16 @@ function savedReducer(state: Recipe[], action: SavedAction): Recipe[] {
 interface SavedContextValue {
   savedRecipes: Recipe[];
   savedCount: number;
-  dispatch: React.Dispatch<SavedAction>;
+  dispatch: React.Dispatch<any>;
 }
 
 const SavedContext = createContext<SavedContextValue | null>(null);
 
 export function SavedProvider({ children }: { children: ReactNode }) {
-  const [savedRecipes, dispatch] = useReducer(savedReducer, []);
-  const savedCount = savedRecipes.length;
+  // Initialize useReducer with savedReducer
+  const savedRecipes: Recipe[] = [];
+  const savedCount = 0;
+  const dispatch = (action: any) => {};
 
   return (
     <SavedContext.Provider value={{ savedRecipes, savedCount, dispatch }}>
@@ -52,8 +41,6 @@ export function SavedProvider({ children }: { children: ReactNode }) {
 // TODO Recap Final 20: useSaved() custom hook with null guard
 // ==========================================
 export function useSaved() {
-  const context = useContext(SavedContext);
-  if (!context)
-    throw new Error("useSaved must be used inside a <SavedProvider>");
-  return context;
+  // Implement custom hook with null check guard
+  return { savedRecipes: [] as Recipe[], savedCount: 0, dispatch: (action: any) => {} };
 }

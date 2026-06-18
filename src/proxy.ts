@@ -13,27 +13,12 @@ export function proxy(request: NextRequest) {
   // TODO Recap Final 11: Read session cookie on /saved; redirect to /login if missing
   // ==========================================
   if (pathname.startsWith("/saved")) {
-    const sessionCookie = request.cookies.get("session")?.value;
-
-    if (!sessionCookie) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
+    // Check for "session" cookie, if missing redirect to /login
+    
     // ==========================================
     // TODO Recap Final 12: Parse role; redirect food explorers to /unauthorized
     // ==========================================
-    try {
-      const sessionData: SessionData = JSON.parse(sessionCookie);
-      const user = sessionData.user;
-
-      if (user.role === "explorer") {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-      }
-    } catch {
-      const redirect = NextResponse.redirect(new URL("/login", request.url));
-      redirect.cookies.delete("session");
-      return redirect;
-    }
+    // Parse cookie JSON into SessionData. If user.role is "explorer", redirect to /unauthorized.
   }
 
   return NextResponse.next();

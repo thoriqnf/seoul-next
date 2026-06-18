@@ -17,7 +17,7 @@ interface FilterBarProps {
   cuisines: string[];
 }
 
-const FilterBar = React.memo(function FilterBar({
+const FilterBar = function FilterBar({
   cuisineFilter,
   difficultyFilter,
   onCuisineChange,
@@ -68,7 +68,7 @@ const FilterBar = React.memo(function FilterBar({
       </div>
     </div>
   );
-});
+}; // Make sure to wrap with React.memo for optimization!
 
 interface RecipesListClientProps {
   recipes: Recipe[];
@@ -88,32 +88,20 @@ export function RecipesListClient({ recipes }: RecipesListClientProps) {
   }, [recipes]);
 
   // TODO Recap Final 21: useMemo to memoize the filtered recipes list
-  const filteredRecipes = useMemo(() => {
-    filterRunCount.current += 1;
-    return recipes.filter((recipe) => {
-      const matchesCuisine = !cuisineFilter || recipe.cuisine === cuisineFilter;
-      const matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
-      return matchesCuisine && matchesDifficulty;
-    });
-  }, [recipes, cuisineFilter, difficultyFilter]);
+  // Wrap filter logic with useMemo and increment filterRunCount.current
+  const filteredRecipes = recipes;
 
   // TODO Recap Final 22: useCallback to stabilize filter state changes
-  const handleCuisineChange = useCallback((value: string) => {
+  const handleCuisineChange = (value: string) => {
     setCuisineFilter(value);
-  }, []);
+  };
 
-  const handleDifficultyChange = useCallback((value: string) => {
+  const handleDifficultyChange = (value: string) => {
     setDifficultyFilter(value);
-  }, []);
+  };
 
   // TODO Recap Final 24: useMediaQuery to pick grid column count dynamically
-  const isMobile = useMediaQuery("(max-width: 767px)");
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
-  const gridColsClass = isMobile
-    ? "grid-cols-1"
-    : isTablet
-    ? "grid-cols-2"
-    : "grid-cols-3";
+  const gridColsClass = "grid-cols-3"; // Substitute with dynamic value from useMediaQuery hooks
 
   return (
     <div className="ramen-container py-12">

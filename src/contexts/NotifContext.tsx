@@ -12,22 +12,14 @@ import { Notification } from "@/types";
 // ==========================================
 // TODO Recap Final 13: NotifAction discriminated union + notifReducer
 // ==========================================
-type NotifAction =
-  | { type: "ADD_NOTIF"; payload: Notification }
-  | { type: "DISMISS_NOTIF"; payload: { id: string } };
+type NotifAction = any; // Define discriminated union for ADD and DISMISS
 
 function notifReducer(
   state: Notification[],
-  action: NotifAction
+  action: any
 ): Notification[] {
-  switch (action.type) {
-    case "ADD_NOTIF":
-      return [action.payload, ...state];
-    case "DISMISS_NOTIF":
-      return state.filter((n) => n.id !== action.payload.id);
-    default:
-      return state;
-  }
+  // Implement reducer logic
+  return state;
 }
 
 // ==========================================
@@ -35,13 +27,16 @@ function notifReducer(
 // ==========================================
 interface NotifContextValue {
   notifications: Notification[];
-  dispatch: React.Dispatch<NotifAction>;
+  dispatch: React.Dispatch<any>;
 }
 
 const NotifContext = createContext<NotifContextValue | null>(null);
 
 export function NotifProvider({ children }: { children: ReactNode }) {
-  const [notifications, dispatch] = useReducer(notifReducer, []);
+  // Setup useReducer
+  const notifications: Notification[] = [];
+  const dispatch = (action: any) => {};
+
   return (
     <NotifContext.Provider value={{ notifications, dispatch }}>
       {children}
@@ -53,24 +48,17 @@ export function NotifProvider({ children }: { children: ReactNode }) {
 // TODO Recap Final 15: useNotif() custom hook with null guard
 // ==========================================
 export function useNotif() {
-  const context = useContext(NotifContext);
-  if (!context)
-    throw new Error("useNotif must be used inside a <NotifProvider>");
-  return context;
+  // Implement hook with null guard
+  return { notifications: [] as Notification[], dispatch: (action: any) => {} };
 }
 
 // ==========================================
 // TODO Recap Final 17: ToastItem — auto-dismiss via useEffect + clearTimeout cleanup
 // ==========================================
 export function ToastItem({ id, message, type }: Notification) {
-  const { dispatch } = useNotif();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch({ type: "DISMISS_NOTIF", payload: { id } });
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [id, dispatch]);
+  // Implement useEffect with setTimeout to trigger auto-dismissal
+  // and cleanup the timer on unmount.
+  const dispatch = (action: any) => {};
 
   const colorMap = {
     success: "border-green-500 bg-green-950/60 text-green-300",
@@ -84,9 +72,7 @@ export function ToastItem({ id, message, type }: Notification) {
     >
       <span className="flex-1">{message}</span>
       <button
-        onClick={() =>
-          dispatch({ type: "DISMISS_NOTIF", payload: { id } })
-        }
+        onClick={() => {}}
         className="text-current opacity-60 hover:opacity-100 transition-opacity ml-1"
       >
         ✕
